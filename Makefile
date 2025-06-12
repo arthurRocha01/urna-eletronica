@@ -5,26 +5,26 @@
 # Caminho do arquivo pom.xml
 POM=pom.xml
 
-# Nome do main class (ajuste conforme necessário)
+# Nome da classe principal
 MAIN_CLASS=br.com.poo.Main
 
 # Caminho do JAR gerado
-TARGET_JAR=target/$(shell mvn help:evaluate -Dexpression=project.build.finalName -q -DforceStdout).jar
+TARGET_JAR=target/$(shell mvn help:evaluate -Dexpression=project.build.finalName -q -DforceStdout)
 
 all: build
 
 build:
-	mvn compile
+	@mvn compile > /dev/null
 
 package:
-	mvn package
+	@mvn package > /dev/null
 
 clean:
-	mvn clean
+	@mvn clean > /dev/null
 
 test:
-	mvn test
+	@mvn test
 
 run: package
-	java -cp $(TARGET_JAR) $(MAIN_CLASS)
+	@java -cp $(TARGET_JAR).jar $(MAIN_CLASS)
 
