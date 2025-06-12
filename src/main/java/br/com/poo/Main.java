@@ -11,7 +11,7 @@ public class Main {
     public void teste() {
         String[] partidoInfo = {"Nome Partido", "Sigla Partido", "Número partido"};
         String[] cargoInfo = {"Nome cargo"};
-        String[] candidatoInfo = {"Nome candidato", "Número Candidato"};
+        String[] candidatoInfo = {"Nome candidato", "Número Candidato", "10"};
         ControllerModel controller = new ControllerModel();
         controller.criarCandidato(partidoInfo, cargoInfo, candidatoInfo);
     }

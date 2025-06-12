@@ -12,6 +12,6 @@ public class ControllerModel {
         Candidato candidato = new Candidato(candidtoInfo);
 
         EntidadeEleitoral entidadeEleitoral = new EntidadeEleitoral(partidoCandidato, cargoCandidato, candidato);
-        System.out.println(entidadeEleitoral.candidato.candidato);
+        System.out.println(entidadeEleitoral.candidato.votosCandidato);
     }
 }

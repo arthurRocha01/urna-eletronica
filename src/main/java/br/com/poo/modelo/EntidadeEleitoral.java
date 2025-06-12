@@ -10,28 +10,4 @@ public class EntidadeEleitoral {
         this.cargo = cargo;
         this.candidato = candidato;
     }
-
-    public Partido getPartido() {
-        return partido;
-    }
-
-    public void setPartido(Partido partido) {
-        this.partido = partido;
-    }
-
-    public Cargo getCargo() {
-        return cargo;
-    }
-
-    public void setCargo(Cargo cargo) {
-        this.cargo = cargo;
-    }
-
-    public Candidato getCandidato() {
-        return candidato;
-    }
-
-    public void setCandidato(Candidato candidato) {
-        this.candidato = candidato;
-    }
 }
