@@ -6,9 +6,9 @@ public class Partido {
     public String numero;
     public double votosPartido;
 
-    public Partido(String[] partidoInfo) {
-        this.nome = partidoInfo[0];
-        this.sigla = partidoInfo[1];
-        this.numero = partidoInfo[2];
+    public Partido(String nome, String sigla, String numero) {
+        this.nome = nome;
+        this.sigla = sigla;
+        this.numero = numero;
     }
 }
