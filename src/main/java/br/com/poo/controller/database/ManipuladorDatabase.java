@@ -1,7 +1,5 @@
 package br.com.poo.controller.database;
 
-import java.util.ArrayList;
-
 import org.bson.Document;
 
 import com.mongodb.client.MongoClients;
