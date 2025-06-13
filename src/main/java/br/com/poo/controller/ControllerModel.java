@@ -2,6 +2,7 @@ package br.com.poo.controller;
 
 import br.com.poo.modelo.Partido;
 import br.com.poo.modelo.Cargo;
+import br.com.poo.controller.database.ManipuladorDatabase;
 import br.com.poo.modelo.Candidato;
 
 public class ControllerModel {
@@ -16,6 +17,8 @@ public class ControllerModel {
         private String[] cargoInfo = {"Nome cargo"};
         private String[] candidatoInfo = {"Nome candidato", "Número Candidato", "10"};
         public void teste() {
+            ManipuladorDatabase manipuladorDatabase = new ManipuladorDatabase();
+            manipuladorDatabase.iniciarCliente();
             criarCandidatos();
         }
 
