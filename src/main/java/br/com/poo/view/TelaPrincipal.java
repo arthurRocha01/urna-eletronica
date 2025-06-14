@@ -10,29 +10,35 @@ public class TelaPrincipal extends JFrame {
     }
 
     private void inicializarComponentes() {
-        configurarPainelPrincipal();
-        adcionarPainel();
+        configurarJanela();
+        adicionarPainelPrincipal();
     }
 
-    private void configurarPainelPrincipal() {
+    private void configurarJanela() {
         setTitle("Simulador de Voto TSE - Layout");
         setSize(1300, 700);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setResizable(false);
-        
     }
 
-    private void adcionarPainel() {
-        JPanel urnaPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 40));
-        urnaPanel.setBackground(new Color(208, 208, 208));
-        adcionarPaineis(urnaPanel);
-        add(urnaPanel);
+    private void adicionarPainelPrincipal() {
+        JPanel painelPrincipal = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        painelPrincipal.setBackground(new Color(208, 208, 208));
+
+        // Painel com legenda e visor empilhados verticalmente
+        JPanel painelEsquerda = new JPanel();
+        painelEsquerda.setLayout(new BoxLayout(painelEsquerda, BoxLayout.Y_AXIS));
+        painelEsquerda.setOpaque(false);
+
+        painelEsquerda.add(new Legenda());
+        painelEsquerda.add(Box.createRigidArea(new Dimension(0, 10))); // Espaço entre Legenda e Visor
+        painelEsquerda.add(new Visor());
+
+        painelPrincipal.add(painelEsquerda);
+        painelPrincipal.add(new Teclado());
+
+        setContentPane(painelPrincipal);
         setVisible(true);
-    }
-
-    private void adcionarPaineis(Container layout) {
-        layout.add(new Visor());
-        layout.add(new Teclado());
     }
 }
