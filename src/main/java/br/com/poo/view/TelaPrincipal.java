@@ -5,13 +5,19 @@ import java.awt.*;
 
 public class TelaPrincipal extends JFrame {
 
+    private Legenda legenda;
+    private Visor visor;
+    private Teclado teclado;
+
     public TelaPrincipal() {
         inicializarComponentes();
     }
 
     private void inicializarComponentes() {
         configurarJanela();
-        adicionarPainelPrincipal();
+        configurarPainelPrincipal();
+        iniciarListeners();
+        setVisible(true);
     }
 
     private void configurarJanela() {
@@ -22,23 +28,39 @@ public class TelaPrincipal extends JFrame {
         setResizable(false);
     }
 
-    private void adicionarPainelPrincipal() {
-        JPanel painelPrincipal = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        painelPrincipal.setBackground(new Color(208, 208, 208));
-
-        // Painel com legenda e visor empilhados verticalmente
-        JPanel painelEsquerda = new JPanel();
-        painelEsquerda.setLayout(new BoxLayout(painelEsquerda, BoxLayout.Y_AXIS));
-        painelEsquerda.setOpaque(false);
-
-        painelEsquerda.add(new Legenda());
-        painelEsquerda.add(Box.createRigidArea(new Dimension(0, 10))); // Espaço entre Legenda e Visor
-        painelEsquerda.add(new Visor());
+    private void configurarPainelPrincipal() {
+        JPanel painelPrincipal = criarPainelPrincipal();
+        JPanel painelEsquerda = criarPainelEsquerda();
 
         painelPrincipal.add(painelEsquerda);
-        painelPrincipal.add(new Teclado());
+        teclado = new Teclado();
+        painelPrincipal.add(teclado);
 
         setContentPane(painelPrincipal);
-        setVisible(true);
+    }
+
+    private JPanel criarPainelPrincipal() {
+        JPanel painel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        painel.setBackground(new Color(208, 208, 208));
+        return painel;
+    }
+
+    private JPanel criarPainelEsquerda() {
+        JPanel painel = new JPanel();
+        painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
+        painel.setOpaque(false);
+
+        legenda = new Legenda();
+        visor = new Visor();
+
+        painel.add(legenda);
+        painel.add(Box.createRigidArea(new Dimension(0, 10))); // Espaço entre legenda e visor
+        painel.add(visor);
+
+        return painel;
+    }
+
+    private void iniciarListeners() {
+        teclado.setListener(acao -> visor.onAcao(acao));
     }
 }

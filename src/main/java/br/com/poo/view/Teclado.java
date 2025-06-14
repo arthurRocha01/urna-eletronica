@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Teclado extends JPanel {
 
+    ViewListener viewListener;
+
     public Teclado() {
         inicializarComponentes();
     }
@@ -36,6 +38,14 @@ public class Teclado extends JPanel {
 
         criarPainel(cabecalho, Color.DARK_GRAY, xBrasa, yBrasa, larguraBrasa, alturaBrasa);
         cabecalho.add(criarLabel("JUSTIÇA ELEITORAL", 16, Color.BLACK, 15, 25, largura, 30, SwingConstants.CENTER));
+    }
+
+    private JPanel criarPainel(Container pai, Color cor, int x, int y, int largura, int altura) {
+        JPanel painel = new JPanel(null);
+        painel.setBackground(cor);
+        painel.setBounds(x, y, largura, altura);
+        pai.add(painel);
+        return painel;
     }
 
     private void adicionarBotoesNumericos() {
@@ -72,16 +82,6 @@ public class Teclado extends JPanel {
         criarBotaoEspecial("CONFIRMA", 14, new Color(0, 153, 0), Color.WHITE, xConfirma, y, confirmaWidth, btnHeight);
     }
 
-    // Métodos utilitários reutilizáveis
-
-    private JPanel criarPainel(Container pai, Color cor, int x, int y, int largura, int altura) {
-        JPanel painel = new JPanel(null);
-        painel.setBackground(cor);
-        painel.setBounds(x, y, largura, altura);
-        pai.add(painel);
-        return painel;
-    }
-
     private JLabel criarLabel(String texto, int tamanho, Color cor, int x, int y, int largura, int altura, int alinhamento) {
         JLabel label = new JLabel(texto, alinhamento);
         label.setFont(new Font("Arial", Font.BOLD, tamanho));
@@ -92,12 +92,27 @@ public class Teclado extends JPanel {
 
     private void criarBotaoNumerico(String texto, int x, int y, int largura, int altura) {
         JButton btn = criarBotao(texto, 20, Color.BLACK, Color.WHITE, x, y, largura, altura);
+        btn.setFocusable(false);
+        btn.addActionListener(e -> onDigito(texto));
         add(btn);
+    }
+
+    private void onDigito(String digito) {
+        if (viewListener != null) viewListener.pressBotao(digito);
+    }
+
+    public void setListener(ViewListener viewListener) {
+        this.viewListener = viewListener;
     }
 
     private void criarBotaoEspecial(String texto, int fonte, Color fundo, Color textoCor, int x, int y, int largura, int altura) {
         JButton btn = criarBotao(texto, fonte, fundo, textoCor, x, y, largura, altura);
+        btn.addActionListener(e -> onBotao(texto));
         add(btn);
+    }
+
+    private void onBotao(String botao) {
+        if (viewListener != null) viewListener.pressBotao(botao);
     }
 
     private JButton criarBotao(String texto, int fonte, Color fundo, Color textoCor, int x, int y, int largura, int altura) {

@@ -13,6 +13,7 @@ public class Visor extends JPanel {
     private static final int BASE_HEIGHT = 400;
 
     private final List<JComponent> componentes = new ArrayList<>();
+    private JTextField[] camposDigito = new JTextField[2];
 
     public Visor() {
         setLayout(null);
@@ -31,7 +32,6 @@ public class Visor extends JPanel {
     }
 
     private void inicializarComponentes() {
-        // Labels principais
         adicionarLabel("SEU VOTO PARA:", 17, new Rectangle(20, 10, 300, 20));
         adicionarLabel("Governador", 22, new Rectangle(300, 45, 300, 30));
         adicionarLabel("Número:", 16, new Rectangle(20, 100, 100, 20));
@@ -85,12 +85,32 @@ public class Visor extends JPanel {
         int espacamento = 5;
 
         for (int i = 0; i < quantidade; i++) {
-            JTextField campo = criarCampoNumerico(larguraCampo, alturaCampo, i * (larguraCampo + espacamento), 0);
-            painelNumeros.add(campo);
+            camposDigito[i] = criarCampoNumerico(larguraCampo, alturaCampo, i * (larguraCampo + espacamento), 0);
+            painelNumeros.add(camposDigito[i]);
         }
 
         componentes.add(painelNumeros);
         add(painelNumeros);
+    }
+
+    public void onAcao(String acao) {
+        if (acao.matches("\\d+")) inserirDigito(acao);
+        else acionarBotao(acao);
+    }
+
+    private void inserirDigito(String acao) {
+        if (camposDigito[0].getText().isEmpty()) camposDigito[0].setText(acao);
+        else if (camposDigito[1].getText().isEmpty()) camposDigito[1].setText(acao);
+    }
+
+    private void acionarBotao(String acao) {
+        if (acao.equals("CORRIGE")) apagarTextoCampos();
+        if (acao.equals("CONFIRMA")) System.out.println("voto confirmado");
+        if (acao.equals("BRANCO")) System.out.println("voto em branco");
+    }
+
+    private void apagarTextoCampos() {
+        for (JTextField campo : camposDigito) campo.setText("");
     }
 
     private JTextField criarCampoNumerico(int largura, int altura, int x, int y) {
@@ -99,6 +119,7 @@ public class Visor extends JPanel {
         campo.setHorizontalAlignment(JTextField.CENTER);
         campo.setBackground(Color.WHITE);
         campo.setBorder(new LineBorder(Color.BLACK, 2));
+        campo.setFocusable(false);
         campo.setBounds(x, y, largura, altura);
         bloquearNaoNumeros(campo);
         return campo;
