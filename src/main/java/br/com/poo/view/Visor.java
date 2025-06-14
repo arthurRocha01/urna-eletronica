@@ -7,26 +7,29 @@ import java.awt.*;
 public class Visor extends JPanel {
 
     public Visor() {
-        setLayout(null);
-        setBackground(Color.WHITE);
-        setBorder(new LineBorder(Color.BLACK, 3));
-        setPreferredSize(new Dimension(550, 350));
-
         inicializarComponentes();
     }
 
     private void inicializarComponentes() {
-        criarLabels();
-        criarFotos();
-        criarCamposNumero(2, new int[]{80, 65}, new Dimension(120, 60));
+        configurarPainelPrincipal();
+        adcionarLabels();
+        adcionarFotos();
+        adcionarCamposNumero(2, new int[]{80, 65}, new Dimension(120, 60));
     }
 
-    private void criarLabels() {
+    private void configurarPainelPrincipal() {
+        setLayout(null);
+        setBackground(Color.WHITE);
+        setBorder(new LineBorder(Color.BLACK, 3));
+        setPreferredSize(new Dimension(800, 450));
+    }
+
+    private void adcionarLabels() {
         Object[][] labels = {
-            { "SEU VOTO PARA:", 14, new Rectangle(10, 5, 150, 20) },
-            { "TREINAMENTO", 14, new Rectangle(200, 5, 150, 20) },
-            { "Governador", 22, new Rectangle(10, 25, 200, 30) },
-            { "Número:", 16, new Rectangle(10, 70, 100, 20) },
+            { "SEU VOTO PARA:", 17, new Rectangle(10, 5, 300, 20) },
+            // { "TREINAMENTO", 14, new Rectangle(200, 5, 150, 20) },
+            { "Governador", 22, new Rectangle(10, 25, 300, 30) },
+            { "Número:", 16, new Rectangle(7, 80, 100, 20) },
             { "Nome:", 16, new Rectangle(10, 135, 100, 20) },
             { "Vôlei", 16, new Rectangle(70, 135, 200, 20) },
             { "Partido:", 16, new Rectangle(10, 160, 100, 20) },
@@ -49,7 +52,7 @@ public class Visor extends JPanel {
         return label;
     }
 
-    private void criarFotos() {
+    private void adcionarFotos() {
         Rectangle[] posicoes = {
             new Rectangle(400, 20, 100, 100),
             new Rectangle(400, 150, 100, 100)
@@ -67,7 +70,7 @@ public class Visor extends JPanel {
         return painel;
     }
 
-    private void criarCamposNumero(int quantidade, int[] posicaoPainel, Dimension tamanhoPainel) {
+    private void adcionarCamposNumero(int quantidade, int[] posicaoPainel, Dimension tamanhoPainel) {
         JPanel numeroPanel = new JPanel(null);
         numeroPanel.setBackground(Color.WHITE);
         numeroPanel.setBounds(posicaoPainel[0], posicaoPainel[1], tamanhoPainel.width, tamanhoPainel.height);
