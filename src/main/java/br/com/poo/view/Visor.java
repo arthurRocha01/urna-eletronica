@@ -12,9 +12,9 @@ public class Visor extends JPanel {
 
     private void inicializarComponentes() {
         configurarPainelPrincipal();
-        adcionarLabels();
-        adcionarFotos();
-        adcionarCamposNumero(2, new int[]{80, 65}, new Dimension(120, 60));
+        adicionarLabels();
+        adicionarFotos();
+        adicionarCamposNumero(2, new int[]{110, 85}, new Dimension(120, 60));
     }
 
     private void configurarPainelPrincipal() {
@@ -24,21 +24,33 @@ public class Visor extends JPanel {
         setPreferredSize(new Dimension(800, 450));
     }
 
-    private void adcionarLabels() {
+    private void adicionarLabels() {
         Object[][] labels = {
-            { "SEU VOTO PARA:", 17, new Rectangle(10, 5, 300, 20) },
-            // { "TREINAMENTO", 14, new Rectangle(200, 5, 150, 20) },
-            { "Governador", 22, new Rectangle(10, 25, 300, 30) },
-            { "Número:", 16, new Rectangle(7, 80, 100, 20) },
-            { "Nome:", 16, new Rectangle(10, 135, 100, 20) },
-            { "Vôlei", 16, new Rectangle(70, 135, 200, 20) },
-            { "Partido:", 16, new Rectangle(10, 160, 100, 20) },
-            { "PEsp", 16, new Rectangle(75, 160, 100, 20) },
-            { "Vice-Governador:", 16, new Rectangle(10, 185, 160, 20) },
-            { "Tênis", 16, new Rectangle(160, 185, 200, 20) },
-            { "Governador", 12, new Rectangle(400, 120, 100, 20) },
-            { "Vice-Governador", 12, new Rectangle(390, 250, 120, 20) },
-            { "<html>Aperte a tecla:<br>CONFIRMA para CONFIRMAR este voto<br>CORRIGE para REINICIAR este voto</html>", 12, new Rectangle(10, 250, 350, 60) }
+            { "SEU VOTO PARA:", 17, new Rectangle(20, 10, 300, 20) },
+            { "Governador", 22, new Rectangle(300, 45, 300, 30) },
+            { "Número:", 16, new Rectangle(20, 100, 100, 20) },
+
+            { "Nome:", 16, new Rectangle(20, 190, 100, 20) },
+            { "Vôlei", 16, new Rectangle(100, 190, 200, 20) },
+            { "Partido:", 16, new Rectangle(20, 220, 100, 20) },
+            { "PEsp", 16, new Rectangle(100, 220, 100, 20) },
+            { "Vice-Governador:", 16, new Rectangle(20, 250, 160, 20) },
+            { "Tênis", 16, new Rectangle(170, 250, 200, 20) },
+
+            { "Governador", 12, new Rectangle(670, 210, 100, 20) },
+            { "Vice-Governador", 12, new Rectangle(660, 380, 120, 20) },
+            
+            {
+                "<html>" +
+                    "<div style='letter-spacing: 1.5px;'>" +
+                        "<hr style='border: 1px solid black;'><br><br>" +
+                        "<div>Aperte a tecla:</div>" +
+                        "<div><b>CONFIRMA</b> para CONFIRMAR este voto</div>" +
+                        "<div><b>CORRIGE</b> para REINICIAR este voto</div>" +
+                    "</div>" +
+                "</html>",
+                15, new Rectangle(20, 330, 500, 100)
+            }
         };
 
         for (Object[] l : labels)
@@ -52,10 +64,10 @@ public class Visor extends JPanel {
         return label;
     }
 
-    private void adcionarFotos() {
+    private void adicionarFotos() {
         Rectangle[] posicoes = {
-            new Rectangle(400, 20, 100, 100),
-            new Rectangle(400, 150, 100, 100)
+            new Rectangle(670, 100, 100, 100), // Foto Governador
+            new Rectangle(670, 270, 100, 100)  // Foto Vice
         };
 
         for (Rectangle pos : posicoes)
@@ -70,14 +82,14 @@ public class Visor extends JPanel {
         return painel;
     }
 
-    private void adcionarCamposNumero(int quantidade, int[] posicaoPainel, Dimension tamanhoPainel) {
+    private void adicionarCamposNumero(int quantidade, int[] posicaoPainel, Dimension tamanhoPainel) {
         JPanel numeroPanel = new JPanel(null);
         numeroPanel.setBackground(Color.WHITE);
         numeroPanel.setBounds(posicaoPainel[0], posicaoPainel[1], tamanhoPainel.width, tamanhoPainel.height);
 
-        int fieldWidth = 50;
-        int fieldHeight = 60;
-        int spacing = 10;
+        int fieldWidth = 40;
+        int fieldHeight = 55;
+        int spacing = 5;
 
         for (int i = 0; i < quantidade; i++) {
             JTextField campo = new JTextField();
