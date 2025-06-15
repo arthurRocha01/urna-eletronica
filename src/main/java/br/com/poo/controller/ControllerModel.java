@@ -33,7 +33,7 @@ public class ControllerModel {
         return manipuladorDatabase.getPartido(sigla);
     }
 
-    // public Document[] buscarDadosColecao(String colecao) {
-
-    // }
+    public Document[] buscarDadosColecao(String colecao) {
+        return manipuladorDatabase.getColecao(colecao);
+    }
 }

@@ -34,7 +34,6 @@ public class TelaPrincipal extends JFrame {
         setResizable(false);
     }
 
-    /** Configura o painel principal da interface */
     private void configurarPainelPrincipal() {
         JPanel painelPrincipal = criarPainelPrincipal();
         JPanel painelEsquerda = criarPainelEsquerda();
@@ -53,7 +52,6 @@ public class TelaPrincipal extends JFrame {
         return painel;
     }
 
-    /** Cria e retorna o painel esquerdo */
     private JPanel criarPainelEsquerda() {
         JPanel painel = new JPanel();
         painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
@@ -74,23 +72,5 @@ public class TelaPrincipal extends JFrame {
         teclado.setController(controller);
         visor.setController(controller);
         legenda.setController(controller);
-    }
-
-    // Getters públicos, caso necessários para acesso externo (seguindo padrão MVC)
-
-    public Legenda getLegenda() {
-        return legenda;
-    }
-
-    public Visor getVisor() {
-        return visor;
-    }
-
-    public Teclado getTeclado() {
-        return teclado;
-    }
-
-    public ControllerModel getController() {
-        return controller;
     }
 }

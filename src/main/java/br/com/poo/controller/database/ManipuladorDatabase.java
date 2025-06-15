@@ -4,14 +4,18 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
 
-import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class ManipuladorDatabase {
-    private final String URI_DATABASE = "mongodb+srv://user1234:senha1234@urna-eletronica.qiefb7e.mongodb.net/?retryWrites=true&w=majority&appName=urna-eletronica";
+    private static final String URI_DATABASE = "mongodb+srv://user1234:senha1234@urna-eletronica.qiefb7e.mongodb.net/?retryWrites=true&w=majority&appName=urna-eletronica";
+
     private MongoClient mongoClient;
     private MongoDatabase database;
 
@@ -25,36 +29,43 @@ public class ManipuladorDatabase {
             partidos = database.getCollection("partidos");
             candidatos = database.getCollection("candidatos");
             System.out.println("Conectado ao banco: " + database.getName());
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Erro na conexão com MongoDB");
         }
     }
 
     public Document getPartido(String sigla) {
-        for (Document partido : partidos.find()) {
-            if (partido.getString("sigla").equals(sigla)) return partido;
+        Document partido = partidos.find(eq("sigla", sigla)).first();
+        if (partido == null) {
+            System.out.println("Database: Partido não encontrado.");
         }
-        System.out.println("Database: Item não encontrado.");
-        return null;
+        return partido;
     }
 
-    public Document[] getCandidato(String voto) {
-        for (Document candidato : candidatos.find()) {
-            if (candidato.getString("numero").equals(voto)) {
-                ObjectId idPartido = candidato.getObjectId("partido_id");
-                Document partido = partidos.find(eq("_id", idPartido)).first();
-                return new Document[] { candidato, partido };
-            }
+    public Document[] getCandidato(String numero) {
+        Document candidato = candidatos.find(eq("numero", numero)).first();
+        if (candidato == null) {
+            System.out.println("Database: Candidato não encontrado.");
+            return new Document[0];
         }
-        System.out.println("Database: Item não encontrado.");
-        return null;
+
+        ObjectId idPartido = candidato.getObjectId("partido_id");
+        Document partido = partidos.find(eq("_id", idPartido)).first();
+
+        return new Document[] { candidato, partido };
     }
 
-    // public Document[] getColecao(String colecao) {
-    //     if (colecao.equals("partidos")) return (FindIterable<Document>) partidos.find();
-    //     return null;
-    // }
+    public Document[] getColecao(String nomeColecao) {
+        MongoCollection<Document> colecao = switch (nomeColecao) {
+            case "partidos" -> partidos;
+            case "candidatos" -> candidatos;
+            default -> null;
+        };
+
+        List<Document> documentos = colecao.find().into(new ArrayList<>());
+        return documentos.toArray(new Document[0]);
+    }
 
     public void fecharConexao() {
         if (mongoClient != null) {

@@ -4,16 +4,14 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import org.bson.Document;
-
 import br.com.poo.controller.ControllerModel;
 
 import java.awt.*;
-import java.util.List;
-import java.util.Arrays;
 
 public class Legenda extends JPanel {
 
-    ControllerModel controller;
+    private ControllerModel controller;
+    private JPanel painelGrade;
 
     public Legenda() {
         iniciarPainelPrincipal();
@@ -35,7 +33,10 @@ public class Legenda extends JPanel {
         ));
 
         painel.add(criarCabecalhoTexto(), BorderLayout.NORTH);
-        painel.add(criarGradePartidos(), BorderLayout.CENTER);
+
+        painelGrade = criarPainel(new GridLayout(2, 3, 10, 10), null);
+        painelGrade.setOpaque(false);
+        painel.add(painelGrade, BorderLayout.CENTER);
 
         return painel;
     }
@@ -50,22 +51,18 @@ public class Legenda extends JPanel {
         return painel;
     }
 
-    private JPanel criarGradePartidos() {
-        JPanel painel = criarPainel(new GridLayout(2, 3, 10, 10), null);
-        painel.setOpaque(false);
+    public void carregarPartidos() {
+        painelGrade.removeAll();
 
-        List<String[]> partidos = Arrays.asList(
-            new String[]{"91 PEsp", "PARTIDO DOS ESPORTES"},
-            new String[]{"92 PPop", "PARTIDO POPULAR"},
-            new String[]{"93 PVer", "PARTIDO VERDE"},
-            new String[]{"94 PFest", "PARTIDO DOS RITMOS"},
-            new String[]{"95 PLib", "PARTIDO DA LIBERDADE"}
-        );
+        Document[] partidos = controller.buscarDadosColecao("partidos");
 
-        partidos.forEach(p -> painel.add(criarPainelPartido(p[0], p[1])));
-        painel.add(new JLabel()); // célula vazia para completar a grade
+        for (Document partido : partidos) {
+            painelGrade.add(criarPainelPartido(partido.getString("sigla"), partido.getString("nome")));
+        }
 
-        return painel;
+        painelGrade.add(new JLabel());
+        revalidate();
+        repaint();
     }
 
     private JPanel criarPainelPartido(String sigla, String nome) {
@@ -107,5 +104,6 @@ public class Legenda extends JPanel {
 
     public void setController(ControllerModel controller) {
         this.controller = controller;
+        carregarPartidos();
     }
 }
