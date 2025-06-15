@@ -1,22 +1,26 @@
 package br.com.poo.view;
 
 import javax.swing.*;
+
+import br.com.poo.controller.ControllerModel;
+
 import java.awt.*;
 
 public class TelaPrincipal extends JFrame {
 
-    private Legenda legenda;
-    private Visor visor;
-    private Teclado teclado;
+    ControllerModel controller;
+    public Legenda legenda;
+    public Visor visor;
+    public Teclado teclado;
 
     public TelaPrincipal() {
         inicializarComponentes();
+        iniciarController();
     }
 
     private void inicializarComponentes() {
         configurarJanela();
         configurarPainelPrincipal();
-        iniciarListeners();
         setVisible(true);
     }
 
@@ -60,7 +64,8 @@ public class TelaPrincipal extends JFrame {
         return painel;
     }
 
-    private void iniciarListeners() {
-        teclado.setListener(acao -> visor.onAcao(acao));
+    private void iniciarController() {
+        this.controller = new ControllerModel(this);
+        teclado.setController(controller);
     }
 }

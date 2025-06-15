@@ -2,6 +2,9 @@ package br.com.poo.view;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
+
+import br.com.poo.controller.ControllerModel;
+
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -12,6 +15,7 @@ public class Visor extends JPanel {
     private static final int BASE_WIDTH = 700;
     private static final int BASE_HEIGHT = 400;
 
+    ControllerModel controller;
     private final List<JComponent> componentesFixos = new ArrayList<>();
     private final List<JComponent> componentesInfo = new ArrayList<>();
     private JTextField[] camposDigito = new JTextField[2];
@@ -94,12 +98,7 @@ public class Visor extends JPanel {
         });
     }
 
-    public void onAcao(String acao) {
-        if (acao.matches("\\d+")) inserirDigito(acao);
-        else acionarBotao(acao);
-    }
-
-    private void inserirDigito(String acao) {
+    public void inserirDigito(String acao) {
         if (camposDigito[0].getText().isEmpty()) camposDigito[0].setText(acao);
         else if (camposDigito[1].getText().isEmpty()) {
             camposDigito[1].setText(acao);
@@ -107,7 +106,7 @@ public class Visor extends JPanel {
         }
     }
 
-    private void acionarBotao(String acao) {
+    public void acionarBotao(String acao) {
         if (acao.equals("CORRIGE")) apagarTextoCampos();
         if (acao.equals("CONFIRMA")) System.out.println("voto confirmado");
         if (acao.equals("BRANCO")) System.out.println("voto em branco");
@@ -194,5 +193,9 @@ public class Visor extends JPanel {
             float novoTamanho = (float) (fonte.getSize2D() * Math.min(escalaX, escalaY));
             comp.setFont(fonte.deriveFont(novoTamanho));
         }
+    }
+
+    public void setController(ControllerModel controller) {
+        this.controller = controller;
     }
 }
