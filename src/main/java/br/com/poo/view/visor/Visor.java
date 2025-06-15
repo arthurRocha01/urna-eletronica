@@ -42,7 +42,7 @@ public class Visor extends JPanel {
     private void adicionarCamposNumericos(int quantidade) {
         int larguraCampo = 40, alturaCampo = 55, espacamento = 5;
         int larguraTotal = quantidade * larguraCampo + (quantidade - 1) * espacamento;
-        int xInicial = (BASE_WIDTH - larguraTotal) / 5;
+        int xInicial = (BASE_WIDTH - larguraTotal) / 4;
 
         JPanel painel = new JPanel(null);
         painel.setBackground(Color.WHITE);
@@ -138,11 +138,11 @@ public class Visor extends JPanel {
         Document candidato = info[0];
         Document partido = info[1];
 
-        adicionarLabelInfo("Número:", candidato.getString("numero"), new Rectangle(20, 160, 300, 20));
+        adicionarLabel("Número:", 18, new Rectangle(25, 95, 300, 20), false);
         adicionarLabelInfo("Nome:", candidato.getString("nome"), new Rectangle(20, 190, 300, 20));
         adicionarLabelInfo("Partido:", partido.getString("sigla"), new Rectangle(20, 220, 300, 20));
 
-        adicionarLabelInfo("Vice-Governador:", "NOME DO VICE", new Rectangle(20, 250, 300, 20));
+        adicionarLabelInfo("Vice-Governador:", "-", new Rectangle(20, 250, 300, 20));
 
         adicionarLabel("Governador", 12, new Rectangle(585, 190, 100, 20), true);
         adicionarLabel("Vice-Governador", 12, new Rectangle(568, 360, 120, 20), true);
