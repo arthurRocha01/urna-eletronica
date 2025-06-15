@@ -1,33 +1,28 @@
 package br.com.poo.controller.database;
 
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoCollection;
 
+import static com.mongodb.client.model.Filters.eq;
 public class ManipuladorDatabase {
-    private String URI_DATABASE = "mongodb+srv://user1234:senha1234@urna-eletronica.qiefb7e.mongodb.net/?retryWrites=true&w=majority&appName=urna-eletronica";
-    MongoClient mongoClient;
+    private final String URI_DATABASE = "mongodb+srv://user1234:senha1234@urna-eletronica.qiefb7e.mongodb.net/?retryWrites=true&w=majority&appName=urna-eletronica";
+    private MongoClient mongoClient;
     private MongoDatabase database;
 
     private MongoCollection<Document> partidos;
-    private MongoCollection<Document> cargos;
     private MongoCollection<Document> candidatos;
-
-    private void inicarColecoes() {
-        partidos = database.getCollection("partidos");
-        cargos = database.getCollection("cargos");
-        candidatos = database.getCollection("candidatos");
-    }
 
     public void iniciarCliente() {
         try {
             mongoClient = MongoClients.create(URI_DATABASE);
             database = mongoClient.getDatabase("urna_db");
-            inicarColecoes();
+            partidos = database.getCollection("partidos");
+            candidatos = database.getCollection("candidatos");
             System.out.println("Conectado ao banco: " + database.getName());
         } catch(Exception e) {
             e.printStackTrace();
@@ -35,17 +30,22 @@ public class ManipuladorDatabase {
         }
     }
 
-    public FindIterable<Document> getItens(String colecao) {
-        if(colecao.equals("cargos")) return cargos.find();
-        if (colecao.equals("partidos")) return partidos.find();
-        if (colecao.equals("candidatos")) return candidatos.find();
+    public Document[] getCandidato(String voto) {
+        for (Document candidato : candidatos.find()) {
+            if (candidato.getString("numero").equals(voto)) {
+                ObjectId idPartido = candidato.getObjectId("partido_id");
+                Document partido = partidos.find(eq("_id", idPartido)).first();
+                return new Document[] { candidato, partido };
+            }
+        }
+        System.out.println("Database: Item não encontrado.");
         return null;
     }
 
     public void fecharConexao() {
-    if (mongoClient != null) {
-        mongoClient.close();
-        System.out.println("Conexão com MongoDB encerrada.");
+        if (mongoClient != null) {
+            mongoClient.close();
+            System.out.println("Conexão com MongoDB encerrada.");
+        }
     }
-}
 }

@@ -1,4 +1,4 @@
-package br.com.poo.view;
+package br.com.poo.view.legenda;
 
 import javax.swing.*;
 import javax.swing.border.*;

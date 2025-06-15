@@ -1,21 +1,23 @@
-package br.com.poo.view;
-
-import javax.swing.*;
+package br.com.poo.view.teclado;
 
 import br.com.poo.controller.ControllerModel;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
 public class Teclado extends JPanel {
 
-    ControllerModel controller;
+    /** Controlador da aplicação */
+    private ControllerModel controller;
 
+    /** Construtor do painel do teclado */
     public Teclado() {
         inicializarComponentes();
     }
 
+    /** Inicializa os componentes do teclado */
     private void inicializarComponentes() {
         configurarPainelPrincipal();
         adicionarCabecalho();
@@ -23,6 +25,7 @@ public class Teclado extends JPanel {
         adicionarBotoesEspeciais();
     }
 
+    /** Configura o painel principal do teclado */
     private void configurarPainelPrincipal() {
         setLayout(null);
         setBackground(new Color(30, 30, 30));
@@ -30,6 +33,7 @@ public class Teclado extends JPanel {
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 10, true));
     }
 
+    /** Adiciona o cabeçalho visual superior do teclado */
     private void adicionarCabecalho() {
         int largura = getPreferredSize().width;
         JPanel cabecalho = criarPainel(this, Color.LIGHT_GRAY, 0, 0, largura, 80);
@@ -43,6 +47,7 @@ public class Teclado extends JPanel {
         cabecalho.add(criarLabel("JUSTIÇA ELEITORAL", 16, Color.BLACK, 15, 25, largura, 30, SwingConstants.CENTER));
     }
 
+    /** Cria e retorna um JLabel configurado */
     private JLabel criarLabel(String texto, int tamanho, Color cor, int x, int y, int largura, int altura, int alinhamento) {
         JLabel label = new JLabel(texto, alinhamento);
         label.setFont(new Font("Arial", Font.BOLD, tamanho));
@@ -51,6 +56,7 @@ public class Teclado extends JPanel {
         return label;
     }
 
+    /** Cria e retorna um JPanel posicionado */
     private JPanel criarPainel(Container pai, Color cor, int x, int y, int largura, int altura) {
         JPanel painel = new JPanel(null);
         painel.setBackground(cor);
@@ -59,13 +65,17 @@ public class Teclado extends JPanel {
         return painel;
     }
 
+    /** Adiciona os botões numéricos (0 a 9) ao teclado */
     private void adicionarBotoesNumericos() {
         List<String> numeros = Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9");
-        int btnWidth = 80, btnHeight = 60, padding = 15;
+        int btnWidth = 80;
+        int btnHeight = 60;
+        int padding = 15;
         int totalBtnWidth = 3 * btnWidth + 2 * padding;
         int xStart = (getPreferredSize().width - totalBtnWidth) / 2;
         int yStart = 100;
-        int x = xStart, y = yStart;
+        int x = xStart;
+        int y = yStart;
 
         for (int i = 0; i < numeros.size(); i++) {
             criarBotaoNumerico(numeros.get(i), x, y, btnWidth, btnHeight);
@@ -79,6 +89,7 @@ public class Teclado extends JPanel {
         criarBotaoNumerico("0", xStart + btnWidth + padding, y, btnWidth, btnHeight);
     }
 
+    /** Cria um botão numérico e o adiciona ao painel */
     private void criarBotaoNumerico(String texto, int x, int y, int largura, int altura) {
         JButton btn = criarBotao(texto, 20, Color.BLACK, Color.WHITE, x, y, largura, altura);
         btn.setFocusable(false);
@@ -86,8 +97,11 @@ public class Teclado extends JPanel {
         add(btn);
     }
 
+    /** Adiciona os botões especiais BRANCO, CORRIGE e CONFIRMA */
     private void adicionarBotoesEspeciais() {
-        int btnWidth = 100, btnHeight = 65, padding = 15;
+        int btnWidth = 100;
+        int btnHeight = 65;
+        int padding = 15;
         int confirmaWidth = 230;
         int xStart = (getPreferredSize().width - (2 * btnWidth + padding)) / 2;
         int y = 100 + 3 * (60 + padding) + padding + 60;
@@ -100,12 +114,14 @@ public class Teclado extends JPanel {
         criarBotaoEspecial("CONFIRMA", 14, new Color(0, 153, 0), Color.WHITE, xConfirma, y, confirmaWidth, btnHeight);
     }
 
+    /** Cria e adiciona um botão especial ao painel */
     private void criarBotaoEspecial(String texto, int fonte, Color fundo, Color textoCor, int x, int y, int largura, int altura) {
         JButton btn = criarBotao(texto, fonte, fundo, textoCor, x, y, largura, altura);
         btn.addActionListener(e -> controller.onAcao(texto));
         add(btn);
     }
 
+    /** Cria um botão configurado */
     private JButton criarBotao(String texto, int fonte, Color fundo, Color textoCor, int x, int y, int largura, int altura) {
         JButton botao = new JButton(texto);
         botao.setFont(new Font("Arial", Font.BOLD, fonte));
@@ -115,6 +131,7 @@ public class Teclado extends JPanel {
         return botao;
     }
 
+    /** Define o controlador da aplicação */
     public void setController(ControllerModel controller) {
         this.controller = controller;
     }

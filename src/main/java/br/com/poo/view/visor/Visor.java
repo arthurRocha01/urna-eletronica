@@ -1,10 +1,9 @@
-package br.com.poo.view;
+package br.com.poo.view.visor;
 
 import javax.swing.*;
 import javax.swing.border.LineBorder;
-
+import org.bson.Document;
 import br.com.poo.controller.ControllerModel;
-
 import java.awt.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -15,19 +14,17 @@ public class Visor extends JPanel {
     private static final int BASE_WIDTH = 700;
     private static final int BASE_HEIGHT = 400;
 
-    ControllerModel controller;
+    private ControllerModel controller;
     private final List<JComponent> componentesFixos = new ArrayList<>();
     private final List<JComponent> componentesInfo = new ArrayList<>();
-    private JTextField[] camposDigito = new JTextField[2];
+    private JTextField[] camposDigito = new JTextField[5];
 
     public Visor() {
         setLayout(null);
         setBackground(Color.WHITE);
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 10, true));
         setPreferredSize(new Dimension(BASE_WIDTH, BASE_HEIGHT));
-
-        iniciarTelaSimples();
-
+        iniciarTela();
         addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(ComponentEvent e) {
@@ -36,44 +33,27 @@ public class Visor extends JPanel {
         });
     }
 
-    private void iniciarTelaSimples() {
-        iniciarHeader();
-        adicionarCamposNumericos(2, new Rectangle(110, 85, 120, 60));
-    }
-
-    private void iniciarHeader() {
+    private void iniciarTela() {
         adicionarLabel("SEU VOTO PARA:", 17, new Rectangle(20, 10, 300, 20), false);
         adicionarLabel("Governador", 22, new Rectangle(300, 45, 300, 30), false);
+        adicionarCamposNumericos(5);
     }
 
-    private void adicionarLabel(String texto, int tamanhoFonte, Rectangle bounds, boolean ehInfo) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
-        label.setBounds(bounds);
-        adicionarComponente(label, ehInfo);
-    }
+    private void adicionarCamposNumericos(int quantidade) {
+        int larguraCampo = 40, alturaCampo = 55, espacamento = 5;
+        int larguraTotal = quantidade * larguraCampo + (quantidade - 1) * espacamento;
+        int xInicial = (BASE_WIDTH - larguraTotal) / 5;
 
-    private void adicionarComponente(JComponent comp, boolean ehInfo) {
-        if (ehInfo) componentesInfo.add(comp);
-        else componentesFixos.add(comp);
-        add(comp);
-    }
-
-    private void adicionarCamposNumericos(int quantidade, Rectangle bounds) {
-        JPanel painelNumeros = new JPanel(null);
-        painelNumeros.setBackground(Color.WHITE);
-        painelNumeros.setBounds(bounds);
-
-        int larguraCampo = 40;
-        int alturaCampo = 55;
-        int espacamento = 5;
+        JPanel painel = new JPanel(null);
+        painel.setBackground(Color.WHITE);
+        painel.setBounds(xInicial, 85, larguraTotal, alturaCampo);
 
         for (int i = 0; i < quantidade; i++) {
             camposDigito[i] = criarCampoNumerico(larguraCampo, alturaCampo, i * (larguraCampo + espacamento), 0);
-            painelNumeros.add(camposDigito[i]);
+            painel.add(camposDigito[i]);
         }
 
-        adicionarComponente(painelNumeros, false);
+        adicionarComponente(painel, false);
     }
 
     private JTextField criarCampoNumerico(int largura, int altura, int x, int y) {
@@ -91,25 +71,46 @@ public class Visor extends JPanel {
     private void bloquearNaoNumeros(JTextField campo) {
         campo.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent e) {
-                if (!Character.isDigit(e.getKeyChar())) {
-                    e.consume();
-                }
+                if (!Character.isDigit(e.getKeyChar())) e.consume();
             }
         });
     }
 
     public void inserirDigito(String acao) {
-        if (camposDigito[0].getText().isEmpty()) camposDigito[0].setText(acao);
-        else if (camposDigito[1].getText().isEmpty()) {
-            camposDigito[1].setText(acao);
-            adicionarInfosEntidade();
+        for (JTextField campo : camposDigito) {
+            if (campo.getText().isEmpty()) {
+                campo.setText(acao);
+                break;
+            }
         }
+        if (votoCompleto()) acionarVoto();
+    }
+
+    private boolean votoCompleto() {
+        for (JTextField campo : camposDigito) {
+            if (campo.getText().isEmpty()) return false;
+        }
+        return true;
+    }
+
+    private void acionarVoto() {
+        String voto = getVoto();
+        Document[] info = controller.buscarInformacoesVoto(voto);
+        if (info != null) adicionarInfosEntidade(info);
+    }
+
+    private String getVoto() {
+        StringBuilder numero = new StringBuilder();
+        for (JTextField campo : camposDigito) numero.append(campo.getText());
+        return numero.toString();
     }
 
     public void acionarBotao(String acao) {
-        if (acao.equals("CORRIGE")) apagarTextoCampos();
-        if (acao.equals("CONFIRMA")) System.out.println("voto confirmado");
-        if (acao.equals("BRANCO")) System.out.println("voto em branco");
+        switch (acao) {
+            case "CORRIGE" -> apagarTextoCampos();
+            case "CONFIRMA" -> System.out.println("Voto confirmado");
+            case "BRANCO" -> System.out.println("Voto em branco");
+        }
     }
 
     private void apagarTextoCampos() {
@@ -118,33 +119,39 @@ public class Visor extends JPanel {
     }
 
     private void removerInfosEntidade() {
-        for (JComponent comp : componentesInfo) {
-            remove(comp);
-        }
+        for (JComponent comp : componentesInfo) remove(comp);
         componentesInfo.clear();
-
         revalidate();
         repaint();
     }
 
-    private void adicionarInfosEntidade() {
-        adicionarCamposInfo();
+    private void adicionarInfosEntidade(Document[] info) {
+        removerInfosEntidade();
+        adicionarCamposInfo(info);
         adicionarCamposFoto();
         adicionarCampoAjuda();
         revalidate();
         repaint();
     }
 
-    private void adicionarCamposInfo() {
-        adicionarLabel("Número:", 16, new Rectangle(20, 100, 100, 20), true);
-        adicionarLabel("Nome:", 16, new Rectangle(20, 190, 100, 20), true);
-        adicionarLabel("Vôlei", 16, new Rectangle(100, 190, 200, 20), true);
-        adicionarLabel("Partido:", 16, new Rectangle(20, 220, 100, 20), true);
-        adicionarLabel("PEsp", 16, new Rectangle(100, 220, 100, 20), true);
-        adicionarLabel("Vice-Governador:", 16, new Rectangle(20, 250, 160, 20), true);
-        adicionarLabel("Tênis", 16, new Rectangle(170, 250, 200, 20), true);
+    private void adicionarCamposInfo(Document[] info) {
+        Document candidato = info[0];
+        Document partido = info[1];
+
+        adicionarLabelInfo("Número:", candidato.getString("numero"), new Rectangle(20, 160, 300, 20));
+        adicionarLabelInfo("Nome:", candidato.getString("nome"), new Rectangle(20, 190, 300, 20));
+        adicionarLabelInfo("Partido:", partido.getString("sigla"), new Rectangle(20, 220, 300, 20));
+
+        adicionarLabelInfo("Vice-Governador:", "NOME DO VICE", new Rectangle(20, 250, 300, 20));
+
         adicionarLabel("Governador", 12, new Rectangle(585, 190, 100, 20), true);
         adicionarLabel("Vice-Governador", 12, new Rectangle(568, 360, 120, 20), true);
+    }
+
+    private void adicionarLabelInfo(String titulo, String valor, Rectangle bounds) {
+        adicionarLabel(titulo, 16, bounds, true);
+        Rectangle valorBounds = new Rectangle(bounds.x + 100, bounds.y, 200, bounds.height);
+        adicionarLabel(valor, 16, valorBounds, true);
     }
 
     private void adicionarCamposFoto() {
@@ -163,11 +170,24 @@ public class Visor extends JPanel {
     private void adicionarCampoAjuda() {
         adicionarLabel(
             "<html><div style='letter-spacing: 1.5px;'><hr style='border: 1px solid black;'><br><br>"
-            + "<div>Aperte a tecla:</div>"
-            + "<div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
-            + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>",
+                    + "<div>Aperte a tecla:</div>"
+                    + "<div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
+                    + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>",
             15, new Rectangle(20, 285, 500, 100), true
         );
+    }
+
+    private void adicionarLabel(String texto, int tamanhoFonte, Rectangle bounds, boolean ehInfo) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
+        label.setBounds(bounds);
+        adicionarComponente(label, ehInfo);
+    }
+
+    private void adicionarComponente(JComponent comp, boolean ehInfo) {
+        if (ehInfo) componentesInfo.add(comp);
+        else componentesFixos.add(comp);
+        add(comp);
     }
 
     private void redimensionarComponentes() {

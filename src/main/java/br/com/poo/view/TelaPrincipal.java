@@ -1,17 +1,19 @@
 package br.com.poo.view;
 
 import javax.swing.*;
+import java.awt.*;
 
 import br.com.poo.controller.ControllerModel;
-
-import java.awt.*;
+import br.com.poo.view.legenda.Legenda;
+import br.com.poo.view.teclado.Teclado;
+import br.com.poo.view.visor.Visor;
 
 public class TelaPrincipal extends JFrame {
 
-    ControllerModel controller;
-    public Legenda legenda;
+    private Legenda legenda;
     public Visor visor;
     public Teclado teclado;
+    public ControllerModel controller;
 
     public TelaPrincipal() {
         inicializarComponentes();
@@ -32,11 +34,13 @@ public class TelaPrincipal extends JFrame {
         setResizable(false);
     }
 
+    /** Configura o painel principal da interface */
     private void configurarPainelPrincipal() {
         JPanel painelPrincipal = criarPainelPrincipal();
         JPanel painelEsquerda = criarPainelEsquerda();
 
         painelPrincipal.add(painelEsquerda);
+
         teclado = new Teclado();
         painelPrincipal.add(teclado);
 
@@ -49,6 +53,7 @@ public class TelaPrincipal extends JFrame {
         return painel;
     }
 
+    /** Cria e retorna o painel esquerdo */
     private JPanel criarPainelEsquerda() {
         JPanel painel = new JPanel();
         painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
@@ -58,14 +63,33 @@ public class TelaPrincipal extends JFrame {
         visor = new Visor();
 
         painel.add(legenda);
-        painel.add(Box.createRigidArea(new Dimension(0, 10))); // Espaço entre legenda e visor
+        painel.add(Box.createRigidArea(new Dimension(0, 10)));
         painel.add(visor);
 
         return painel;
     }
 
     private void iniciarController() {
-        this.controller = new ControllerModel(this);
+        controller = new ControllerModel(this);
         teclado.setController(controller);
+        visor.setController(controller);
+    }
+
+    // Getters públicos, caso necessários para acesso externo (seguindo padrão MVC)
+
+    public Legenda getLegenda() {
+        return legenda;
+    }
+
+    public Visor getVisor() {
+        return visor;
+    }
+
+    public Teclado getTeclado() {
+        return teclado;
+    }
+
+    public ControllerModel getController() {
+        return controller;
     }
 }
