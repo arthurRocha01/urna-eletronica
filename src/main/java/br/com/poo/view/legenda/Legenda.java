@@ -2,11 +2,18 @@ package br.com.poo.view.legenda;
 
 import javax.swing.*;
 import javax.swing.border.*;
+
+import org.bson.Document;
+
+import br.com.poo.controller.ControllerModel;
+
 import java.awt.*;
 import java.util.List;
 import java.util.Arrays;
 
 public class Legenda extends JPanel {
+
+    ControllerModel controller;
 
     public Legenda() {
         iniciarPainelPrincipal();
@@ -96,5 +103,9 @@ public class Legenda extends JPanel {
         label.setForeground(Color.WHITE);
         if (centralizar) label.setAlignmentX(Component.CENTER_ALIGNMENT);
         return label;
+    }
+
+    public void setController(ControllerModel controller) {
+        this.controller = controller;
     }
 }

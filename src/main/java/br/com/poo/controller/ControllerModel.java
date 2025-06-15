@@ -28,4 +28,12 @@ public class ControllerModel {
     public Document[] buscarInformacoesVoto(String voto) {
         return manipuladorDatabase.getCandidato(voto);
     }
+
+    public Document buscarInformacoesPartido(String sigla) {
+        return manipuladorDatabase.getPartido(sigla);
+    }
+
+    // public Document[] buscarDadosColecao(String colecao) {
+
+    // }
 }

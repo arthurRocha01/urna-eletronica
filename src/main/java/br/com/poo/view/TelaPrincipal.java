@@ -73,6 +73,7 @@ public class TelaPrincipal extends JFrame {
         controller = new ControllerModel(this);
         teclado.setController(controller);
         visor.setController(controller);
+        legenda.setController(controller);
     }
 
     // Getters públicos, caso necessários para acesso externo (seguindo padrão MVC)

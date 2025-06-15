@@ -4,6 +4,7 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import com.mongodb.client.MongoClients;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoCollection;
@@ -30,6 +31,14 @@ public class ManipuladorDatabase {
         }
     }
 
+    public Document getPartido(String sigla) {
+        for (Document partido : partidos.find()) {
+            if (partido.getString("sigla").equals(sigla)) return partido;
+        }
+        System.out.println("Database: Item não encontrado.");
+        return null;
+    }
+
     public Document[] getCandidato(String voto) {
         for (Document candidato : candidatos.find()) {
             if (candidato.getString("numero").equals(voto)) {
@@ -41,6 +50,11 @@ public class ManipuladorDatabase {
         System.out.println("Database: Item não encontrado.");
         return null;
     }
+
+    // public Document[] getColecao(String colecao) {
+    //     if (colecao.equals("partidos")) return (FindIterable<Document>) partidos.find();
+    //     return null;
+    // }
 
     public void fecharConexao() {
         if (mongoClient != null) {
