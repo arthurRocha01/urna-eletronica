@@ -57,7 +57,7 @@ public class Legenda extends JPanel {
         Document[] partidos = controller.buscarDadosColecao("partidos");
 
         for (Document partido : partidos) {
-            painelGrade.add(criarPainelPartido(partido.getString("sigla"), partido.getString("nome")));
+            painelGrade.add(criarPainelPartido(partido.getString("sigla"), partido.getString("nome"), partido.getString("numero")));
         }
 
         painelGrade.add(new JLabel());
@@ -65,22 +65,32 @@ public class Legenda extends JPanel {
         repaint();
     }
 
-    private JPanel criarPainelPartido(String sigla, String nome) {
-        JPanel painel = criarPainel();
-        painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
-        painel.setBorder(new LineBorder(Color.WHITE, 1, true));
+    private JPanel criarPainelPartido(String sigla, String nome, String numero) {
+    JPanel painel = criarPainel();
+    painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
+    painel.setBorder(new LineBorder(Color.WHITE, 1, true));
 
-        JLabel labelSigla = criarLabel(sigla, Font.PLAIN, 16, true);
-        JLabel labelNome = criarLabel("<html><center>" + nome + "</center></html>", Font.PLAIN, 11, true);
+    // Painel horizontal: sigla + número
+    JPanel painelTopo = new JPanel();
+    painelTopo.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
+    painelTopo.setOpaque(false);
 
-        painel.add(Box.createVerticalStrut(5));
-        painel.add(labelSigla);
-        painel.add(Box.createVerticalStrut(4));
-        painel.add(labelNome);
-        painel.add(Box.createVerticalGlue());
+    JLabel labelSigla = criarLabel(sigla, Font.BOLD, 16, false);
+    JLabel labelNumero = criarLabel("Nº " + numero, Font.PLAIN, 13, false);
+    
+    painelTopo.add(labelSigla);
+    painelTopo.add(labelNumero);
 
-        return painel;
-    }
+    JLabel labelNome = criarLabel("<html><center>" + nome + "</center></html>", Font.PLAIN, 11, true);
+
+    painel.add(Box.createVerticalStrut(5));
+    painel.add(painelTopo);
+    painel.add(Box.createVerticalStrut(4));
+    painel.add(labelNome);
+    painel.add(Box.createVerticalGlue());
+
+    return painel;
+}
 
     private JPanel criarPainel(LayoutManager layout, Color corFundo) {
         JPanel painel = new JPanel(layout);
