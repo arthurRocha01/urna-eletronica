@@ -4,10 +4,10 @@ import javax.swing.*;
 import javax.swing.border.LineBorder;
 import org.bson.Document;
 import java.awt.*;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
+import java.awt.event.*;
 
 public class VisorBuilder {
+    private final String caminhoImagens = "src/main/resources/images/";
     private final Visor visor;
 
     public VisorBuilder(Visor visor) {
@@ -21,9 +21,7 @@ public class VisorBuilder {
         visor.setBackground(Color.WHITE);
         visor.setBorder(BorderFactory.createLineBorder(Color.BLACK, 10, true));
         visor.setPreferredSize(new Dimension(visor.BASE_WIDTH, visor.BASE_HEIGHT));
-
         visor.addComponentListener(new ComponentAdapter() {
-            @Override
             public void componentResized(ComponentEvent e) {
                 redimensionarComponentes();
             }
@@ -36,69 +34,41 @@ public class VisorBuilder {
         adicionarCamposNumericos(5);
     }
 
-    private void adicionarCamposNumericos(int quantidade) {
+    private void adicionarCamposNumericos(int qtd) {
         int largura = 40, altura = 55, espacamento = 5;
-        int total = quantidade * largura + (quantidade - 1) * espacamento;
+        int total = qtd * (largura + espacamento) - espacamento;
         int x = (visor.BASE_WIDTH - total) / 4;
 
         JPanel painel = new JPanel(null);
         painel.setBackground(Color.WHITE);
         painel.setBounds(x, 85, total, altura);
 
-        for (int i = 0; i < quantidade; i++) {
-            JTextField campo = criarCampoNumerico(i * (largura + espacamento), 0, largura, altura);
+        for (int i = 0; i < qtd; i++) {
+            JTextField campo = new JTextField();
+            campo.setFont(new Font("Arial", Font.BOLD, 28));
+            campo.setHorizontalAlignment(JTextField.CENTER);
+            campo.setBorder(new LineBorder(Color.BLACK, 2));
+            campo.setFocusable(false);
+            campo.setBounds(i * (largura + espacamento), 0, largura, altura);
             visor.camposDigito[i] = campo;
             painel.add(campo);
         }
-
         adicionarComponente(painel, false);
-    }
-
-    private JTextField criarCampoNumerico(int x, int y, int largura, int altura) {
-        JTextField campo = new JTextField();
-        campo.setFont(new Font("Arial", Font.BOLD, 28));
-        campo.setHorizontalAlignment(JTextField.CENTER);
-        campo.setBackground(Color.WHITE);
-        campo.setBorder(new LineBorder(Color.BLACK, 2));
-        campo.setFocusable(false);
-        campo.setBounds(x, y, largura, altura);
-        bloquearNaoNumeros(campo);
-        return campo;
-    }
-
-    private void bloquearNaoNumeros(JTextField campo) {
-        campo.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyTyped(java.awt.event.KeyEvent e) {
-                if (!Character.isDigit(e.getKeyChar())) e.consume();
-            }
-        });
     }
 
     public void adicionarInfosEntidade(Document[] info) {
         removerInfosEntidade();
-
-        Document candidato = info[0];
-        Document partido = info[1];
+        Document candidato = info[0], partido = info[1];
 
         adicionarLabel("Número:", 18, new Rectangle(25, 95, 300, 20), false);
         adicionarLabelInfo("Nome:", candidato.getString("nome"), new Rectangle(20, 190, 300, 20));
         adicionarLabelInfo("Partido:", partido.getString("sigla"), new Rectangle(20, 220, 300, 20));
-        adicionarLabelInfo("Vice-Governador:", "-", new Rectangle(20, 250, 300, 20));
-
         adicionarLabel("Governador", 12, new Rectangle(585, 190, 100, 20), true);
-        adicionarLabel("Vice-Governador", 12, new Rectangle(568, 360, 120, 20), true);
-
-        adicionarFoto(new Rectangle(570, 85, 100, 100));
-        adicionarFoto(new Rectangle(570, 260, 100, 100));
-
-        adicionarLabel(
-            "<html><div style='letter-spacing: 1.5px;'><hr style='border: 1px solid black;'><br><br>"
-                    + "<div>Aperte a tecla:</div>"
-                    + "<div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
-                    + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>",
-            15, new Rectangle(20, 285, 500, 100), true
-        );
-
+        adicionarFoto(partido.getString("sigla"), candidato.getString("nome"), new Rectangle(570, 85, 100, 100));
+        adicionarLabel("<html><div style='letter-spacing:1.5px;'><hr style='border:1px solid black;'><br><br>"
+                + "<div>Aperte a tecla:</div><div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
+                + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>", 15,
+                new Rectangle(20, 285, 500, 100), true);
         visor.revalidate();
         visor.repaint();
     }
@@ -110,15 +80,21 @@ public class VisorBuilder {
 
     private void adicionarLabelInfo(String titulo, String valor, Rectangle bounds) {
         adicionarLabel(titulo, 16, bounds, true);
-        Rectangle valorBounds = new Rectangle(bounds.x + (titulo.equals("Vice-Governador") ? 200 : 100), bounds.y, 200, bounds.height);
-        adicionarLabel(valor, 16, valorBounds, true);
+        Rectangle valBounds = new Rectangle(bounds.x + 100, bounds.y, 200, bounds.height);
+        adicionarLabel(valor, 16, valBounds, true);
     }
 
-    private void adicionarFoto(Rectangle bounds) {
-        JPanel foto = new JPanel();
+    private void adicionarFoto(String sigla, String nome, Rectangle bounds) {
+        String caminho = caminhoImagens + sigla + "/" + nome.toLowerCase() + ".png";
+        ImageIcon img = new ImageIcon(new ImageIcon(caminho).getImage()
+                .getScaledInstance(bounds.width, bounds.height, Image.SCALE_SMOOTH));
+
+        JLabel imgLabel = new JLabel(img, JLabel.CENTER);
+        JPanel foto = new JPanel(new BorderLayout());
         foto.setBackground(new Color(230, 230, 230));
         foto.setBorder(new LineBorder(Color.BLACK, 1));
         foto.setBounds(bounds);
+        foto.add(imgLabel, BorderLayout.CENTER);
         adicionarComponente(foto, true);
     }
 
@@ -140,20 +116,13 @@ public class VisorBuilder {
 
         visor.componentesFixos.forEach(c -> redimensionar(c, escalaX, escalaY));
         visor.componentesInfo.forEach(c -> redimensionar(c, escalaX, escalaY));
-
         visor.repaint();
     }
 
-    private void redimensionar(JComponent comp, double escalaX, double escalaY) {
-        Rectangle bounds = comp.getBounds();
-        comp.setBounds(
-                (int) (bounds.x * escalaX),
-                (int) (bounds.y * escalaY),
-                (int) (bounds.width * escalaX),
-                (int) (bounds.height * escalaY)
-        );
-        Font font = comp.getFont();
-        if (font != null)
-            comp.setFont(font.deriveFont((float) (font.getSize2D() * Math.min(escalaX, escalaY))));
+    private void redimensionar(JComponent comp, double sx, double sy) {
+        Rectangle b = comp.getBounds();
+        comp.setBounds((int)(b.x * sx), (int)(b.y * sy), (int)(b.width * sx), (int)(b.height * sy));
+        Font f = comp.getFont();
+        if (f != null) comp.setFont(f.deriveFont((float)(f.getSize2D() * Math.min(sx, sy))));
     }
 }

@@ -8,5 +8,6 @@ public class Main {
 //        ControllerModel controller = new ControllerModel();
 //        controller.getColecao("partidos");
         TelaPrincipal view = new TelaPrincipal();
+        
     }
 }
