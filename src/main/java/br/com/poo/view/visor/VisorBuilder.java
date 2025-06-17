@@ -117,7 +117,7 @@ public class VisorBuilder {
         removerInfosEntidade();
     }
 
-    public void confirmaVoto() {
+    public void exibirConfirmaVoto() {
     // Remove todos os componentes do visor
     visor.removeAll();
     visor.componentesFixos.clear();

@@ -19,6 +19,7 @@ public class Visor extends JPanel {
     public ControllerModel controller;
     public List<JComponent> componentesFixos = new ArrayList<>();
     public List<JComponent> componentesInfo = new ArrayList<>();
+    public Document[] contabilidadeVotos;
     public JTextField[] camposDigito = new JTextField[5];
     VisorBuilder visorFunctios;
 
@@ -59,9 +60,18 @@ public class Visor extends JPanel {
     public void acionarBotao(String acao) {
         switch (acao) {
             case "CORRIGE" -> visorFunctios.apagarTextoCampos();
-            case "CONFIRMA" -> visorFunctios.confirmaVoto();
+            case "CONFIRMA" -> confirmaVoto();
             case "BRANCO" -> System.out.println("Voto em branco");
         }
+    }
+    
+    private void confirmaVoto() {
+        String voto = getVoto();
+        visorFunctios.exibirConfirmaVoto();
+        if (voto.equals("99999")) {
+           
+        }
+        
     }
 
     public void setController(ControllerModel controller) {
