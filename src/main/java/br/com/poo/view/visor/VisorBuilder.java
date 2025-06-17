@@ -7,11 +7,16 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class VisorBuilder {
-    private final String caminhoImagens = "src/main/resources/images/";
-    private final Visor visor;
+    private String caminhoImagens = "src/main/resources/images/";
+    private Visor visor;
+    TelaAnimadaVoto telaAnimadaVoto;
 
     public VisorBuilder(Visor visor) {
         this.visor = visor;
+        telaAnimadaVoto = new TelaAnimadaVoto(visor, this);
+    }
+    
+    public void iniciarTela() {
         configurarVisor();
         construirTela();
     }
@@ -74,7 +79,7 @@ public class VisorBuilder {
         visor.repaint();
     }
 
-    public void removerInfosEntidade() {
+    private void removerInfosEntidade() {
         visor.componentesInfo.forEach(visor::remove);
         visor.componentesInfo.clear();
     }
@@ -106,6 +111,27 @@ public class VisorBuilder {
         label.setBounds(bounds);
         adicionarComponente(label, ehInfo);
     }
+
+    public void apagarTextoCampos() {
+        for (JTextField campo : visor.camposDigito) campo.setText("");
+        removerInfosEntidade();
+    }
+
+    public void confirmaVoto() {
+    // Remove todos os componentes do visor
+    visor.removeAll();
+    visor.componentesFixos.clear();
+    visor.componentesInfo.clear();
+
+    // Muda o layout para centralizar a animação
+    visor.setLayout(new BorderLayout());
+    visor.add(telaAnimadaVoto, BorderLayout.CENTER);
+
+    telaAnimadaVoto.iniciarAnimacao();
+
+    visor.revalidate();
+    visor.repaint();
+}
 
     private void adicionarComponente(JComponent comp, boolean ehInfo) {
         (ehInfo ? visor.componentesInfo : visor.componentesFixos).add(comp);
