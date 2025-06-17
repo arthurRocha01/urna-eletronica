@@ -26,7 +26,7 @@ public class ControllerModel {
     }
 
     public Document[] buscarInformacoesVoto(String voto) {
-        return manipuladorDatabase.getCandidato(voto);
+        return manipuladorDatabase.getInfoCandidato(voto);
     }
 
     public Document buscarInformacoesPartido(String sigla) {
@@ -35,5 +35,9 @@ public class ControllerModel {
 
     public Document[] buscarDadosColecao(String colecao) {
         return manipuladorDatabase.getColecao(colecao);
+    }
+
+    public Document[] buscarCandidatos(Document partido) {
+        return manipuladorDatabase.getCandidatos(partido);
     }
 }

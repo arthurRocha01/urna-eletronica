@@ -43,7 +43,7 @@ public class ManipuladorDatabase {
         return partido;
     }
 
-    public Document[] getCandidato(String numero) {
+    public Document[] getInfoCandidato(String numero) {
         Document candidato = candidatos.find(eq("numero", numero)).first();
         if (candidato == null) {
             System.out.println("Database: Candidato não encontrado.");
@@ -65,6 +65,12 @@ public class ManipuladorDatabase {
 
         List<Document> documentos = colecao.find().into(new ArrayList<>());
         return documentos.toArray(new Document[0]);
+    }
+
+    public Document[] getCandidatos(Document partido) {
+        ObjectId idPartido = partido.getObjectId("_id");
+        List<Document> lista = candidatos.find(eq("partido_id", idPartido)).into(new ArrayList<>());
+        return lista.toArray(new Document[0]);
     }
 
     public void fecharConexao() {

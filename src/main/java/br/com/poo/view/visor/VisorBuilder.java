@@ -59,12 +59,13 @@ public class VisorBuilder {
     public void adicionarInfosEntidade(Document[] info) {
         removerInfosEntidade();
         Document candidato = info[0], partido = info[1];
+        String nomeCandidato = candidato.getString("nome"), nomePartido = partido.getString("nome"),
+        siglaPartido = partido.getString("sigla");
 
         adicionarLabel("Número:", 18, new Rectangle(25, 95, 300, 20), false);
-        adicionarLabelInfo("Nome:", candidato.getString("nome"), new Rectangle(20, 190, 300, 20));
-        adicionarLabelInfo("Partido:", partido.getString("sigla"), new Rectangle(20, 220, 300, 20));
-        adicionarLabel("Governador", 12, new Rectangle(585, 190, 100, 20), true);
-        adicionarFoto(partido.getString("sigla"), candidato.getString("nome"), new Rectangle(570, 85, 100, 100));
+        adicionarLabelInfo("Nome:", nomeCandidato, new Rectangle(20, 190, 300, 20));
+        adicionarLabelInfo("Partido:", siglaPartido, new Rectangle(20, 220, 300, 20));
+        adicionarFoto(siglaPartido, nomeCandidato, new Rectangle(570, 85, 100, 100));
         adicionarLabel("<html><div style='letter-spacing:1.5px;'><hr style='border:1px solid black;'><br><br>"
                 + "<div>Aperte a tecla:</div><div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
                 + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>", 15,
@@ -88,6 +89,7 @@ public class VisorBuilder {
         String caminho = caminhoImagens + sigla + "/" + nome.toLowerCase() + ".png";
         ImageIcon img = new ImageIcon(new ImageIcon(caminho).getImage()
                 .getScaledInstance(bounds.width, bounds.height, Image.SCALE_SMOOTH));
+        adicionarLabel("Governador", 12, new Rectangle(585, 190, 100, 20), true);
 
         JLabel imgLabel = new JLabel(img, JLabel.CENTER);
         JPanel foto = new JPanel(new BorderLayout());

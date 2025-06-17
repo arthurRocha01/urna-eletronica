@@ -2,48 +2,43 @@ package br.com.poo.view.legenda;
 
 import javax.swing.*;
 import javax.swing.border.*;
-
 import org.bson.Document;
 import br.com.poo.controller.ControllerModel;
-
 import java.awt.*;
+import java.awt.event.*;
 
 public class Legenda extends JPanel {
 
     private ControllerModel controller;
-    private JPanel painelGrade;
+    private final JPanel painelGrade = new JPanel(new GridLayout(2, 3, 10, 10));
+    private final Color azul = new Color(30, 144, 255);
+    private final Color verde = new Color(60, 179, 113);
+
+    private JPanel painelPrincipal; // painel que contém tudo
+    private JPanel painelCabecalho;
 
     public Legenda() {
-        iniciarPainelPrincipal();
-    }
-
-    private void iniciarPainelPrincipal() {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600, 180));
         setBackground(new Color(230, 230, 230));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 10, true));
-        add(criarPainelFundo(), BorderLayout.CENTER);
+        initComponentes();
     }
 
-    private JPanel criarPainelFundo() {
-        JPanel painel = criarPainel(new BorderLayout(0, 10), new Color(30, 144, 255));
-        painel.setBorder(BorderFactory.createCompoundBorder(
-            new LineBorder(Color.BLUE.darker(), 1, true),
-            BorderFactory.createEmptyBorder(10, 10, 10, 10)
-        ));
+    private void initComponentes() {
+        painelPrincipal = painelComLayout(new BorderLayout(0, 10), azul, new LineBorder(Color.BLUE.darker(), 1, true));
 
-        painel.add(criarCabecalhoTexto(), BorderLayout.NORTH);
+        painelCabecalho = criarCabecalho();
+        painelPrincipal.add(painelCabecalho, BorderLayout.NORTH);
 
-        painelGrade = criarPainel(new GridLayout(2, 3, 10, 10), null);
         painelGrade.setOpaque(false);
-        painel.add(painelGrade, BorderLayout.CENTER);
+        painelPrincipal.add(painelGrade, BorderLayout.CENTER);
 
-        return painel;
+        add(painelPrincipal, BorderLayout.CENTER);
     }
 
-    private JPanel criarCabecalhoTexto() {
-        JPanel painel = criarPainel(new FlowLayout(FlowLayout.LEFT, 5, 0), null);
-        painel.setOpaque(false);
+    private JPanel criarCabecalho() {
+        JPanel painel = painelComLayout(new FlowLayout(FlowLayout.LEFT, 5, 0), azul, null);
 
         painel.add(criarLabel("Para visualização dos candidatos, ", Font.PLAIN, 14, false));
         painel.add(criarLabel("selecione um partido:", Font.BOLD, 14, false));
@@ -51,56 +46,116 @@ public class Legenda extends JPanel {
         return painel;
     }
 
+    public void setController(ControllerModel controller) {
+        this.controller = controller;
+        carregarPartidos();
+    }
+
     public void carregarPartidos() {
         painelGrade.removeAll();
 
-        Document[] partidos = controller.buscarDadosColecao("partidos");
-
-        for (Document partido : partidos) {
-            painelGrade.add(criarPainelPartido(partido.getString("sigla"), partido.getString("nome"), partido.getString("numero")));
+        for (Document partido : controller.buscarDadosColecao("partidos")) {
+            painelGrade.add(criarPainelPartido(partido));
         }
 
-        painelGrade.add(new JLabel());
-        revalidate();
-        repaint();
+        painelGrade.add(new JLabel()); // espaço extra
+
+        // Remove todo conteúdo do painelPrincipal e adiciona o cabeçalho original + painelGrade
+        painelPrincipal.removeAll();
+        painelPrincipal.add(painelCabecalho, BorderLayout.NORTH);
+        painelPrincipal.add(painelGrade, BorderLayout.CENTER);
+
+        painelPrincipal.revalidate();
+        painelPrincipal.repaint();
     }
 
-    private JPanel criarPainelPartido(String sigla, String nome, String numero) {
-    JPanel painel = criarPainel();
-    painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
-    painel.setBorder(new LineBorder(Color.WHITE, 1, true));
+    private void exibirCandidatos(Document partido) {
+        painelGrade.removeAll();
 
-    // Painel horizontal: sigla + número
-    JPanel painelTopo = new JPanel();
-    painelTopo.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 0));
-    painelTopo.setOpaque(false);
+        for (Document candidato : controller.buscarCandidatos(partido)) {
+            painelGrade.add(criarPainelCandidato(candidato));
+        }
 
-    JLabel labelSigla = criarLabel(sigla, Font.BOLD, 16, false);
-    JLabel labelNumero = criarLabel("Nº " + numero, Font.PLAIN, 13, false);
-    
-    painelTopo.add(labelSigla);
-    painelTopo.add(labelNumero);
+        painelGrade.add(new JLabel()); // espaço extra
 
-    JLabel labelNome = criarLabel("<html><center>" + nome + "</center></html>", Font.PLAIN, 11, true);
+        // Cria painel topo com botão voltar
+        JButton botaoVoltar = new JButton("← Voltar");
+        botaoVoltar.setFocusable(false);
+        botaoVoltar.addActionListener(e -> carregarPartidos());
+        botaoVoltar.setBackground(Color.WHITE);
+        botaoVoltar.setForeground(azul);
+        botaoVoltar.setFont(new Font("Arial", Font.BOLD, 14));
 
-    painel.add(Box.createVerticalStrut(5));
-    painel.add(painelTopo);
-    painel.add(Box.createVerticalStrut(4));
-    painel.add(labelNome);
-    painel.add(Box.createVerticalGlue());
+        JPanel painelTopo = painelComLayout(new FlowLayout(FlowLayout.LEFT), azul, null);
+        painelTopo.add(botaoVoltar);
 
-    return painel;
-}
+        // Remove painelGrade do painelPrincipal e substitui pelo painelTopo + painelGrade
+        painelPrincipal.removeAll();
+        painelPrincipal.add(painelTopo, BorderLayout.NORTH);
+        painelPrincipal.add(painelGrade, BorderLayout.CENTER);
 
-    private JPanel criarPainel(LayoutManager layout, Color corFundo) {
-        JPanel painel = new JPanel(layout);
-        if (corFundo != null) painel.setBackground(corFundo);
+        painelPrincipal.revalidate();
+        painelPrincipal.repaint();
+    }
+
+    // === PAINÉIS ===
+
+    private JPanel criarPainelPartido(Document partido) {
+        JPanel painel = painelVertical(azul);
+        painel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                exibirCandidatos(partido);
+            }
+        });
+
+        painel.add(Box.createVerticalStrut(5));
+        painel.add(criarTopoPartido(partido));
+        painel.add(Box.createVerticalStrut(4));
+        painel.add(criarLabelCentralizado(partido.getString("nome"), Font.PLAIN, 11));
+        painel.add(Box.createVerticalGlue());
+
         return painel;
     }
 
-    private JPanel criarPainel() {
+    private JPanel criarPainelCandidato(Document candidato) {
+        JPanel painel = painelVertical(verde);
+
+        painel.add(Box.createVerticalStrut(8));
+        painel.add(criarLabel("Nº " + candidato.getString("numero"), Font.BOLD, 16, false));
+        painel.add(Box.createVerticalStrut(5));
+        painel.add(criarLabelCentralizado(candidato.getString("nome"), Font.PLAIN, 13));
+        painel.add(Box.createVerticalGlue());
+
+        return painel;
+    }
+
+    private JPanel criarTopoPartido(Document partido) {
+        JPanel topo = painelComLayout(new FlowLayout(FlowLayout.CENTER, 5, 0), null, null);
+        topo.setOpaque(false);
+        topo.add(criarLabel(partido.getString("sigla"), Font.BOLD, 16, false));
+        topo.add(criarLabel("Nº " + partido.getString("numero"), Font.PLAIN, 13, false));
+        return topo;
+    }
+
+    // === UTILITÁRIOS ===
+
+    private JPanel painelVertical(Color corFundo) {
         JPanel painel = new JPanel();
-        painel.setBackground(new Color(30, 144, 255));
+        painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
+        painel.setBackground(corFundo);
+        painel.setOpaque(true);
+        painel.setBorder(new LineBorder(Color.WHITE, 1, true));
+        painel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        return painel;
+    }
+
+    private JPanel painelComLayout(LayoutManager layout, Color corFundo, Border borda) {
+        JPanel painel = new JPanel(layout);
+        if (corFundo != null) {
+            painel.setBackground(corFundo);
+            painel.setOpaque(true);
+        }
+        if (borda != null) painel.setBorder(borda);
         return painel;
     }
 
@@ -112,8 +167,7 @@ public class Legenda extends JPanel {
         return label;
     }
 
-    public void setController(ControllerModel controller) {
-        this.controller = controller;
-        carregarPartidos();
+    private JLabel criarLabelCentralizado(String texto, int estilo, int tamanho) {
+        return criarLabel("<html><center>" + texto + "</center></html>", estilo, tamanho, true);
     }
 }
