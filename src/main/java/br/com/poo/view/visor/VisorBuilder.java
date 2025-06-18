@@ -65,8 +65,7 @@ public class VisorBuilder {
         if (visor.visorBloqueado) return;
         removerInfosEntidade();
         Document candidato = info[0], partido = info[1];
-        String nomeCandidato = candidato.getString("nome"), nomePartido = partido.getString("nome"),
-        siglaPartido = partido.getString("sigla");
+        String nomeCandidato = candidato.getString("nome"),siglaPartido = partido.getString("sigla");
 
         adicionarLabel("Número:", 18, new Rectangle(25, 95, 300, 20), false);
         adicionarLabelInfo("Nome:", nomeCandidato, new Rectangle(20, 190, 300, 20));
@@ -122,12 +121,6 @@ public class VisorBuilder {
     public void exibirConfirmaVoto() {
     visor.visorBloqueado = true;
     telaAnimadaVoto.iniciarAnimacao();
-}
-
-private void desbloquarVisor() {
-    Timer timer = new Timer(3500, e -> visor.visorBloqueado = false);
-timer.setRepeats(false); // Executa apenas uma vez
-timer.start();
 }
 
     private void adicionarComponente(JComponent comp, boolean ehInfo) {

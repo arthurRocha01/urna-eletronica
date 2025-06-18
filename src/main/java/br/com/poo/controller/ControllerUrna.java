@@ -1,7 +1,6 @@
 package br.com.poo.controller;
 
 import org.bson.Document;
-import com.mongodb.client.FindIterable;
 
 import br.com.poo.controller.database.ManipuladorDatabase;
 import br.com.poo.view.TelaPrincipal;

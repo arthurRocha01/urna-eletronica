@@ -19,7 +19,6 @@ public class TelaConfirmaVoto extends JPanel {
     private JLabel labelVotou;
     private JLabel labelRelogio;
 
-    private Timer timerGravacao;
     private Timer timerRelogio;
 
     public TelaConfirmaVoto(Visor visor, VisorBuilder builder) {
