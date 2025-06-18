@@ -67,9 +67,18 @@ public class ManipuladorDatabase {
         return documentos.toArray(new Document[0]);
     }
 
-    public Document[] getCandidatos(Document partido) {
+    public Document[] getCandidatosPartido(Document partido) {
         ObjectId idPartido = partido.getObjectId("_id");
         List<Document> lista = candidatos.find(eq("partido_id", idPartido)).into(new ArrayList<>());
+        return lista.toArray(new Document[0]);
+    }
+    
+    public Document getCandidato(String numero) {
+        return candidatos.find(eq("numero", numero)).first();
+    }
+
+    public Document[] getTodosCandidatos() {
+        List<Document> lista = candidatos.find().into(new ArrayList<>());
         return lista.toArray(new Document[0]);
     }
 

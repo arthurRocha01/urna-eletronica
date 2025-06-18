@@ -9,11 +9,11 @@ import java.awt.event.*;
 public class VisorBuilder {
     private String caminhoImagens = "src/main/resources/images/";
     private Visor visor;
-    TelaAnimadaVoto telaAnimadaVoto;
+    TelaConfirmaVoto telaAnimadaVoto;
 
     public VisorBuilder(Visor visor) {
         this.visor = visor;
-        telaAnimadaVoto = new TelaAnimadaVoto(visor, this);
+        telaAnimadaVoto = new TelaConfirmaVoto(visor, this);
     }
     
     public void iniciarTela() {
@@ -62,6 +62,7 @@ public class VisorBuilder {
     }
 
     public void adicionarInfosEntidade(Document[] info) {
+        if (visor.visorBloqueado) return;
         removerInfosEntidade();
         Document candidato = info[0], partido = info[1];
         String nomeCandidato = candidato.getString("nome"), nomePartido = partido.getString("nome"),
@@ -113,24 +114,20 @@ public class VisorBuilder {
     }
 
     public void apagarTextoCampos() {
+        visor.visorBloqueado = false;
         for (JTextField campo : visor.camposDigito) campo.setText("");
         removerInfosEntidade();
     }
 
     public void exibirConfirmaVoto() {
-    // Remove todos os componentes do visor
-    visor.removeAll();
-    visor.componentesFixos.clear();
-    visor.componentesInfo.clear();
-
-    // Muda o layout para centralizar a animação
-    visor.setLayout(new BorderLayout());
-    visor.add(telaAnimadaVoto, BorderLayout.CENTER);
-
+    visor.visorBloqueado = true;
     telaAnimadaVoto.iniciarAnimacao();
+}
 
-    visor.revalidate();
-    visor.repaint();
+private void desbloquarVisor() {
+    Timer timer = new Timer(3500, e -> visor.visorBloqueado = false);
+timer.setRepeats(false); // Executa apenas uma vez
+timer.start();
 }
 
     private void adicionarComponente(JComponent comp, boolean ehInfo) {

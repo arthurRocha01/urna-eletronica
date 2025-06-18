@@ -1,6 +1,6 @@
 package br.com.poo.view.teclado;
 
-import br.com.poo.controller.ControllerModel;
+import br.com.poo.controller.ControllerUrna;
 
 import javax.swing.*;
 import java.awt.*;
@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Teclado extends JPanel {
 
-    private ControllerModel controller;
+    private ControllerUrna controller;
 
     public Teclado() {
         inicializarComponentes();
@@ -119,7 +119,7 @@ public class Teclado extends JPanel {
         return botao;
     }
 
-    public void setController(ControllerModel controller) {
+    public void setController(ControllerUrna controller) {
         this.controller = controller;
     }
 }

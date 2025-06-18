@@ -3,7 +3,7 @@ package br.com.poo.view;
 import javax.swing.*;
 import java.awt.*;
 
-import br.com.poo.controller.ControllerModel;
+import br.com.poo.controller.ControllerUrna;
 import br.com.poo.view.legenda.Legenda;
 import br.com.poo.view.teclado.Teclado;
 import br.com.poo.view.visor.Visor;
@@ -13,7 +13,7 @@ public class TelaPrincipal extends JFrame {
     private Legenda legenda;
     public Visor visor;
     public Teclado teclado;
-    public ControllerModel controller;
+    public ControllerUrna controller;
 
     public TelaPrincipal() {
         inicializarComponentes();
@@ -68,7 +68,7 @@ public class TelaPrincipal extends JFrame {
     }
 
     private void iniciarController() {
-        controller = new ControllerModel(this);
+        controller = new ControllerUrna(this);
         teclado.setController(controller);
         visor.setController(controller);
         legenda.setController(controller);

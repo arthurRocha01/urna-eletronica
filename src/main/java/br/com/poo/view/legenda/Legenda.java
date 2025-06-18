@@ -3,13 +3,13 @@ package br.com.poo.view.legenda;
 import javax.swing.*;
 import javax.swing.border.*;
 import org.bson.Document;
-import br.com.poo.controller.ControllerModel;
+import br.com.poo.controller.ControllerUrna;
 import java.awt.*;
 import java.awt.event.*;
 
 public class Legenda extends JPanel {
 
-    private ControllerModel controller;
+    private ControllerUrna controller;
     private final JPanel painelGrade = new JPanel(new GridLayout(2, 3, 10, 10));
     private final Color azul = new Color(30, 144, 255);
     private final Color verde = new Color(60, 179, 113);
@@ -46,7 +46,7 @@ public class Legenda extends JPanel {
         return painel;
     }
 
-    public void setController(ControllerModel controller) {
+    public void setController(ControllerUrna controller) {
         this.controller = controller;
         carregarPartidos();
     }
@@ -72,7 +72,7 @@ public class Legenda extends JPanel {
     private void exibirCandidatos(Document partido) {
         painelGrade.removeAll();
 
-        for (Document candidato : controller.buscarCandidatos(partido)) {
+        for (Document candidato : controller.buscarCandidatosPartido(partido)) {
             painelGrade.add(criarPainelCandidato(candidato));
         }
 
