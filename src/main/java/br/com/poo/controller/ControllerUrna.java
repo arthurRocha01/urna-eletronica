@@ -3,6 +3,7 @@ package br.com.poo.controller;
 import org.bson.Document;
 
 import br.com.poo.controller.database.ManipuladorDatabase;
+import br.com.poo.modelo.ModeloUrna;
 import br.com.poo.view.TelaPrincipal;
 
 public class ControllerUrna {
@@ -10,10 +11,12 @@ public class ControllerUrna {
     private ManipuladorDatabase manipuladorDatabase = new ManipuladorDatabase();
 
     private TelaPrincipal display;
+    private ModeloUrna model;
 
     public ControllerUrna(TelaPrincipal display) {
         this.display = display;
         manipuladorDatabase.iniciarCliente();
+        model = new ModeloUrna(this);
     }
 
     public void onAcao(String acao) {
@@ -31,6 +34,10 @@ public class ControllerUrna {
             case "CONFIRMA" -> display.visor.confirmaVoto();
             case "BRANCO" -> System.out.println("Voto em branco");
         }
+    }
+    
+    public void contabilizarVoto(String chave) {
+        model.addVoto(chave);
     }
 
     public Document[] buscarInformacoesVoto(String voto) {

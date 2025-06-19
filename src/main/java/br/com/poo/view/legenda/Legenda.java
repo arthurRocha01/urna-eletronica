@@ -48,6 +48,7 @@ public class Legenda extends JPanel {
 
     public void setController(ControllerUrna controller) {
         this.controller = controller;
+        System.out.println("legenda.controller");
         carregarPartidos();
     }
 

@@ -21,7 +21,6 @@ public class Visor extends JPanel {
     
     public List<JComponent> componentesFixos = new ArrayList<>();
     public List<JComponent> componentesInfo = new ArrayList<>();
-    public Document contabilidadeVotos;
 
     public boolean visorBloqueado = false;
 
@@ -67,28 +66,16 @@ public class Visor extends JPanel {
         visorFunctios.exibirConfirmaVoto();
 
         if (voto.equals("99999")) {
-            int votosAtuais = contabilidadeVotos.getInteger("branco");
-            contabilidadeVotos.put("branco", votosAtuais + 1);
-            return;
+            controller.contabilizarVoto("branco");
+        } else {
+            Document candidatoVotado = controller.buscarCandidato(voto);
+            String nome = candidatoVotado.getString("nome");
+            controller.contabilizarVoto(nome);
         }
-        Document candidatoVotado = controller.buscarCandidato(voto);
-        String nome = candidatoVotado.getString("nome");
-        int votosAtuais = contabilidadeVotos.getInteger(nome);
-        contabilidadeVotos.put(nome, votosAtuais + 1);
-        
     }
 
     public void setController(ControllerUrna controller) {
         this.controller = controller;
-        iniciarContabilidade();
-    }
-
-    private void iniciarContabilidade() {
-        contabilidadeVotos = new Document();
-        Document[] listaCandidatos = controller.buscarTodosCandidatos();
-        for (Document candidato : listaCandidatos) {
-            contabilidadeVotos.append(candidato.getString("nome"), 0);
-        }
-        contabilidadeVotos.append("branco", 0);
+        System.out.println("visor.controller");
     }
 }

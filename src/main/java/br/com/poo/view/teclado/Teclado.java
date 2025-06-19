@@ -121,5 +121,6 @@ public class Teclado extends JPanel {
 
     public void setController(ControllerUrna controller) {
         this.controller = controller;
+        System.out.println("teclado.controller");
     }
 }
