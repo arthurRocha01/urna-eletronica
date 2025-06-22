@@ -3,23 +3,22 @@ package br.com.poo.view.visor;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class TelaConfirmaVoto extends JPanel {
-    private Visor visor;
-    private VisorBuilder builder;
+
+    private final Visor visor;
+    private final VisorBuilder builder;
 
     private JProgressBar barraProgresso;
-    private JLabel labelMensagem;
-    private JLabel labelRodape;
-    private JLabel labelTitulo;
-    private JLabel labelFim;
-    private JLabel labelVotou;
-    private JLabel labelRelogio;
+    private JLabel mensagem;
+    private JLabel rodape;
+    private JLabel titulo;
+    private JLabel fim;
+    private JLabel votou;
+    private JLabel relogio;
 
-    private Timer timerGravacao;
     private Timer timerRelogio;
 
     public TelaConfirmaVoto(Visor visor, VisorBuilder builder) {
@@ -31,54 +30,41 @@ public class TelaConfirmaVoto extends JPanel {
         setOpaque(true);
         setPreferredSize(new Dimension(600, 400));
 
-        iniciarComponentes();
+        inicializarComponentes();
     }
 
-    private void iniciarComponentes() {
-        labelTitulo = new JLabel("TREINAMENTO", SwingConstants.CENTER);
-        labelTitulo.setFont(new Font("SansSerif", Font.BOLD, 16));
-        labelTitulo.setForeground(Color.GRAY);
-        labelTitulo.setBounds(0, 10, 600, 30);
-        add(labelTitulo);
+    private void inicializarComponentes() {
+        titulo = criarLabel("TREINAMENTO", 16, Color.GRAY, 0, 10, 600, 30, SwingConstants.CENTER);
+        add(titulo);
 
         barraProgresso = new JProgressBar(0, 100);
         barraProgresso.setBounds(100, 140, 400, 25);
         barraProgresso.setForeground(Color.GREEN);
         add(barraProgresso);
 
-        labelMensagem = new JLabel("Gravando", SwingConstants.CENTER);
-        labelMensagem.setFont(new Font("SansSerif", Font.BOLD, 20));
-        labelMensagem.setBounds(0, 180, 600, 30);
-        add(labelMensagem);
+        mensagem = criarLabel("Gravando", 20, Color.BLACK, 0, 180, 600, 30, SwingConstants.CENTER);
+        add(mensagem);
 
-        labelRodape = new JLabel("Município: 99999 - Minha Cidade   Zona: 9999   Seção: 9999", SwingConstants.CENTER);
-        labelRodape.setOpaque(true);
-        labelRodape.setBackground(new Color(230, 235, 245));
-        labelRodape.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        labelRodape.setBounds(0, 370, 600, 30);
-        add(labelRodape);
+        rodape = criarLabel("Município: 99999 - Minha Cidade   Zona: 9999   Seção: 9999", 12, Color.DARK_GRAY, 0, 370, 600, 30, SwingConstants.CENTER);
+        rodape.setBackground(new Color(230, 235, 245));
+        rodape.setOpaque(true);
+        add(rodape);
 
-        labelFim = new JLabel("FIM", SwingConstants.CENTER);
-        labelFim.setFont(new Font("SansSerif", Font.BOLD, 72));
-        labelFim.setBounds(0, 100, 600, 80);
-        labelFim.setVisible(false);
-        add(labelFim);
+        fim = criarLabel("FIM", 72, Color.BLACK, 0, 100, 600, 80, SwingConstants.CENTER);
+        fim.setVisible(false);
+        add(fim);
 
-        labelVotou = new JLabel("VOTOU", SwingConstants.RIGHT);
-        labelVotou.setFont(new Font("SansSerif", Font.BOLD, 24));
-        labelVotou.setForeground(Color.LIGHT_GRAY);
-        labelVotou.setBounds(450, 200, 140, 30);
-        labelVotou.setVisible(false);
-        add(labelVotou);
+        votou = criarLabel("VOTOU", 24, Color.LIGHT_GRAY, 450, 200, 140, 30, SwingConstants.RIGHT);
+        votou.setVisible(false);
+        add(votou);
 
-        labelRelogio = new JLabel("", SwingConstants.LEFT);
-        labelRelogio.setFont(new Font("SansSerif", Font.PLAIN, 12));
-        labelRelogio.setForeground(Color.DARK_GRAY);
-        labelRelogio.setBounds(10, 10, 200, 20);
-        add(labelRelogio);
+        relogio = criarLabel("", 12, Color.DARK_GRAY, 10, 10, 200, 20, SwingConstants.LEFT);
+        add(relogio);
 
         timerRelogio = new Timer(1000, e -> {
-            labelRelogio.setText(new SimpleDateFormat("EEE dd/MM/yyyy HH:mm:ss").format(new Date()).toUpperCase());
+            String horaAtual = new SimpleDateFormat("EEE dd/MM/yyyy HH:mm:ss")
+                    .format(new Date()).toUpperCase();
+            relogio.setText(horaAtual);
         });
         timerRelogio.start();
     }
@@ -87,17 +73,16 @@ public class TelaConfirmaVoto extends JPanel {
         visor.removeAll();
         visor.setLayout(new BorderLayout());
         visor.add(this, BorderLayout.CENTER);
-
         visor.revalidate();
         visor.repaint();
 
         barraProgresso.setValue(0);
         barraProgresso.setVisible(true);
-        labelMensagem.setVisible(true);
-        labelFim.setVisible(false);
-        labelVotou.setVisible(false);
+        mensagem.setVisible(true);
+        fim.setVisible(false);
+        votou.setVisible(false);
 
-        Timer timer = new Timer(30, new ActionListener() {
+        Timer animador = new Timer(30, new AbstractAction() {
             int progresso = 0;
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -105,27 +90,34 @@ public class TelaConfirmaVoto extends JPanel {
                 barraProgresso.setValue(progresso);
                 if (progresso >= 100) {
                     ((Timer) e.getSource()).stop();
-                    mostrarTelaFim();
+                    exibirFim();
                 }
             }
         });
-        timer.start();
+        animador.start();
     }
 
-    private void mostrarTelaFim() {
+    private void exibirFim() {
         barraProgresso.setVisible(false);
-        labelMensagem.setVisible(false);
-        labelFim.setVisible(true);
-        labelVotou.setVisible(true);
+        mensagem.setVisible(false);
+        fim.setVisible(true);
+        votou.setVisible(true);
 
-        // Remove a animação e volta para a tela inicial após 2 segundos
-        Timer fim = new Timer(2000, e -> {
+        Timer resetarTela = new Timer(2000, e -> {
             visor.remove(this);
             builder.iniciarTela();
             visor.revalidate();
             visor.repaint();
         });
-        fim.setRepeats(false);
-        fim.start();
+        resetarTela.setRepeats(false);
+        resetarTela.start();
+    }
+
+    private JLabel criarLabel(String texto, int tamanhoFonte, Color cor, int x, int y, int largura, int altura, int alinhamento) {
+        JLabel label = new JLabel(texto, alinhamento);
+        label.setFont(new Font("SansSerif", Font.BOLD, tamanhoFonte));
+        label.setForeground(cor);
+        label.setBounds(x, y, largura, altura);
+        return label;
     }
 }

@@ -3,10 +3,7 @@ package br.com.poo.controller.database;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.MongoCollection;
+import com.mongodb.client.*;
 
 import static com.mongodb.client.model.Filters.*;
 
@@ -15,6 +12,7 @@ import java.util.List;
 
 public class ManipuladorDatabase {
     private static final String URI_DATABASE = "mongodb+srv://user1234:senha1234@urna-eletronica.qiefb7e.mongodb.net/?retryWrites=true&w=majority&appName=urna-eletronica";
+    private static final String DATABASE_NAME = "urna_db";
 
     private MongoClient mongoClient;
     private MongoDatabase database;
@@ -23,68 +21,65 @@ public class ManipuladorDatabase {
     private MongoCollection<Document> candidatos;
 
     public ManipuladorDatabase() {
-        iniciarCliente();
+        conectar();
     }
 
-    private void iniciarCliente() {
+    private void conectar() {
         try {
             mongoClient = MongoClients.create(URI_DATABASE);
-            database = mongoClient.getDatabase("urna_db");
+            database = mongoClient.getDatabase(DATABASE_NAME);
             partidos = database.getCollection("partidos");
             candidatos = database.getCollection("candidatos");
-            System.out.println("Conectado ao banco: " + database.getName());
+            System.out.println("Conectado ao banco: " + DATABASE_NAME);
         } catch (Exception e) {
+            System.out.println("Erro na conexão com MongoDB:");
             e.printStackTrace();
-            System.out.println("Erro na conexão com MongoDB");
         }
     }
 
     public Document getPartido(String sigla) {
-        Document partido = partidos.find(eq("sigla", sigla)).first();
-        if (partido == null) {
-            System.out.println("Database: Partido não encontrado.");
-        }
-        return partido;
+        return partidos.find(eq("sigla", sigla)).first();
     }
 
-    public Document[] getInfoCandidato(String numero) {
-        Document candidato = candidatos.find(eq("numero", numero)).first();
-        if (candidato == null) {
-            System.out.println("Database: Candidato não encontrado.");
-            return null;
-        }
-
-        ObjectId idPartido = candidato.getObjectId("partido_id");
-        Document partido = partidos.find(eq("_id", idPartido)).first();
-
-        return new Document[] { candidato, partido };
+    public Document getCandidato(String numero) {
+        return candidatos.find(eq("numero", numero)).first();
     }
 
-    public Document[] getColecao(String nomeColecao) {
-        MongoCollection<Document> colecao = switch (nomeColecao) {
+    public Document[] getTodosCandidatos() {
+        return toArray(candidatos.find());
+    }
+
+    public Document[] getColecao(String nome) {
+        MongoCollection<Document> colecao = switch (nome) {
             case "partidos" -> partidos;
             case "candidatos" -> candidatos;
             default -> null;
         };
 
-        List<Document> documentos = colecao.find().into(new ArrayList<>());
-        return documentos.toArray(new Document[0]);
+        return colecao != null ? toArray(colecao.find()) : new Document[0];
+    }
+
+    public Document[] getInfoCandidato(String numero) {
+        Document candidato = getCandidato(numero);
+        if (candidato == null) {
+            System.out.println("Candidato não encontrado.");
+            return null;
+        }
+
+        ObjectId partidoId = candidato.getObjectId("partido_id");
+        Document partido = partidos.find(eq("_id", partidoId)).first();
+
+        return new Document[] { candidato, partido };
     }
 
     public Document[] getCandidatosPartido(Document partido) {
-        ObjectId idPartido = partido.getObjectId("_id");
-        List<Document> lista = candidatos.find(eq("partido_id", idPartido)).into(new ArrayList<>());
-        return lista.toArray(new Document[0]);
-    }
-    
-    public Document getCandidato(String numero) {
-        Document candidato = candidatos.find(eq("numero", numero)).first();
-        if (candidato == null) return null;
-        else return candidato;
+        ObjectId id = partido.getObjectId("_id");
+        return toArray(candidatos.find(eq("partido_id", id)));
     }
 
-    public Document[] getTodosCandidatos() {
-        List<Document> lista = candidatos.find().into(new ArrayList<>());
+
+    private Document[] toArray(FindIterable<Document> iterable) {
+        List<Document> lista = iterable.into(new ArrayList<>());
         return lista.toArray(new Document[0]);
     }
 

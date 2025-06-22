@@ -10,20 +10,24 @@ import br.com.poo.view.visor.Visor;
 
 public class TelaPrincipal extends JFrame {
 
-    public ControllerUrna controller;
-    private Legenda legenda;
+    public ControllerUrna controlador;
     public Visor visor;
     public Teclado teclado;
 
+    private Legenda legenda;
+
     public TelaPrincipal() {
-        controller = new ControllerUrna(this);
-        inicializarComponentes();
-        iniciarControllers();
+        this.controlador = new ControllerUrna(this);
+    }
+    
+    public void iniciar() {        
+        inicializarInterface();
+        vincularControladores();
     }
 
-    private void inicializarComponentes() {
+    private void inicializarInterface() {
         configurarJanela();
-        configurarPainelPrincipal();
+        configurarLayoutPrincipal();
         setVisible(true);
     }
 
@@ -35,12 +39,13 @@ public class TelaPrincipal extends JFrame {
         setResizable(false);
     }
 
-    private void configurarPainelPrincipal() {
+    private void configurarLayoutPrincipal() {
         JPanel painelPrincipal = criarPainelPrincipal();
-        JPanel painelEsquerda = criarPainelEsquerda();
-        painelPrincipal.add(painelEsquerda);
-        teclado = new Teclado();
+        painelPrincipal.add(criarPainelEsquerdo());
+
+        this.teclado = new Teclado();
         painelPrincipal.add(teclado);
+
         setContentPane(painelPrincipal);
     }
 
@@ -50,13 +55,13 @@ public class TelaPrincipal extends JFrame {
         return painel;
     }
 
-    private JPanel criarPainelEsquerda() {
+    private JPanel criarPainelEsquerdo() {
         JPanel painel = new JPanel();
         painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
         painel.setOpaque(false);
 
-        legenda = new Legenda();
-        visor = new Visor();
+        this.legenda = new Legenda();
+        this.visor = new Visor();
 
         painel.add(legenda);
         painel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -65,9 +70,9 @@ public class TelaPrincipal extends JFrame {
         return painel;
     }
 
-    private void iniciarControllers() {
-        teclado.setController(controller);
-        visor.setController(controller);
-        legenda.setController(controller);
+    private void vincularControladores() {
+        teclado.setController(controlador);
+        visor.setController(controlador);
+        legenda.setController(controlador);
     }
 }

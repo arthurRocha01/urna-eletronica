@@ -7,68 +7,82 @@ import br.com.poo.view.TelaPrincipal;
 
 public class ControllerUrna {
 
-    public TelaPrincipal display;
-    public ModeloUrna model;
-    private ManipuladorDatabase db;
+    public TelaPrincipal tela;
+    public ModeloUrna urna;
+    private final ManipuladorDatabase banco;
 
-    public ControllerUrna(TelaPrincipal display) {
-        this.display = display;
-        this.db = new ManipuladorDatabase();
-        this.model = new ModeloUrna(this);
+    public ControllerUrna(TelaPrincipal tela) {
+        this.tela = tela;
+        this.banco = new ManipuladorDatabase();
+        this.urna = new ModeloUrna(this);
     }
 
-    public void onAcao(String acao) {
-        if (acao.matches("\\d+") && !display.visor.tecladoBloqueado) {
-            display.visor.inserirDigito(acao);
-        } else if (!display.visor.botoesBloqeuado) {
-            if (acao.equals("CONFIRMA")) display.visor.botoesBloqeuado = true;
-            tratarBotao(acao);
+    public void executarAcao(String comando) {
+        if (comando.matches("\\d+") && !tela.visor.tecladoBloqueado) {
+            tela.visor.inserirDigito(comando);
+        } else if (!tela.visor.botoesBloqueados) {
+            if (comando.equals("CONFIRMA")) {
+                tela.visor.botoesBloqueados = true;
+            }
+            processarComando(comando);
         }
     }
 
-    private void tratarBotao(String acao) {
-        switch (acao) {
-            case "CORRIGE" -> display.visor.visorFunctios.apagarTextoCampos();
-            case "CONFIRMA" -> registrarVoto();
-            case "BRANCO" -> registrarBranco();
+    private void processarComando(String comando) {
+        switch (comando) {
+            case "CORRIGE" -> tela.visor.builder.apagarTextoCampos();
+            case "CONFIRMA" -> confirmarVoto();
+            case "BRANCO" -> registrarVotoBranco();
         }
     }
 
-    private void registrarVoto() {
-        String voto = display.visor.getVoto();
-        Document candidato = buscarCandidato(voto);
+    private void confirmarVoto() {
+        String numero = tela.visor.getNumeroDigitado();
+        Document candidato = buscarCandidato(numero);
 
-        if (votoValido(voto, candidato)) {
-            registrarVotoCandidato(candidato);
+        if (votoEhValido(numero, candidato)) {
+            registrarVoto(candidato.getString("nome"));
+            tela.visor.builder.exibirConfirmaVoto();
         } else {
-            registrarBranco();
-            display.visor.visorFunctios.apagarTextoCampos();
+            registrarVotoBranco();
+            tela.visor.builder.apagarTextoCampos();
         }
     }
 
-    private boolean votoValido(String voto, Document candidato) {
-        return !voto.equals("99999") && candidato != null;
+    private boolean votoEhValido(String numero, Document candidato) {
+        return !numero.equals("99999") && candidato != null;
     }
 
-    private void registrarVotoCandidato(Document candidato) {
-        display.visor.visorFunctios.exibirConfirmaVoto();
-        incrementarVoto(candidato.getString("nome"));
+    private void registrarVoto(String nome) {
+        urna.votosPorCandidato.put(nome, urna.votosPorCandidato.getInteger(nome, 0) + 1);
     }
 
-    private void registrarBranco() {
-        incrementarVoto("branco");
+    private void registrarVotoBranco() {
+        registrarVoto("branco");
         System.out.println("Voto branco ou inválido.");
     }
 
-    private void incrementarVoto(String nome) {
-        int votos = model.contabilidadeVotos.getInteger(nome, 0);
-        model.contabilidadeVotos.put(nome, votos + 1);
+    public Document buscarCandidato(String numero) {
+        return banco.getCandidato(numero);
     }
 
-    public Document buscarCandidato(String numero)                { return db.getCandidato(numero); }
-    public Document buscarInformacoesPartido(String sigla)        { return db.getPartido(sigla); }
-    public Document[] buscarInformacoesVoto(String voto)          { return db.getInfoCandidato(voto); }
-    public Document[] buscarDadosColecao(String colecao)          { return db.getColecao(colecao); }
-    public Document[] buscarCandidatosPartido(Document partido)   { return db.getCandidatosPartido(partido); }
-    public Document[] buscarTodosCandidatos()                     { return db.getTodosCandidatos(); }
+    public Document buscarPartido(String sigla) {
+        return banco.getPartido(sigla);
+    }
+
+    public Document[] buscarInfoCandidato(String numero) {
+        return banco.getInfoCandidato(numero);
+    }
+
+    public Document[] buscarColecao(String nomeColecao) {
+        return banco.getColecao(nomeColecao);
+    }
+
+    public Document[] buscarCandidatosPorPartido(Document partido) {
+        return banco.getCandidatosPartido(partido);
+    }
+
+    public Document[] buscarTodosCandidatos() {
+        return banco.getTodosCandidatos();
+    }
 }

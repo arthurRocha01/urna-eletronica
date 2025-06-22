@@ -2,66 +2,73 @@ package br.com.poo.view.visor;
 
 import javax.swing.*;
 import org.bson.Document;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import br.com.poo.controller.ControllerUrna;
 
 public class Visor extends JPanel {
-    public int BASE_WIDTH = 700;
-    public int BASE_HEIGHT = 400;
 
-    public VisorBuilder visorFunctios;
-    public ControllerUrna controller;
+    public final int LARGURA = 700;
+    public final int ALTURA = 400;
 
-    public StringBuilder numero;
-    public Document[] info;
-    public JTextField[] camposDigito = new JTextField[5];
-    
+    public VisorBuilder builder;
+    public ControllerUrna controlador;
+
+    public StringBuilder numeroDigitado;
+    public Document[] dadosCandidato;
+    public JTextField[] camposNumero = new JTextField[5];
+
     public List<JComponent> componentesFixos = new ArrayList<>();
-    public List<JComponent> componentesInfo = new ArrayList<>();
+    public List<JComponent> componentesDinamicos = new ArrayList<>();
 
     public boolean tecladoBloqueado = false;
-    public boolean botoesBloqeuado = false;
+    public boolean botoesBloqueados = false;
 
     public Visor() {
-        visorFunctios = new VisorBuilder(this);
-        visorFunctios.iniciarTela();
+        this.builder = new VisorBuilder(this);
+        builder.iniciarTela();
     }
 
-    public void inserirDigito(String acao) {
+    public void inserirDigito(String digito) {
         if (tecladoBloqueado) return;
-        for (JTextField campo : camposDigito) {
+
+        for (JTextField campo : camposNumero) {
             if (campo.getText().isEmpty()) {
-                campo.setText(acao);
+                campo.setText(digito);
                 break;
             }
         }
-        if (votoCompleto()) acionarVoto();
+
+        if (votoEstaCompleto()) {
+            processarVoto();
+        }
     }
 
-    public boolean votoCompleto() {
-        for (JTextField campo : camposDigito) {
+    public boolean votoEstaCompleto() {
+        for (JTextField campo : camposNumero) {
             if (campo.getText().isEmpty()) return false;
         }
         tecladoBloqueado = true;
         return true;
     }
-    
-    private void acionarVoto() {
-        String voto = getVoto();
-        info = controller.buscarInformacoesVoto(voto);
-        if (info != null) visorFunctios.adicionarInfosEntidade(info);
+
+    private void processarVoto() {
+        String voto = getNumeroDigitado();
+        dadosCandidato = controlador.buscarInfoCandidato(voto);
+        if (dadosCandidato != null) {
+            builder.adicionarInfosEntidade(dadosCandidato);
+        }
     }
 
-    public String getVoto() {
-        numero = new StringBuilder();
-        for (JTextField campo : camposDigito) numero.append(campo.getText());
-        return numero.toString();
+    public String getNumeroDigitado() {
+        numeroDigitado = new StringBuilder();
+        for (JTextField campo : camposNumero) {
+            numeroDigitado.append(campo.getText());
+        }
+        return numeroDigitado.toString();
     }
 
-    public void setController(ControllerUrna controller) {
-        this.controller = controller;
+    public void setController(ControllerUrna controlador) {
+        this.controlador = controlador;
     }
 }
