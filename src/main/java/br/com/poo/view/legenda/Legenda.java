@@ -18,22 +18,27 @@ public class Legenda extends JPanel {
     private JPanel painelCabecalho;
 
     public Legenda() {
+        inicializarComponentes();
+    }
+
+    private void inicializarComponentes() {
+        configurarJanela();
+        criarPainelPrincipal();
+    }
+    
+    private void configurarJanela() {
         setLayout(new BorderLayout());
         setPreferredSize(new Dimension(600, 180));
         setBackground(new Color(230, 230, 230));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 10, true));
-        initComponentes();
     }
 
-    private void initComponentes() {
+    private void criarPainelPrincipal() {
         painelPrincipal = painelComLayout(new BorderLayout(0, 10), azul, new LineBorder(Color.BLUE.darker(), 1, true));
-
         painelCabecalho = criarCabecalho();
         painelPrincipal.add(painelCabecalho, BorderLayout.NORTH);
-
         painelGrade.setOpaque(false);
         painelPrincipal.add(painelGrade, BorderLayout.CENTER);
-
         add(painelPrincipal, BorderLayout.CENTER);
     }
 
@@ -44,11 +49,6 @@ public class Legenda extends JPanel {
         painel.add(criarLabel("selecione um partido:", Font.BOLD, 14, false));
 
         return painel;
-    }
-
-    public void setController(ControllerUrna controller) {
-        this.controller = controller;
-        carregarPartidos();
     }
 
     public void carregarPartidos() {
@@ -169,5 +169,10 @@ public class Legenda extends JPanel {
 
     private JLabel criarLabelCentralizado(String texto, int estilo, int tamanho) {
         return criarLabel("<html><center>" + texto + "</center></html>", estilo, tamanho, true);
+    }
+
+    public void setController(ControllerUrna controller) {
+        this.controller = controller;
+        carregarPartidos();
     }
 }

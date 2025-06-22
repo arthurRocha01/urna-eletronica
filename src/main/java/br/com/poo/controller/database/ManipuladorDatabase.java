@@ -22,7 +22,11 @@ public class ManipuladorDatabase {
     private MongoCollection<Document> partidos;
     private MongoCollection<Document> candidatos;
 
-    public void iniciarCliente() {
+    public ManipuladorDatabase() {
+        iniciarCliente();
+    }
+
+    private void iniciarCliente() {
         try {
             mongoClient = MongoClients.create(URI_DATABASE);
             database = mongoClient.getDatabase("urna_db");
@@ -47,7 +51,7 @@ public class ManipuladorDatabase {
         Document candidato = candidatos.find(eq("numero", numero)).first();
         if (candidato == null) {
             System.out.println("Database: Candidato não encontrado.");
-            return new Document[0];
+            return null;
         }
 
         ObjectId idPartido = candidato.getObjectId("partido_id");
@@ -74,7 +78,9 @@ public class ManipuladorDatabase {
     }
     
     public Document getCandidato(String numero) {
-        return candidatos.find(eq("numero", numero)).first();
+        Document candidato = candidatos.find(eq("numero", numero)).first();
+        if (candidato == null) return null;
+        else return candidato;
     }
 
     public Document[] getTodosCandidatos() {

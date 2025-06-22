@@ -21,9 +21,9 @@ public class Visor extends JPanel {
     
     public List<JComponent> componentesFixos = new ArrayList<>();
     public List<JComponent> componentesInfo = new ArrayList<>();
-    public Document contabilidadeVotos;
 
-    public boolean visorBloqueado = false;
+    public boolean tecladoBloqueado = false;
+    public boolean botoesBloqeuado = false;
 
     public Visor() {
         visorFunctios = new VisorBuilder(this);
@@ -31,7 +31,7 @@ public class Visor extends JPanel {
     }
 
     public void inserirDigito(String acao) {
-        if (visorBloqueado) return;
+        if (tecladoBloqueado) return;
         for (JTextField campo : camposDigito) {
             if (campo.getText().isEmpty()) {
                 campo.setText(acao);
@@ -41,54 +41,27 @@ public class Visor extends JPanel {
         if (votoCompleto()) acionarVoto();
     }
 
-    private boolean votoCompleto() {
+    public boolean votoCompleto() {
         for (JTextField campo : camposDigito) {
             if (campo.getText().isEmpty()) return false;
         }
+        tecladoBloqueado = true;
         return true;
     }
     
     private void acionarVoto() {
-        visorBloqueado = true;
         String voto = getVoto();
         info = controller.buscarInformacoesVoto(voto);
         if (info != null) visorFunctios.adicionarInfosEntidade(info);
     }
 
-    private String getVoto() {
+    public String getVoto() {
         numero = new StringBuilder();
         for (JTextField campo : camposDigito) numero.append(campo.getText());
         return numero.toString();
     }
-    
-    public void confirmaVoto() {
-        if (!votoCompleto()) return;
-        String voto = getVoto();
-        visorFunctios.exibirConfirmaVoto();
-
-        if (voto.equals("99999")) {
-            int votosAtuais = contabilidadeVotos.getInteger("branco");
-            contabilidadeVotos.put("branco", votosAtuais + 1);
-            return;
-        }
-        Document candidatoVotado = controller.buscarCandidato(voto);
-        String nome = candidatoVotado.getString("nome");
-        int votosAtuais = contabilidadeVotos.getInteger(nome);
-        contabilidadeVotos.put(nome, votosAtuais + 1);
-        
-    }
 
     public void setController(ControllerUrna controller) {
         this.controller = controller;
-        iniciarContabilidade();
-    }
-
-    private void iniciarContabilidade() {
-        contabilidadeVotos = new Document();
-        Document[] listaCandidatos = controller.buscarTodosCandidatos();
-        for (Document candidato : listaCandidatos) {
-            contabilidadeVotos.append(candidato.getString("nome"), 0);
-        }
-        contabilidadeVotos.append("branco", 0);
     }
 }

@@ -62,7 +62,6 @@ public class VisorBuilder {
     }
 
     public void adicionarInfosEntidade(Document[] info) {
-        if (visor.visorBloqueado) return;
         removerInfosEntidade();
         Document candidato = info[0], partido = info[1];
         String nomeCandidato = candidato.getString("nome"), nomePartido = partido.getString("nome"),
@@ -114,21 +113,25 @@ public class VisorBuilder {
     }
 
     public void apagarTextoCampos() {
-        visor.visorBloqueado = false;
+        visor.tecladoBloqueado = false;
         for (JTextField campo : visor.camposDigito) campo.setText("");
         removerInfosEntidade();
     }
 
     public void exibirConfirmaVoto() {
-    visor.visorBloqueado = true;
     telaAnimadaVoto.iniciarAnimacao();
-}
+    desbloquarVisor();
+    }
 
-private void desbloquarVisor() {
-    Timer timer = new Timer(3500, e -> visor.visorBloqueado = false);
-timer.setRepeats(false); // Executa apenas uma vez
-timer.start();
-}
+    private void desbloquarVisor() {
+        Timer timer = new Timer(3500, e -> {
+            visor.tecladoBloqueado = false;
+            visor.botoesBloqeuado = false;
+            System.out.println("botoes desbloqueadas");
+        });
+        timer.setRepeats(false);
+        timer.start();
+    }
 
     private void adicionarComponente(JComponent comp, boolean ehInfo) {
         (ehInfo ? visor.componentesInfo : visor.componentesFixos).add(comp);

@@ -1,60 +1,74 @@
 package br.com.poo.controller;
 
 import org.bson.Document;
-import com.mongodb.client.FindIterable;
-
 import br.com.poo.controller.database.ManipuladorDatabase;
+import br.com.poo.modelo.ModeloUrna;
 import br.com.poo.view.TelaPrincipal;
 
 public class ControllerUrna {
 
-    private ManipuladorDatabase manipuladorDatabase = new ManipuladorDatabase();
-
-    private TelaPrincipal display;
+    public TelaPrincipal display;
+    public ModeloUrna model;
+    private ManipuladorDatabase db;
 
     public ControllerUrna(TelaPrincipal display) {
         this.display = display;
-        manipuladorDatabase.iniciarCliente();
+        this.db = new ManipuladorDatabase();
+        this.model = new ModeloUrna(this);
     }
 
     public void onAcao(String acao) {
-        if (acao.matches("\\d+") && !display.visor.visorBloqueado) {
-            if (display.visor.visorBloqueado) return;
+        if (acao.matches("\\d+") && !display.visor.tecladoBloqueado) {
             display.visor.inserirDigito(acao);
-        } else {
-            acionarBotao(acao);
+        } else if (!display.visor.botoesBloqeuado) {
+            if (acao.equals("CONFIRMA")) display.visor.botoesBloqeuado = true;
+            tratarBotao(acao);
         }
     }
 
-    private void acionarBotao(String acao) {
+    private void tratarBotao(String acao) {
         switch (acao) {
             case "CORRIGE" -> display.visor.visorFunctios.apagarTextoCampos();
-            case "CONFIRMA" -> display.visor.confirmaVoto();
-            case "BRANCO" -> System.out.println("Voto em branco");
+            case "CONFIRMA" -> registrarVoto();
+            case "BRANCO" -> registrarBranco();
         }
     }
 
-    public Document[] buscarInformacoesVoto(String voto) {
-        return manipuladorDatabase.getInfoCandidato(voto);
+    private void registrarVoto() {
+        String voto = display.visor.getVoto();
+        Document candidato = buscarCandidato(voto);
+
+        if (votoValido(voto, candidato)) {
+            registrarVotoCandidato(candidato);
+        } else {
+            registrarBranco();
+            display.visor.visorFunctios.apagarTextoCampos();
+        }
     }
 
-    public Document buscarInformacoesPartido(String sigla) {
-        return manipuladorDatabase.getPartido(sigla);
+    private boolean votoValido(String voto, Document candidato) {
+        return !voto.equals("99999") && candidato != null;
     }
 
-    public Document[] buscarDadosColecao(String colecao) {
-        return manipuladorDatabase.getColecao(colecao);
+    private void registrarVotoCandidato(Document candidato) {
+        display.visor.visorFunctios.exibirConfirmaVoto();
+        incrementarVoto(candidato.getString("nome"));
     }
 
-    public Document[] buscarCandidatosPartido(Document partido) {
-        return manipuladorDatabase.getCandidatosPartido(partido);
+    private void registrarBranco() {
+        incrementarVoto("branco");
+        System.out.println("Voto branco ou inválido.");
     }
 
-    public Document[] buscarTodosCandidatos() {
-        return manipuladorDatabase.getTodosCandidatos();
+    private void incrementarVoto(String nome) {
+        int votos = model.contabilidadeVotos.getInteger(nome, 0);
+        model.contabilidadeVotos.put(nome, votos + 1);
     }
 
-    public Document buscarCandidato(String numero) {
-        return manipuladorDatabase.getCandidato(numero);
-    }
+    public Document buscarCandidato(String numero)                { return db.getCandidato(numero); }
+    public Document buscarInformacoesPartido(String sigla)        { return db.getPartido(sigla); }
+    public Document[] buscarInformacoesVoto(String voto)          { return db.getInfoCandidato(voto); }
+    public Document[] buscarDadosColecao(String colecao)          { return db.getColecao(colecao); }
+    public Document[] buscarCandidatosPartido(Document partido)   { return db.getCandidatosPartido(partido); }
+    public Document[] buscarTodosCandidatos()                     { return db.getTodosCandidatos(); }
 }

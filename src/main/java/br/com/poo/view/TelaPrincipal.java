@@ -10,14 +10,15 @@ import br.com.poo.view.visor.Visor;
 
 public class TelaPrincipal extends JFrame {
 
+    public ControllerUrna controller;
     private Legenda legenda;
     public Visor visor;
     public Teclado teclado;
-    public ControllerUrna controller;
 
     public TelaPrincipal() {
+        controller = new ControllerUrna(this);
         inicializarComponentes();
-        iniciarController();
+        iniciarControllers();
     }
 
     private void inicializarComponentes() {
@@ -37,12 +38,9 @@ public class TelaPrincipal extends JFrame {
     private void configurarPainelPrincipal() {
         JPanel painelPrincipal = criarPainelPrincipal();
         JPanel painelEsquerda = criarPainelEsquerda();
-
         painelPrincipal.add(painelEsquerda);
-
         teclado = new Teclado();
         painelPrincipal.add(teclado);
-
         setContentPane(painelPrincipal);
     }
 
@@ -67,8 +65,7 @@ public class TelaPrincipal extends JFrame {
         return painel;
     }
 
-    private void iniciarController() {
-        controller = new ControllerUrna(this);
+    private void iniciarControllers() {
         teclado.setController(controller);
         visor.setController(controller);
         legenda.setController(controller);
