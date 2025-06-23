@@ -23,6 +23,7 @@ public class ControllerUrna {
         } else if (!tela.visor.botoesBloqueados) {
             if (comando.equals("CONFIRMA") && tela.visor.votoEstaCompleto()) {
                 tela.visor.botoesBloqueados = true;
+                System.out.println("botoes bloqueados");
             }
             processarComando(comando);
         }
@@ -45,8 +46,8 @@ public class ControllerUrna {
             tela.visor.builder.exibirConfirmaVoto();
         } else {
             registrarVotoBranco();
-            tela.visor.apagarTextoCampos();
         }
+        tela.visor.apagarTextoCampos();
     }
 
     private boolean votoEhValido(String numero, Document candidato) {

@@ -75,7 +75,7 @@ public class VisorBuilder {
         String nome = candidato.getString("nome");
         String sigla = partido.getString("sigla");
 
-        adicionarLabel("Número:", 18, new Rectangle(25, 95, 300, 20), false);
+        adicionarLabel("Número:", 18, new Rectangle(25, 95, 300, 20), true);
         adicionarLabelInfo("Nome:", nome, new Rectangle(20, 190, 300, 20));
         adicionarLabelInfo("Partido:", sigla, new Rectangle(20, 220, 300, 20));
         adicionarFoto(sigla, nome, new Rectangle(570, 85, 100, 100));
@@ -95,6 +95,10 @@ public class VisorBuilder {
     public void removerInfosEntidade() {
         visor.componentesDinamicos.forEach(visor::remove);
         visor.componentesDinamicos.clear();
+        System.out.println("entidade removidas");
+
+        visor.revalidate();
+        visor.repaint();
     }
 
     private void adicionarLabelInfo(String titulo, String valor, Rectangle bounds) {
