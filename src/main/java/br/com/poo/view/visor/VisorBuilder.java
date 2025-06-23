@@ -95,7 +95,7 @@ public class VisorBuilder {
     public void removerInfosEntidade() {
         visor.componentesDinamicos.forEach(visor::remove);
         visor.componentesDinamicos.clear();
-        System.out.println("entidade removidas");
+        visor.controlador.avisarSistema("VisorBuilder", "entidades removidas");
 
         visor.revalidate();
         visor.repaint();
@@ -139,7 +139,7 @@ public class VisorBuilder {
         Timer timer = new Timer(3500, e -> {
             visor.tecladoBloqueado = false;
             visor.botoesBloqueados = false;
-            System.out.println("Botões desbloqueados");
+            visor.controlador.avisarSistema("VisorBuilder", "botoes desbloqueados");
         });
         timer.setRepeats(false);
         timer.start();

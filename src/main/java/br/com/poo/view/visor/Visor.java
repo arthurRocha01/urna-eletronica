@@ -49,6 +49,7 @@ public class Visor extends JPanel {
             if (campo.getText().isEmpty()) return false;
         }
         tecladoBloqueado = true;
+        controlador.avisarSistema("Visor", "botoes bloquados");
         return true;
     }
 
@@ -71,7 +72,7 @@ public class Visor extends JPanel {
         public void apagarTextoCampos() {
         tecladoBloqueado = false;
         botoesBloqueados = false;
-        System.out.println("botoes desbloqueados");
+        controlador.avisarSistema("Visor", "botoes desbloqueados");
         for (JTextField campo : camposNumero) campo.setText("");
         builder.removerInfosEntidade();
     }

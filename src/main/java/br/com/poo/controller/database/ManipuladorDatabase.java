@@ -5,6 +5,8 @@ import org.bson.types.ObjectId;
 
 import com.mongodb.client.*;
 
+import br.com.poo.controller.ControllerUrna;
+
 import static com.mongodb.client.model.Filters.*;
 
 import java.util.ArrayList;
@@ -16,11 +18,13 @@ public class ManipuladorDatabase {
 
     private MongoClient mongoClient;
     private MongoDatabase database;
+    private ControllerUrna controller;
 
     private MongoCollection<Document> partidos;
     private MongoCollection<Document> candidatos;
 
-    public ManipuladorDatabase() {
+    public ManipuladorDatabase(ControllerUrna controller) {
+        this.controller = controller;
         conectar();
     }
 
@@ -31,8 +35,9 @@ public class ManipuladorDatabase {
             partidos = database.getCollection("partidos");
             candidatos = database.getCollection("candidatos");
             System.out.println("Conectado ao banco: " + DATABASE_NAME);
+            controller.avisarSistema("ManipuladorDatabase", "conexão feita com sucesso - " + DATABASE_NAME);
         } catch (Exception e) {
-            System.out.println("Erro na conexão com MongoDB:");
+            controller.avisarSistema("ManipuladorDatabase", "Erro na conexão com MongoDB:");
             e.printStackTrace();
         }
     }

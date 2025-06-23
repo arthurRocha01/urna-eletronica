@@ -13,7 +13,7 @@ public class ControllerUrna {
 
     public ControllerUrna(TelaPrincipal tela) {
         this.tela = tela;
-        this.banco = new ManipuladorDatabase();
+        this.banco = new ManipuladorDatabase(this);
         this.urna = new ModeloUrna(this);
     }
 
@@ -23,7 +23,7 @@ public class ControllerUrna {
         } else if (!tela.visor.botoesBloqueados) {
             if (comando.equals("CONFIRMA") && tela.visor.votoEstaCompleto()) {
                 tela.visor.botoesBloqueados = true;
-                System.out.println("botoes bloqueados");
+                avisarSistema("Visor:", "botoões bloqueados");
             }
             processarComando(comando);
         }
@@ -50,6 +50,10 @@ public class ControllerUrna {
         tela.visor.apagarTextoCampos();
     }
 
+    public void avisarSistema(Object tipo, String mensagem) {
+        System.out.printf("--> %s: %s\n\n", tipo, mensagem);
+    }
+
     private boolean votoEhValido(String numero, Document candidato) {
         return !numero.equals("99999") && candidato != null;
     }
@@ -60,7 +64,7 @@ public class ControllerUrna {
 
     private void registrarVotoBranco() {
         registrarVoto("branco");
-        System.out.println("Voto branco ou inválido.");
+        avisarSistema("Controller", "Voto branco ou inválido.");
     }
 
     public Document buscarCandidato(String numero) {
