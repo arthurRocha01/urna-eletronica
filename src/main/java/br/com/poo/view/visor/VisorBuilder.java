@@ -92,7 +92,7 @@ public class VisorBuilder {
         visor.repaint();
     }
 
-    private void removerInfosEntidade() {
+    public void removerInfosEntidade() {
         visor.componentesDinamicos.forEach(visor::remove);
         visor.componentesDinamicos.clear();
     }
@@ -124,12 +124,6 @@ public class VisorBuilder {
         label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
         label.setBounds(bounds);
         adicionarComponente(label, ehInfo);
-    }
-
-    public void apagarTextoCampos() {
-        visor.tecladoBloqueado = false;
-        for (JTextField campo : visor.camposNumero) campo.setText("");
-        removerInfosEntidade();
     }
 
     public void exibirConfirmaVoto() {

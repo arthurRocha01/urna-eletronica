@@ -21,7 +21,7 @@ public class ControllerUrna {
         if (comando.matches("\\d+") && !tela.visor.tecladoBloqueado) {
             tela.visor.inserirDigito(comando);
         } else if (!tela.visor.botoesBloqueados) {
-            if (comando.equals("CONFIRMA")) {
+            if (comando.equals("CONFIRMA") && tela.visor.votoEstaCompleto()) {
                 tela.visor.botoesBloqueados = true;
             }
             processarComando(comando);
@@ -30,7 +30,7 @@ public class ControllerUrna {
 
     private void processarComando(String comando) {
         switch (comando) {
-            case "CORRIGE" -> tela.visor.builder.apagarTextoCampos();
+            case "CORRIGE" -> tela.visor.apagarTextoCampos();
             case "CONFIRMA" -> confirmarVoto();
             case "BRANCO" -> registrarVotoBranco();
         }
@@ -45,7 +45,7 @@ public class ControllerUrna {
             tela.visor.builder.exibirConfirmaVoto();
         } else {
             registrarVotoBranco();
-            tela.visor.builder.apagarTextoCampos();
+            tela.visor.apagarTextoCampos();
         }
     }
 

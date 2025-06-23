@@ -68,6 +68,13 @@ public class Visor extends JPanel {
         return numeroDigitado.toString();
     }
 
+        public void apagarTextoCampos() {
+        tecladoBloqueado = false;
+        botoesBloqueados = false;
+        for (JTextField campo : camposNumero) campo.setText("");
+        builder.removerInfosEntidade();
+    }
+
     public void setController(ControllerUrna controlador) {
         this.controlador = controlador;
     }
