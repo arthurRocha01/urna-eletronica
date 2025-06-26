@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TelaConfirmaVoto extends JPanel {
+public class TelaConfirmaCandidato extends JPanel {
 
     private final Visor visor;
     private final VisorBuilder builder;
@@ -21,7 +21,7 @@ public class TelaConfirmaVoto extends JPanel {
 
     private Timer timerRelogio;
 
-    public TelaConfirmaVoto(Visor visor, VisorBuilder builder) {
+    public TelaConfirmaCandidato(Visor visor, VisorBuilder builder) {
         this.visor = visor;
         this.builder = builder;
 
@@ -69,7 +69,7 @@ public class TelaConfirmaVoto extends JPanel {
         timerRelogio.start();
     }
 
-    public void iniciarAnimacao() {
+    public void exibirTela() {
         visor.removeAll();
         visor.setLayout(new BorderLayout());
         visor.add(this, BorderLayout.CENTER);

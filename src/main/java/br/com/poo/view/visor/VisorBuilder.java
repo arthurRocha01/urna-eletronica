@@ -12,11 +12,13 @@ public class VisorBuilder {
     private static final String CAMINHO_IMAGENS = "src/main/resources/images/";
 
     private final Visor visor;
-    private final TelaConfirmaVoto animacaoConfirmaVoto;
+    private final TelaConfirmaCandidato telaConfirmaCandidato;
+    private final TelaVotoBranco telaConfirmaBranco;
 
     public VisorBuilder(Visor visor) {
         this.visor = visor;
-        this.animacaoConfirmaVoto = new TelaConfirmaVoto(visor, this);
+        this.telaConfirmaCandidato = new TelaConfirmaCandidato(visor, this);
+        this.telaConfirmaBranco = new TelaVotoBranco(visor, this);
     }
 
     public void iniciarTela() {
@@ -130,9 +132,15 @@ public class VisorBuilder {
         adicionarComponente(label, ehInfo);
     }
 
-    public void exibirConfirmaVoto() {
-        animacaoConfirmaVoto.iniciarAnimacao();
-        desbloquearVisorComDelay();
+    public void exibirConfirmaVoto(String tela) {
+        if (tela.equals("votoCandidato")) {
+            telaConfirmaCandidato.exibirTela();
+            desbloquearVisorComDelay();
+        }
+
+        if (tela.equals("votoBranco")) {
+            telaConfirmaBranco.exibirTela();
+        }
     }
 
     private void desbloquearVisorComDelay() {
