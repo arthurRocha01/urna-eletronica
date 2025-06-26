@@ -1,0 +1,10 @@
+src/main/java/br/com/poo/Main.java
+src/main/java/br/com/poo/modelo/ModeloUrna.java
+src/main/java/br/com/poo/controller/database/ManipuladorDatabase.java
+src/main/java/br/com/poo/controller/ControllerUrna.java
+src/main/java/br/com/poo/view/visor/Visor.java
+src/main/java/br/com/poo/view/visor/VisorBuilder.java
+src/main/java/br/com/poo/view/visor/TelaConfirmaVoto.java
+src/main/java/br/com/poo/view/legenda/Legenda.java
+src/main/java/br/com/poo/view/TelaPrincipal.java
+src/main/java/br/com/poo/view/teclado/Teclado.java

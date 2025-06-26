@@ -40,31 +40,36 @@ public class ControllerUrna {
     private void confirmarVoto() {
         String numero = tela.visor.getNumeroDigitado();
         Document candidato = buscarCandidato(numero);
+        
+        if (tela.visor.votoEstaCompleto()) {
+            avisarSistema("Controller", "candidato votado");
+            votar(numero, candidato);
+            tela.visor.apagarTextoCampos();
+        }
+    }
 
+    private void votar(String numero, Document candidato) {
         if (votoEhValido(numero, candidato)) {
-            registrarVoto(candidato.getString("nome"));
+            urna.registrarVoto(candidato.getString("nome"));
             tela.visor.builder.exibirConfirmaVoto();
         } else {
             registrarVotoBranco();
         }
-        tela.visor.apagarTextoCampos();
     }
 
     public void avisarSistema(Object tipo, String mensagem) {
-        System.out.printf("--> %s: %s\n\n", tipo, mensagem);
+        System.out.printf("--> %s: %s.\n", tipo, mensagem);
     }
 
     private boolean votoEhValido(String numero, Document candidato) {
         return !numero.equals("99999") && candidato != null;
     }
 
-    private void registrarVoto(String nome) {
-        urna.votosPorCandidato.put(nome, urna.votosPorCandidato.getInteger(nome, 0) + 1);
-    }
-
     private void registrarVotoBranco() {
-        registrarVoto("branco");
-        avisarSistema("Controller", "Voto branco ou inválido.");
+        if (tela.visor.votoEstaCompleto()) {
+            urna.registrarVoto("branco");
+            avisarSistema("Controller", "Voto branco ou inválido.");
+        }
     }
 
     public Document buscarCandidato(String numero) {

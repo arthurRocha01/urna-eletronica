@@ -7,8 +7,10 @@ import br.com.poo.controller.ControllerUrna;
 
 public class ModeloUrna {
     public Document votosPorCandidato = new Document();
+    ControllerUrna controller;
 
     public ModeloUrna(ControllerUrna controller) {
+        this.controller = controller;
         inicializarVotos(controller.buscarTodosCandidatos());
     }
 
@@ -22,7 +24,9 @@ public class ModeloUrna {
     public void registrarVoto(String nome) {
         int votos = votosPorCandidato.getInteger(nome, 0);
         votosPorCandidato.put(nome, votos + 1);
-        votosPorCandidato.forEach((k, v) -> System.err.printf("%s: %s\n", k, v));
+        votosPorCandidato.forEach(
+            (k, v) -> System.out.printf("%s: %s\n", k, v)
+        );
     }
 
     public Document getMapaVotos() {

@@ -34,7 +34,6 @@ public class ManipuladorDatabase {
             database = mongoClient.getDatabase(DATABASE_NAME);
             partidos = database.getCollection("partidos");
             candidatos = database.getCollection("candidatos");
-            System.out.println("Conectado ao banco: " + DATABASE_NAME);
             controller.avisarSistema("ManipuladorDatabase", "conexão feita com sucesso - " + DATABASE_NAME);
         } catch (Exception e) {
             controller.avisarSistema("ManipuladorDatabase", "Erro na conexão com MongoDB:");
@@ -67,7 +66,7 @@ public class ManipuladorDatabase {
     public Document[] getInfoCandidato(String numero) {
         Document candidato = getCandidato(numero);
         if (candidato == null) {
-            System.out.println("Candidato não encontrado.");
+            controller.avisarSistema("ManipuladorDatabase", "Candidato não encontrado");
             return null;
         }
 

@@ -95,7 +95,7 @@ public class VisorBuilder {
     public void removerInfosEntidade() {
         visor.componentesDinamicos.forEach(visor::remove);
         visor.componentesDinamicos.clear();
-        visor.controlador.avisarSistema("VisorBuilder", "entidades removidas");
+        visor.controlador.avisarSistema("VisorBuilder", "informações do candidato removidas");
 
         visor.revalidate();
         visor.repaint();
