@@ -51,10 +51,17 @@ public class TelaVotoBranco extends JPanel {
         add(labelRelogio);
     }
 
-    public void exibirTela() {
+    public void exibir() {
         visor.removeAll();
         visor.setLayout(new BorderLayout());
         visor.add(this, BorderLayout.CENTER);
+        visor.revalidate();
+        visor.repaint();
+    }
+
+    public void fechar() {
+        visor.remove(this);
+        builder.iniciarTela();
         visor.revalidate();
         visor.repaint();
     }

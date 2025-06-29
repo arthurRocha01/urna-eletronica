@@ -25,12 +25,15 @@ public class TelaConfirmaCandidato extends JPanel {
         this.visor = visor;
         this.builder = builder;
 
+        configurarTela();
+        inicializarComponentes();
+    }
+
+    private void configurarTela() {
         setLayout(null);
         setBackground(Color.WHITE);
         setOpaque(true);
         setPreferredSize(new Dimension(600, 400));
-
-        inicializarComponentes();
     }
 
     private void inicializarComponentes() {

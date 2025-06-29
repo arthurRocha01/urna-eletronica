@@ -39,22 +39,45 @@ public class Visor extends JPanel {
             }
         }
 
-        if (votoEstaCompleto()) {
+        if (isVotoCompleto()) {
             processarVoto();
         }
     }
 
-    public boolean votoEstaCompleto() {
+    public boolean isVotoCompleto() {
         for (JTextField campo : camposNumero) {
             if (campo.getText().isEmpty()) return false;
         }
-        tecladoBloqueado = true;
-        controlador.avisarSistema("Visor", "teclado bloquado");
+        bloquarTeclado();
         return true;
     }
 
+    public boolean isVotandoBranco() {
+        return builder.telaConfirmaBranco.isShowing();
+    }
+    
+    public void bloquarTeclado() {
+        tecladoBloqueado = true;
+        controlador.avisarSistema("Visor", "teclado bloquado");
+    }
+
+    public void desbloquearTeclado() {
+        tecladoBloqueado = false;
+        controlador.avisarSistema("Visor", "teclado desbloqueado");
+    }
+
+    public void bloquearBotoes() {
+        botoesBloqueados = true;
+        controlador.avisarSistema("Visor", "botoes bloquados");
+    }
+
+    public void desbloquearBotoes() {
+        botoesBloqueados = false;
+        controlador.avisarSistema("Visor", "botoes desbloqueados");
+    }
+
     private void processarVoto() {
-        String voto = getNumeroDigitado();
+        String voto = getVotoInserido();
         dadosCandidato = controlador.buscarInfoCandidato(voto);
         if (dadosCandidato != null) {
             builder.adicionarInfosEntidade(dadosCandidato);
@@ -62,7 +85,7 @@ public class Visor extends JPanel {
         }
     }
 
-    public String getNumeroDigitado() {
+    public String getVotoInserido() {
         numeroDigitado = new StringBuilder();
         for (JTextField campo : camposNumero) {
             numeroDigitado.append(campo.getText());
@@ -70,13 +93,20 @@ public class Visor extends JPanel {
         return numeroDigitado.toString();
     }
 
-        public void apagarTextoCampos() {
+    public void limparCamposVoto() {
         tecladoBloqueado = false;
         botoesBloqueados = false;
-        controlador.avisarSistema("Visor", "teclado desbloqueado");
-        controlador.avisarSistema("Visor", "botoes desbloqueados");
+        desbloquearTeclado();
+        desbloquearBotoes();
         for (JTextField campo : camposNumero) campo.setText("");
         builder.removerInfosEntidade();
+    }
+
+    public boolean votosEstaVazio() {
+        for (JTextField campo : camposNumero) {
+            if (!campo.getText().isEmpty()) return false;
+        }
+        return true;
     }
 
     public void setController(ControllerUrna controlador) {

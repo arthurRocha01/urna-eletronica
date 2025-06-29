@@ -18,56 +18,65 @@ public class ControllerUrna {
     }
 
     public void executarAcao(String comando) {
-        if (comando.matches("\\d+") && !tela.visor.tecladoBloqueado) {
+        if (isInserindoVoto(comando)) {
             tela.visor.inserirDigito(comando);
-        } else if (!tela.visor.botoesBloqueados) {
-            if (comando.equals("CONFIRMA") && tela.visor.votoEstaCompleto()) {
-                tela.visor.botoesBloqueados = true;
-                avisarSistema("Visor:", "botoões bloqueados");
-            }
+        } else if (!tela.visor.botoesBloqueados || tela.visor.isVotandoBranco()) {
+            tela.visor.botoesBloqueados = isVotando(comando);
             processarComando(comando);
         }
     }
 
+    private boolean isInserindoVoto(String comando) {
+        return comando.matches("\\d+") && !tela.visor.tecladoBloqueado;
+    }
+
+    private boolean isVotando(String comando) {
+        if (comando.equals("CONFIRMA") && tela.visor.isVotoCompleto()) {
+            tela.visor.bloquearBotoes();
+            return true;
+        }
+        return false;
+    }
+
     private void processarComando(String comando) {
         switch (comando) {
-            case "CORRIGE" -> tela.visor.apagarTextoCampos();
+            case "CORRIGE" -> tela.visor.limparCamposVoto();
             case "CONFIRMA" -> confirmarVoto();
-            case "BRANCO" -> registrarVotoBranco();
+            case "BRANCO" -> tela.visor.builder.manipuladorTelaVotoBranco("mostrar");
             default -> {}
         }
     }
 
     private void confirmarVoto() {
-        String numero = tela.visor.getNumeroDigitado();
-        Document candidato = buscarCandidato(numero);
+        String voto = tela.visor.getVotoInserido();
+        Document candidato = buscarCandidato(voto);
+        tela.visor.botoesBloqueados = true;
         
-        if (tela.visor.votoEstaCompleto()) {
-            avisarSistema("Controller", "candidato votado");
-            registrarVoto(numero, candidato);
-            tela.visor.apagarTextoCampos();
-        }
+        if (tela.visor.isVotoCompleto()) registrarVoto(voto, candidato);
+        else if (tela.visor.isVotandoBranco()) registrarVotoBranco();
     }
 
     private void registrarVoto(String numero, Document candidato) {
-        if (votoValido(numero, candidato)) {
-            urna.registrarVoto(candidato.getString("nome"));
-            tela.visor.builder.exibirConfirmaVoto("votoCandidato");
-        } else {
-            registrarVotoBranco();
-        }
+        if (votoValido(numero, candidato)) registrarVotoCandidato(candidato);
+        else tela.visor.builder.manipuladorTelaVotoBranco("mostrar");
+        tela.visor.limparCamposVoto();
     }
 
     private boolean votoValido(String numero, Document candidato) {
         return !numero.equals("99999") && candidato != null;
     }
 
+    private void registrarVotoCandidato(Document candidato) {
+        urna.registrarVoto(candidato.getString("nome"));
+        tela.visor.builder.exibirConfirmaVoto();
+        avisarSistema("Controller", "candidato votado");
+    }
+
     private void registrarVotoBranco() {
-        if (tela.visor.votoEstaCompleto()) {
-            tela.visor.builder.exibirConfirmaVoto("votoBranco");
-            urna.registrarVoto("branco");
-            avisarSistema("Controller", "Voto branco ou inválido.");
-        }
+        urna.registrarVoto("branco");
+        avisarSistema("Controller", "Voto branco ou inválido.");
+        tela.visor.builder.manipuladorTelaVotoBranco("fechar");
+        tela.visor.builder.exibirConfirmaVoto();
     }
 
     public Document buscarCandidato(String numero) {

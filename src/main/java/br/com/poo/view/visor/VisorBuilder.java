@@ -12,8 +12,8 @@ public class VisorBuilder {
     private static final String CAMINHO_IMAGENS = "src/main/resources/images/";
 
     private final Visor visor;
-    private final TelaConfirmaCandidato telaConfirmaCandidato;
-    private final TelaVotoBranco telaConfirmaBranco;
+    public final TelaConfirmaCandidato telaConfirmaCandidato;
+    public final TelaVotoBranco telaConfirmaBranco;
 
     public VisorBuilder(Visor visor) {
         this.visor = visor;
@@ -132,22 +132,23 @@ public class VisorBuilder {
         adicionarComponente(label, ehInfo);
     }
 
-    public void exibirConfirmaVoto(String tela) {
-        if (tela.equals("votoCandidato")) {
-            telaConfirmaCandidato.exibirTela();
-            desbloquearVisorComDelay();
-        }
-
-        if (tela.equals("votoBranco")) {
-            telaConfirmaBranco.exibirTela();
-        }
+    public void exibirConfirmaVoto() {
+        telaConfirmaBranco.fechar();
+        telaConfirmaCandidato.exibirTela();
+        desbloquearVisorComDelay();
     }
+
+    public void manipuladorTelaVotoBranco(String acao) {
+        if (acao.equals("mostrar")) telaConfirmaBranco.exibir();
+        if (acao.equals("fechar")) telaConfirmaBranco.fechar();
+    }
+
 
     private void desbloquearVisorComDelay() {
         Timer timer = new Timer(3500, e -> {
             visor.tecladoBloqueado = false;
             visor.botoesBloqueados = false;
-            visor.controlador.avisarSistema("VisorBuilder", "botoes desbloqueados");
+            visor.desbloquearBotoes();
         });
         timer.setRepeats(false);
         timer.start();
