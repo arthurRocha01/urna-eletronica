@@ -1,90 +1,80 @@
 package br.com.poo.view.visor;
 
 import javax.swing.*;
-import javax.swing.border.LineBorder;
+import org.bson.Document;
 import java.awt.*;
+import java.util.List;
 
 public class TelaContabilidade extends JPanel {
 
-    private JLabel lblTitulo;
-    private JLabel lblPrimeiroTitulo;
-    private JLabel lblPrimeiroValor;
+    private final Visor visor;
 
-    private JLabel lblSegundoTitulo;
-    private JLabel lblSegundoValor;
-
-    private JLabel lblTerceiroTitulo;
-    private JLabel lblTerceiroValor;
-
-    private JLabel lblNulosTitulo;
-    private JLabel lblNulosValor;
-
-    private JPanel painelEstatisticas;
-
-    public Visor visor;
-    public VisorBuilder builder;
-
-    public TelaContabilidade(Visor visor, VisorBuilder builder) {
+    public TelaContabilidade(Visor visor) {
         this.visor = visor;
-        this.builder = builder;
     }
-    
-    public void exibir() {
+
+    public void exibir(List<Document> votos) {
+        prepararVisor();
+        configurarPainel();
+        exibirTitulo();
+        exibirVotos(votos);
+    }
+
+    private void prepararVisor() {
         visor.removeAll();
         visor.setLayout(new BorderLayout());
         visor.add(this, BorderLayout.CENTER);
         visor.revalidate();
         visor.repaint();
-
-        configurarTela();
-        montarInterface();
     }
 
-    private void configurarTela() {
+    private void configurarPainel() {
         setLayout(null);
         setBackground(Color.WHITE);
-        setOpaque(true);
         setPreferredSize(new Dimension(600, 400));
     }
 
-    private void montarInterface() {
-        lblTitulo = criarLabel("CONTABILIDADE DOS VOTOS", 22, new Rectangle(200, 10, 400, 30));
-
-        lblPrimeiroTitulo = criarLabel("1º Mais Votado:", 18, new Rectangle(50, 70, 200, 25));
-        lblPrimeiroValor = criarLabel("Nome - Partido - Votos", 16, new Rectangle(250, 70, 400, 25));
-
-        lblSegundoTitulo = criarLabel("2º Mais Votado:", 18, new Rectangle(50, 110, 200, 25));
-        lblSegundoValor = criarLabel("Nome - Partido - Votos", 16, new Rectangle(250, 110, 400, 25));
-
-        lblTerceiroTitulo = criarLabel("3º Mais Votado:", 18, new Rectangle(50, 150, 200, 25));
-        lblTerceiroValor = criarLabel("Nome - Partido - Votos", 16, new Rectangle(250, 150, 400, 25));
-
-        lblNulosTitulo = criarLabel("Votos Nulos:", 18, new Rectangle(50, 200, 200, 25));
-        lblNulosValor = criarLabel("Total: X votos", 16, new Rectangle(250, 200, 400, 25));
-
-        // criarPainelEstatisticas();
+    private void exibirTitulo() {
+        addLabel("CONTABILIDADE DOS VOTOS", 22, 200, 10, 400, 30);
     }
 
-    private JLabel criarLabel(String texto, int tamanhoFonte, Rectangle bounds) {
+    private void exibirVotos(List<Document> votos) {
+        int y = 70;
+        for (int i = 0; i < votos.size(); i++) {
+            Document doc = votos.get(i);
+            String nome = doc.getString("nome");
+
+            if ("branco".equals(nome)) {
+                exibirVotoBranco(doc);
+            } else {
+                exibirCandidato(doc, i, y);
+                y += 40;
+            }
+        }
+    }
+
+    private void exibirCandidato(Document doc, int index, int y) {
+        String nome = doc.getString("nome");
+        String partido = doc.getString("partido");
+        int votos = doc.getInteger("votos");
+        double porcentagem = doc.getDouble("porcentagem");
+
+        addLabel(String.format("%dº Mais Votado:", index + 1), 18, 50, y, 200, 25);
+        addLabel(String.format("%s - %s - %d votos - %.2f%%", nome, partido, votos, porcentagem), 16, 250, y, 400, 25);
+    }
+
+    private void exibirVotoBranco(Document doc) {
+        int votos = doc.getInteger("votos");
+        double porcentagem = doc.getDouble("porcentagem");
+
+        addLabel("Votos em Branco:", 18, 50, 200, 200, 25);
+        addLabel(String.format("Total: %d votos - %.2f%%", votos, porcentagem), 16, 250, 200, 400, 25);
+    }
+
+    private void addLabel(String texto, int tamanho, int x, int y, int largura, int altura) {
         JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
-        label.setBounds(bounds);
+        label.setFont(new Font("Arial", Font.PLAIN, tamanho));
+        label.setBounds(x, y, largura, altura);
         add(label);
-        return label;
-    }
-
-    private void criarPainelEstatisticas() {
-        painelEstatisticas = new JPanel();
-        painelEstatisticas.setLayout(new BorderLayout());
-        painelEstatisticas.setBackground(new Color(245, 245, 245));
-        painelEstatisticas.setBorder(new LineBorder(Color.GRAY, 1));
-        painelEstatisticas.setBounds(50, 250, 600, 120);
-
-        JLabel placeholder = new JLabel("Gráfico ou tabela pode ser exibido aqui");
-        placeholder.setHorizontalAlignment(SwingConstants.CENTER);
-        placeholder.setFont(new Font("Arial", Font.ITALIC, 14));
-        painelEstatisticas.add(placeholder, BorderLayout.CENTER);
-
-        add(painelEstatisticas);
     }
 }

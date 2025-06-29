@@ -1,5 +1,7 @@
 package br.com.poo.view.visor;
 
+import java.util.List;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import org.bson.Document;
@@ -29,7 +31,7 @@ public class VisorBuilder {
         this.visor = visor;
         this.telaConfirmaCandidato = new TelaConfirmaCandidato(visor, this);
         this.telaConfirmaBranco = new TelaVotoBranco(visor, this);
-        telaContabilidade = new TelaContabilidade(visor, this);
+        telaContabilidade = new TelaContabilidade(visor);
     }
 
     public void iniciarTela() {
@@ -159,8 +161,8 @@ public class VisorBuilder {
         painelFoto.setVisible(true);
     }
 
-    public void mostrarContabilidade() {
-        telaContabilidade.exibir();
+    public void mostrarContabilidade(List<Document> votosContabilizados) {
+        telaContabilidade.exibir(votosContabilizados);
     }
 
     public void exibirConfirmaVoto() {

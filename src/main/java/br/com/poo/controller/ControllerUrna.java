@@ -1,5 +1,7 @@
 package br.com.poo.controller;
 
+import java.util.List;
+
 import org.bson.Document;
 import br.com.poo.controller.database.ManipuladorDatabase;
 import br.com.poo.modelo.ModeloUrna;
@@ -81,8 +83,8 @@ public class ControllerUrna {
 
     private void finalizarVotacao() {
         avisarSistema("Controller(finalizar())", "exibir contabilidade");
-        tela.visor.builder.mostrarContabilidade();
-        urna.contabilizarVotos();
+        List<Document> votosContabilizados = urna.contabilizarVotos();
+        tela.visor.builder.mostrarContabilidade(votosContabilizados);
     }
 
     public Document buscarCandidato(String numero) {

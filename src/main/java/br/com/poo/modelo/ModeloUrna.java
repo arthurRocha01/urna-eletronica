@@ -8,10 +8,8 @@ import br.com.poo.controller.ControllerUrna;
 
 public class ModeloUrna {
     private List<Document> contabilidadeVotos = new ArrayList<>();
-    private ControllerUrna controller;
 
     public ModeloUrna(ControllerUrna controller) {
-        this.controller = controller;
         inicializarVotos(controller.buscarTodosCandidatos());
     }
 
