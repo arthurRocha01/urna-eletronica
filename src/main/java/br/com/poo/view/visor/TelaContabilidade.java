@@ -1,6 +1,7 @@
 package br.com.poo.view.visor;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import org.bson.Document;
 import java.awt.*;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 public class TelaContabilidade extends JPanel {
 
     private final Visor visor;
+    private static final String CAMINHO_IMAGENS = "src/main/resources/images/";
 
     public TelaContabilidade(Visor visor) {
         this.visor = visor;
@@ -16,8 +18,20 @@ public class TelaContabilidade extends JPanel {
     public void exibir(List<Document> votos) {
         prepararVisor();
         configurarPainel();
-        exibirTitulo();
-        exibirVotos(votos);
+        addTitulo();
+
+        int y = 60;
+        int posicao = 1;
+
+        for (Document doc : votos) {
+            String nome = doc.getString("nome");
+
+            if ("branco".equalsIgnoreCase(nome)) {
+                y = addVotoBranco(doc, y);
+            } else {
+                y = addCandidato(doc, posicao++, y);
+            }
+        }
     }
 
     private void prepararVisor() {
@@ -31,44 +45,53 @@ public class TelaContabilidade extends JPanel {
     private void configurarPainel() {
         setLayout(null);
         setBackground(Color.WHITE);
-        setPreferredSize(new Dimension(600, 400));
+        setPreferredSize(new Dimension(600, 800));
     }
 
-    private void exibirTitulo() {
-        addLabel("CONTABILIDADE DOS VOTOS", 22, 200, 10, 400, 30);
+    private void addTitulo() {
+        addLabel("CONTABILIDADE DOS VOTOS", 22, 180, 10, 400, 30);
     }
 
-    private void exibirVotos(List<Document> votos) {
-        int y = 70;
-        for (int i = 0; i < votos.size(); i++) {
-            Document doc = votos.get(i);
-            String nome = doc.getString("nome");
-
-            if ("branco".equals(nome)) {
-                exibirVotoBranco(doc);
-            } else {
-                exibirCandidato(doc, i, y);
-                y += 40;
-            }
-        }
-    }
-
-    private void exibirCandidato(Document doc, int index, int y) {
+    private int addCandidato(Document doc, int posicao, int y) {
         String nome = doc.getString("nome");
-        String partido = doc.getString("partido");
-        int votos = doc.getInteger("votos");
-        double porcentagem = doc.getDouble("porcentagem");
+        String partido = doc.getString("sigla");
+        int votos = doc.getInteger("votos", 0);
+        double porcentagem = doc.getDouble("porcentagem") != null ? doc.getDouble("porcentagem") : 0.0;
 
-        addLabel(String.format("%dº Mais Votado:", index + 1), 18, 50, y, 200, 25);
-        addLabel(String.format("%s - %s - %d votos - %.2f%%", nome, partido, votos, porcentagem), 16, 250, y, 400, 25);
+        addImagem(partido, nome, 30, y);
+        addLabel(posicao + "º Mais Votado:", 16, 110, y, 400, 25);
+        addLabel("Nome - " + nome, 16, 110, y + 25, 400, 20);
+        addLabel("Partido - " + partido, 16, 110, y + 45, 400, 20);
+        addLabel(String.format("Votos - %d (%.2f%%)", votos, porcentagem), 14, 110, y + 65, 400, 20);
+
+        return y + 110;
     }
 
-    private void exibirVotoBranco(Document doc) {
-        int votos = doc.getInteger("votos");
-        double porcentagem = doc.getDouble("porcentagem");
+    private int addVotoBranco(Document doc, int y) {
+        int votos = doc.getInteger("votos", 0);
+        double porcentagem = doc.getDouble("porcentagem") != null ? doc.getDouble("porcentagem") : 0.0;
 
-        addLabel("Votos em Branco:", 18, 50, 200, 200, 25);
-        addLabel(String.format("Total: %d votos - %.2f%%", votos, porcentagem), 16, 250, 200, 400, 25);
+        addLabel("Votos em Branco:", 18, 320, 130, 250, 25);
+        addLabel(String.format("Total: %d - %.2f%%", votos, porcentagem), 16, 340, 150, 300, 25);
+
+        return y + 60;
+    }
+
+    private void addImagem(String sigla, String nome, int x, int y) {
+        String caminho = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
+        JLabel imagem = new JLabel();
+        imagem.setBounds(x, y, 60, 60);
+        imagem.setBorder(new LineBorder(Color.BLACK, 1));
+
+        try {
+            ImageIcon icon = new ImageIcon(caminho);
+            Image imgRedimensionada = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+            imagem.setIcon(new ImageIcon(imgRedimensionada));
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar imagem: " + caminho);
+        }
+
+        add(imagem);
     }
 
     private void addLabel(String texto, int tamanho, int x, int y, int largura, int altura) {

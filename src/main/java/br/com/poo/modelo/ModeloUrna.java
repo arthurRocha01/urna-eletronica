@@ -8,18 +8,24 @@ import br.com.poo.controller.ControllerUrna;
 
 public class ModeloUrna {
     private List<Document> contabilidadeVotos = new ArrayList<>();
+    ControllerUrna controller;
 
     public ModeloUrna(ControllerUrna controller) {
+        this.controller = controller;
         inicializarVotos(controller.buscarTodosCandidatos());
     }
 
     private void inicializarVotos(Document[] candidatos) {
-        Arrays.stream(candidatos)
-            .map(c -> c.getString("nome"))
-            .forEach(nome -> contabilidadeVotos.add(new Document("nome", nome).append("votos", 0)));
-
-        contabilidadeVotos.add(new Document("nome", "branco").append("votos", 0));
-    }
+    Arrays.stream(candidatos)
+        .forEach(c -> {
+            String nome = c.getString("nome");
+            String partido = controller.buscarPartido(c.getString("numero").substring(0, 2)).getString("sigla");
+            contabilidadeVotos.add(new Document("nome", nome)
+                                    .append("sigla", partido)
+                                    .append("votos", 0));
+        });
+    contabilidadeVotos.add(new Document("nome", "branco").append("votos", 0));
+}
 
     public void registrarVoto(String nome) {
         for (Document candidato : contabilidadeVotos) {
@@ -40,9 +46,10 @@ public class ModeloUrna {
 
         for (Document doc : votosContabilizados) {
             String nome = doc.getString("nome");
+            String partido = doc.getString("sigla");
             int votos = doc.getInteger("votos");
             double porcentagem = doc.getDouble("porcentagem");
-            System.out.printf("Candidato: %s - Votos: %d - Porcentagem: %.2f%%\n", nome, votos, porcentagem);
+            System.out.printf("Candidato: %s - Partido: %s - Votos: %d - Porcentagem: %.2f%%\n", nome, partido, votos, porcentagem);
         }
 
         return votosContabilizados;
