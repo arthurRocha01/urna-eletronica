@@ -161,6 +161,10 @@ public class VisorBuilder {
         painelFoto.setVisible(true);
     }
 
+    public void exibirTelaVoto() {
+        telaContabilidade.fechar();
+    }
+
     public void mostrarContabilidade(List<Document> votosContabilizados) {
         telaContabilidade.exibir(votosContabilizados);
     }

@@ -22,7 +22,7 @@ public class ControllerUrna {
     public void executarAcao(String comando) {
         if (isInserindoVoto(comando)) {
             tela.visor.inserirDigito(comando);
-        } else if (!tela.visor.botoesBloqueados || tela.visor.isVotandoBranco()) {
+        } else if (!tela.visor.botoesBloqueados || tela.visor.isVotandoBranco() || tela.visor.isFinalizado()) {
             if (isVotando(comando)) tela.visor.bloquearBotoes();
             processarComando(comando);
         }
@@ -53,7 +53,8 @@ public class ControllerUrna {
         String voto = tela.visor.getVotoInserido();
         Document candidato = buscarCandidato(voto);
         
-        if (voto.equals("99999")) finalizarVotacao();
+        if (tela.visor.isFinalizado()) tela.visor.builder.exibirTelaVoto();
+        else if (voto.equals("99999")) finalizarVotacao();
         else if (tela.visor.isVotoCompleto()) registrarVoto(voto, candidato);
         else if (tela.visor.isVotandoBranco()) registrarVotoBranco();
     }

@@ -100,4 +100,11 @@ public class TelaContabilidade extends JPanel {
         label.setBounds(x, y, largura, altura);
         add(label);
     }
+
+    public void fechar() {
+        visor.remove(this);
+        visor.builder.iniciarTela();
+        visor.revalidate();
+        visor.repaint();
+    }
 }

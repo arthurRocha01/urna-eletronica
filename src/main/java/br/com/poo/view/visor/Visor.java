@@ -82,6 +82,10 @@ public class Visor extends JPanel {
         return builder.telaConfirmaBranco.isShowing();
     }
 
+    public boolean isFinalizado() {
+        return builder.telaContabilidade.isShowing();
+    }
+
     public void limparCamposVoto() {
         desbloquearTeclado();
         desbloquearBotoes();
