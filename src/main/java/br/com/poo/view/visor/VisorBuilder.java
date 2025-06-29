@@ -13,6 +13,7 @@ public class VisorBuilder {
     private final Visor visor;
     public final TelaConfirmaCandidato telaConfirmaCandidato;
     public final TelaVotoBranco telaConfirmaBranco;
+    public final TelaContabilidade telaContabilidade;
 
     private JLabel lblNumero;
     private JLabel lblNomeTitulo;
@@ -28,6 +29,7 @@ public class VisorBuilder {
         this.visor = visor;
         this.telaConfirmaCandidato = new TelaConfirmaCandidato(visor, this);
         this.telaConfirmaBranco = new TelaVotoBranco(visor, this);
+        telaContabilidade = new TelaContabilidade(visor, this);
     }
 
     public void iniciarTela() {
@@ -155,6 +157,10 @@ public class VisorBuilder {
             painelFoto.getWidth(), painelFoto.getHeight(), Image.SCALE_SMOOTH);
         lblFoto.setIcon(new ImageIcon(imagem));
         painelFoto.setVisible(true);
+    }
+
+    public void mostrarContabilidade() {
+        telaContabilidade.exibir();
     }
 
     public void exibirConfirmaVoto() {

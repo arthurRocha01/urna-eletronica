@@ -51,7 +51,8 @@ public class ControllerUrna {
         String voto = tela.visor.getVotoInserido();
         Document candidato = buscarCandidato(voto);
         
-        if (tela.visor.isVotoCompleto()) registrarVoto(voto, candidato);
+        if (voto.equals("99999")) finalizarVotacao();
+        else if (tela.visor.isVotoCompleto()) registrarVoto(voto, candidato);
         else if (tela.visor.isVotandoBranco()) registrarVotoBranco();
     }
 
@@ -76,6 +77,11 @@ public class ControllerUrna {
         avisarSistema("Controller", "Voto branco ou inválido.");
         tela.visor.builder.manipuladorTelaVotoBranco("fechar");
         tela.visor.builder.exibirConfirmaVoto();
+    }
+
+    private void finalizarVotacao() {
+        avisarSistema("Controller(finalizar())", "exibir contabilidade");
+        tela.visor.builder.mostrarContabilidade();
     }
 
     public Document buscarCandidato(String numero) {
