@@ -82,6 +82,7 @@ public class ControllerUrna {
     private void finalizarVotacao() {
         avisarSistema("Controller(finalizar())", "exibir contabilidade");
         tela.visor.builder.mostrarContabilidade();
+        urna.contabilizarVotos();
     }
 
     public Document buscarCandidato(String numero) {
