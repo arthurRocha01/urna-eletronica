@@ -15,7 +15,6 @@ public class Visor extends JPanel {
     public ControllerUrna controlador;
 
     public StringBuilder numeroDigitado;
-    public Document[] dadosCandidato;
     public JTextField[] camposNumero = new JTextField[5];
 
     public List<JComponent> componentesFixos = new ArrayList<>();
@@ -39,9 +38,31 @@ public class Visor extends JPanel {
             }
         }
 
-        if (isVotoCompleto()) {
-            processarVoto();
+        processarVoto();
+    }
+
+    private void processarVoto() {
+        String voto = getVotoInserido();
+        System.out.println(voto);
+        
+        if (voto.length() == 2) {
+            Document partido = controlador.buscarPartido(voto);
+            System.out.println(partido);
+            if (partido != null) builder.mostrarInformacoesPartido(partido);
         }
+        else if (voto.length() == 5) {
+            Document candidato = controlador.buscarCandidato(voto);
+            System.out.println(candidato);
+            if (candidato != null) builder.mostrarInformacoesCandidato(candidato);
+        }
+    }
+
+    public String getVotoInserido() {
+        numeroDigitado = new StringBuilder();
+        for (JTextField campo : camposNumero) {
+            numeroDigitado.append(campo.getText());
+        }
+        return numeroDigitado.toString();
     }
 
     public boolean isVotoCompleto() {
@@ -52,13 +73,20 @@ public class Visor extends JPanel {
         return true;
     }
 
-    public boolean isVotandoBranco() {
-        return builder.telaConfirmaBranco.isShowing();
-    }
-    
     public void bloquarTeclado() {
         tecladoBloqueado = true;
         controlador.avisarSistema("Visor", "teclado bloquado");
+    }
+
+    public boolean isVotandoBranco() {
+        return builder.telaConfirmaBranco.isShowing();
+    }
+
+    public void limparCamposVoto() {
+        desbloquearTeclado();
+        desbloquearBotoes();
+        for (JTextField campo : camposNumero) campo.setText("");
+        builder.limparInformacoesCandidato();
     }
 
     public void desbloquearTeclado() {
@@ -74,32 +102,6 @@ public class Visor extends JPanel {
     public void desbloquearBotoes() {
         botoesBloqueados = false;
         controlador.avisarSistema("Visor", "botoes desbloqueados");
-    }
-
-    private void processarVoto() {
-        String voto = getVotoInserido();
-        dadosCandidato = controlador.buscarInfoCandidato(voto);
-        if (dadosCandidato != null) {
-            builder.adicionarInfosEntidade(dadosCandidato);
-            controlador.avisarSistema("Visor", "informações do candidato adcionadas");
-        }
-    }
-
-    public String getVotoInserido() {
-        numeroDigitado = new StringBuilder();
-        for (JTextField campo : camposNumero) {
-            numeroDigitado.append(campo.getText());
-        }
-        return numeroDigitado.toString();
-    }
-
-    public void limparCamposVoto() {
-        tecladoBloqueado = false;
-        botoesBloqueados = false;
-        desbloquearTeclado();
-        desbloquearBotoes();
-        for (JTextField campo : camposNumero) campo.setText("");
-        builder.removerInfosEntidade();
     }
 
     public boolean votosEstaVazio() {

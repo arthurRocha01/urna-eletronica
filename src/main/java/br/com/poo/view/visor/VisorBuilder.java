@@ -3,7 +3,6 @@ package br.com.poo.view.visor;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import org.bson.Document;
-
 import java.awt.*;
 import java.awt.event.*;
 
@@ -14,6 +13,16 @@ public class VisorBuilder {
     private final Visor visor;
     public final TelaConfirmaCandidato telaConfirmaCandidato;
     public final TelaVotoBranco telaConfirmaBranco;
+
+    private JLabel lblNumero;
+    private JLabel lblNomeTitulo;
+    private JLabel lblNomeValor;
+    private JLabel lblPartidoTitulo;
+    private JLabel lblPartidoValor;
+    private JLabel lblInstrucao;
+    private JLabel lblFotoTitulo;
+    private JLabel lblFoto;
+    private JPanel painelFoto;
 
     public VisorBuilder(Visor visor) {
         this.visor = visor;
@@ -40,9 +49,32 @@ public class VisorBuilder {
     }
 
     private void montarInterface() {
-        adicionarLabel("SEU VOTO PARA:", 17, new Rectangle(20, 10, 300, 20), false);
-        adicionarLabel("Governador", 22, new Rectangle(300, 45, 300, 30), false);
+        adicionarLabel("SEU VOTO PARA:", 17, new Rectangle(20, 10, 300, 20));
+        adicionarLabel("Governador", 22, new Rectangle(300, 45, 300, 30));
         adicionarCamposNumericos(5);
+
+        lblNumero = criarLabel("", 18, new Rectangle(25, 95, 300, 20));
+        lblNomeTitulo = criarLabel("", 16, new Rectangle(20, 190, 100, 20));
+        lblNomeValor = criarLabel("", 16, new Rectangle(120, 190, 200, 20));
+        lblPartidoTitulo = criarLabel("", 16, new Rectangle(20, 220, 100, 20));
+        lblPartidoValor = criarLabel("", 16, new Rectangle(120, 220, 200, 20));
+        lblInstrucao = criarLabel("", 15, new Rectangle(20, 285, 500, 100));
+        lblInstrucao.setVerticalAlignment(SwingConstants.TOP);
+        lblFotoTitulo = criarLabel("", 12, new Rectangle(585, 190, 100, 20));
+
+        criarPainelFoto();
+    }
+
+    private void criarPainelFoto() {
+        lblFoto = new JLabel();
+        painelFoto = new JPanel(new BorderLayout());
+        painelFoto.setBackground(new Color(230, 230, 230));
+        painelFoto.setBorder(new LineBorder(Color.BLACK, 1));
+        painelFoto.setBounds(570, 85, 100, 100);
+        painelFoto.add(lblFoto, BorderLayout.CENTER);
+
+        visor.add(painelFoto);
+        painelFoto.setVisible(false);
     }
 
     private void adicionarCamposNumericos(int quantidade) {
@@ -65,71 +97,64 @@ public class VisorBuilder {
             painel.add(campo);
         }
 
-        adicionarComponente(painel, false);
+        visor.add(painel);
     }
 
-    public void adicionarInfosEntidade(Document[] dados) {
-        removerInfosEntidade();
-
-        Document candidato = dados[0];
-        Document partido = dados[1];
-
-        String nome = candidato.getString("nome");
-        String sigla = partido.getString("sigla");
-
-        adicionarLabel("Número:", 18, new Rectangle(25, 95, 300, 20), true);
-        adicionarLabelInfo("Nome:", nome, new Rectangle(20, 190, 300, 20));
-        adicionarLabelInfo("Partido:", sigla, new Rectangle(20, 220, 300, 20));
-        adicionarFoto(sigla, nome, new Rectangle(570, 85, 100, 100));
-        adicionarLabel(
-            "<html><div style='letter-spacing:1.5px;'><hr style='border:1px solid black;'><br><br>"
-            + "<div>Aperte a tecla:</div><div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
-            + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>",
-            15,
-            new Rectangle(20, 285, 500, 100),
-            true
-        );
-
-        visor.revalidate();
-        visor.repaint();
-    }
-
-    public void removerInfosEntidade() {
-        visor.componentesDinamicos.forEach(visor::remove);
-        visor.componentesDinamicos.clear();
-        visor.controlador.avisarSistema("VisorBuilder", "informações do candidato removidas");
-
-        visor.revalidate();
-        visor.repaint();
-    }
-
-    private void adicionarLabelInfo(String titulo, String valor, Rectangle bounds) {
-        adicionarLabel(titulo, 16, bounds, true);
-        Rectangle boundsValor = new Rectangle(bounds.x + 100, bounds.y, 200, bounds.height);
-        adicionarLabel(valor, 16, boundsValor, true);
-    }
-
-    private void adicionarFoto(String sigla, String nome, Rectangle bounds) {
-        String caminho = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
-        Image imagemEscalada = new ImageIcon(caminho).getImage()
-                .getScaledInstance(bounds.width, bounds.height, Image.SCALE_SMOOTH);
-        JLabel labelImagem = new JLabel(new ImageIcon(imagemEscalada), JLabel.CENTER);
-
-        JPanel painelFoto = new JPanel(new BorderLayout());
-        painelFoto.setBackground(new Color(230, 230, 230));
-        painelFoto.setBorder(new LineBorder(Color.BLACK, 1));
-        painelFoto.setBounds(bounds);
-        painelFoto.add(labelImagem, BorderLayout.CENTER);
-
-        adicionarLabel("Governador", 12, new Rectangle(585, 190, 100, 20), true);
-        adicionarComponente(painelFoto, true);
-    }
-
-    private void adicionarLabel(String texto, int tamanhoFonte, Rectangle bounds, boolean ehInfo) {
+    private JLabel criarLabel(String texto, int tamanhoFonte, Rectangle bounds) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
         label.setBounds(bounds);
-        adicionarComponente(label, ehInfo);
+        visor.add(label);
+        return label;
+    }
+
+    private void adicionarLabel(String texto, int tamanhoFonte, Rectangle bounds) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
+        label.setBounds(bounds);
+        visor.add(label);
+    }
+
+    public void mostrarInformacoesPartido(Document partido) {
+        String sigla = partido.getString("sigla");
+
+        lblNumero.setText("Número:");
+        lblPartidoTitulo.setText("Partido");
+        lblPartidoValor.setText(sigla);
+
+        lblInstrucao.setText("<html><div style='letter-spacing:1.5px;'>"
+            + "<hr style='border:1px solid black;'><br><br>"
+            + "<div>Aperte a tecla:</div><div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
+            + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>");
+    }
+
+    public void mostrarInformacoesCandidato(Document candidato) {
+        String nome = candidato.getString("nome");
+
+        lblNomeTitulo.setText("Nome:");
+        lblNomeValor.setText(nome);
+
+        atualizarFoto(lblPartidoValor.getText(), nome);
+        lblFotoTitulo.setText("Governante");
+    }
+
+    public void limparInformacoesCandidato() {
+        lblNomeTitulo.setText("");
+        lblNomeValor.setText("");
+
+        lblPartidoTitulo.setText("");
+        lblPartidoValor.setText("");
+
+        lblInstrucao.setText("");
+        lblFoto.setVisible(false);
+    }
+
+    private void atualizarFoto(String sigla, String nome) {
+        String caminho = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
+        Image imagem = new ImageIcon(caminho).getImage().getScaledInstance(
+            painelFoto.getWidth(), painelFoto.getHeight(), Image.SCALE_SMOOTH);
+        lblFoto.setIcon(new ImageIcon(imagem));
+        painelFoto.setVisible(true);
     }
 
     public void exibirConfirmaVoto() {
@@ -143,7 +168,6 @@ public class VisorBuilder {
         if (acao.equals("fechar")) telaConfirmaBranco.fechar();
     }
 
-
     private void desbloquearVisorComDelay() {
         Timer timer = new Timer(3500, e -> {
             visor.tecladoBloqueado = false;
@@ -154,17 +178,16 @@ public class VisorBuilder {
         timer.start();
     }
 
-    private void adicionarComponente(JComponent componente, boolean ehInfo) {
-        (ehInfo ? visor.componentesDinamicos : visor.componentesFixos).add(componente);
-        visor.add(componente);
-    }
-
     private void redimensionarComponentes() {
         double escalaX = visor.getWidth() / (double) visor.LARGURA;
         double escalaY = visor.getHeight() / (double) visor.ALTURA;
 
-        visor.componentesFixos.forEach(c -> redimensionarComponente(c, escalaX, escalaY));
-        visor.componentesDinamicos.forEach(c -> redimensionarComponente(c, escalaX, escalaY));
+        for (Component comp : visor.getComponents()) {
+            if (comp instanceof JComponent) {
+                redimensionarComponente((JComponent) comp, escalaX, escalaY);
+            }
+        }
+
         visor.repaint();
     }
 
@@ -176,7 +199,6 @@ public class VisorBuilder {
             (int)(b.width * escalaX),
             (int)(b.height * escalaY)
         );
-
         Font fonte = componente.getFont();
         if (fonte != null) {
             componente.setFont(fonte.deriveFont((float)(fonte.getSize2D() * Math.min(escalaX, escalaY))));

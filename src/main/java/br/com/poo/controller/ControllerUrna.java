@@ -21,7 +21,7 @@ public class ControllerUrna {
         if (isInserindoVoto(comando)) {
             tela.visor.inserirDigito(comando);
         } else if (!tela.visor.botoesBloqueados || tela.visor.isVotandoBranco()) {
-            tela.visor.botoesBloqueados = isVotando(comando);
+            if (isVotando(comando)) tela.visor.bloquearBotoes();
             processarComando(comando);
         }
     }
@@ -50,7 +50,6 @@ public class ControllerUrna {
     private void confirmarVoto() {
         String voto = tela.visor.getVotoInserido();
         Document candidato = buscarCandidato(voto);
-        tela.visor.botoesBloqueados = true;
         
         if (tela.visor.isVotoCompleto()) registrarVoto(voto, candidato);
         else if (tela.visor.isVotandoBranco()) registrarVotoBranco();
@@ -80,15 +79,13 @@ public class ControllerUrna {
     }
 
     public Document buscarCandidato(String numero) {
+        avisarSistema("Controller(buscarCandidato())", numero);
         return banco.getCandidato(numero);
     }
 
-    public Document buscarPartido(String sigla) {
-        return banco.getPartido(sigla);
-    }
-
-    public Document[] buscarInfoCandidato(String numero) {
-        return banco.getInfoCandidato(numero);
+    public Document buscarPartido(String numero) {
+        avisarSistema("Controller(buscarPartido())", numero);
+        return banco.getPartido(numero);
     }
 
     public Document[] buscarColecao(String nomeColecao) {

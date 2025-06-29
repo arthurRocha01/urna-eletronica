@@ -35,14 +35,15 @@ public class ManipuladorDatabase {
             partidos = database.getCollection("partidos");
             candidatos = database.getCollection("candidatos");
             controller.avisarSistema("ManipuladorDatabase", "conexão feita com sucesso - " + DATABASE_NAME);
+            // fecharConexao();
         } catch (Exception e) {
             controller.avisarSistema("ManipuladorDatabase", "Erro na conexão com MongoDB:");
             e.printStackTrace();
         }
     }
 
-    public Document getPartido(String sigla) {
-        return partidos.find(eq("sigla", sigla)).first();
+    public Document getPartido(String numero) {
+        return partidos.find(eq("numero", numero)).first();
     }
 
     public Document getCandidato(String numero) {
@@ -61,19 +62,6 @@ public class ManipuladorDatabase {
         };
 
         return colecao != null ? toArray(colecao.find()) : new Document[0];
-    }
-
-    public Document[] getInfoCandidato(String numero) {
-        Document candidato = getCandidato(numero);
-        if (candidato == null) {
-            controller.avisarSistema("ManipuladorDatabase", "Candidato não encontrado");
-            return null;
-        }
-
-        ObjectId partidoId = candidato.getObjectId("partido_id");
-        Document partido = partidos.find(eq("_id", partidoId)).first();
-
-        return new Document[] { candidato, partido };
     }
 
     public Document[] getCandidatosPartido(Document partido) {
