@@ -1,11 +1,30 @@
 package br.com.poo.view.legenda;
 
-import javax.swing.*;
-import javax.swing.border.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.LayoutManager;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
+
 import org.bson.Document;
+
 import br.com.poo.controller.ControllerUrna;
-import java.awt.*;
-import java.awt.event.*;
 
 public class Legenda extends JPanel {
 
@@ -90,8 +109,6 @@ public class Legenda extends JPanel {
         painelPrincipal.repaint();
     }
 
-    // === PAINÉIS ===
-
     private JPanel criarPainelPartido(Document partido) {
         JPanel painel = criarPainelVertical(corPartido);
         painel.addMouseListener(new MouseAdapter() {
@@ -128,8 +145,6 @@ public class Legenda extends JPanel {
         topo.add(criarLabel("Nº " + partido.getString("numero"), Font.PLAIN, 13, false));
         return topo;
     }
-
-    // === UTILITÁRIOS ===
 
     private JPanel criarPainelVertical(Color corFundo) {
         JPanel painel = new JPanel();

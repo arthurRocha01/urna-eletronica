@@ -1,9 +1,17 @@
 package br.com.poo.view.visor;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
 
 public class TelaVotoBranco extends JPanel {
 
@@ -51,7 +59,7 @@ public class TelaVotoBranco extends JPanel {
         add(labelRelogio);
     }
 
-    public void exibir() {
+    public void mostrar() {
         visor.removeAll();
         visor.setLayout(new BorderLayout());
         visor.add(this, BorderLayout.CENTER);

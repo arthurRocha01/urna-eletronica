@@ -1,10 +1,20 @@
 package br.com.poo.view.visor;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.AbstractAction;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
+
 
 public class TelaConfirmaCandidato extends JPanel {
 
@@ -72,7 +82,7 @@ public class TelaConfirmaCandidato extends JPanel {
         timerRelogio.start();
     }
 
-    public void exibirTela() {
+    public void mostrar() {
         visor.removeAll();
         visor.setLayout(new BorderLayout());
         visor.add(this, BorderLayout.CENTER);

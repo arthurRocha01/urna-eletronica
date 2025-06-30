@@ -1,10 +1,19 @@
 package br.com.poo.view.visor;
 
-import javax.swing.*;
-import javax.swing.border.LineBorder;
-import org.bson.Document;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+
 import java.util.List;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
+
+import org.bson.Document;
 
 public class TelaContabilidade extends JPanel {
 

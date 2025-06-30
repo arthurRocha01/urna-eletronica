@@ -1,7 +1,13 @@
 package br.com.poo.view;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import br.com.poo.controller.ControllerUrna;
 import br.com.poo.view.legenda.Legenda;

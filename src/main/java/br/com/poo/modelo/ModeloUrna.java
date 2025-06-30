@@ -1,9 +1,11 @@
 package br.com.poo.modelo;
 
-import org.bson.Document;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.bson.Document;
+
 import br.com.poo.controller.ControllerUrna;
 
 public class ModeloUrna {

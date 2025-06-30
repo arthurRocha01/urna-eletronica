@@ -1,9 +1,14 @@
 package br.com.poo.view.visor;
 
-import javax.swing.*;
-import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.bson.Document;
+
 import br.com.poo.controller.ControllerUrna;
 
 public class Visor extends JPanel {

@@ -1,16 +1,18 @@
 package br.com.poo.controller.database;
 
-import org.bson.Document;
-import org.bson.types.ObjectId;
-
-import com.mongodb.client.*;
-
-import br.com.poo.controller.ControllerUrna;
-
-import static com.mongodb.client.model.Filters.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.mongodb.client.model.Filters.eq;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoClient;
+import org.bson.types.ObjectId;
+import org.bson.Document;
+
+import br.com.poo.controller.ControllerUrna;
 
 public class ManipuladorDatabase {
     private static final String URI_DATABASE = "mongodb+srv://user1234:senha1234@urna-eletronica.qiefb7e.mongodb.net/?retryWrites=true&w=majority&appName=urna-eletronica";

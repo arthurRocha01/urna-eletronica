@@ -1,10 +1,19 @@
 package br.com.poo.view.teclado;
 
-import br.com.poo.controller.ControllerUrna;
-
-import javax.swing.*;
-import java.awt.*;
 import java.util.List;
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Font;
+
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingConstants;
+
+import br.com.poo.controller.ControllerUrna;
 
 public class Teclado extends JPanel {
 
@@ -55,7 +64,6 @@ public class Teclado extends JPanel {
             }
         }
 
-        // Botão 0 centralizado abaixo dos outros
         criarBotaoNumerico("0", xInicial + largura + padding, y, largura, altura);
     }
 

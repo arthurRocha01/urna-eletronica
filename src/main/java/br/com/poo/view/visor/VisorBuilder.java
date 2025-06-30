@@ -1,12 +1,28 @@
 package br.com.poo.view.visor;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.Rectangle;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.border.LineBorder;
+
 import org.bson.Document;
-import java.awt.*;
-import java.awt.event.*;
 
 public class VisorBuilder {
 
@@ -171,12 +187,12 @@ public class VisorBuilder {
 
     public void exibirConfirmaVoto() {
         telaConfirmaBranco.fechar();
-        telaConfirmaCandidato.exibirTela();
+        telaConfirmaCandidato.mostrar();
         desbloquearVisorComDelay();
     }
 
     public void manipuladorTelaVotoBranco(String acao) {
-        if (acao.equals("mostrar")) telaConfirmaBranco.exibir();
+        if (acao.equals("mostrar")) telaConfirmaBranco.mostrar();
         if (acao.equals("fechar")) telaConfirmaBranco.fechar();
     }
 
