@@ -3,13 +3,11 @@ package br.com.poo.controller.database;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.eq;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
-import org.bson.types.ObjectId;
 import org.bson.Document;
 
 import br.com.poo.controller.ControllerUrna;
@@ -34,8 +32,11 @@ public class ManipuladorDatabase {
     private MongoDatabase database;
     private ControllerUrna controller;
 
-    private MongoCollection<Document> partidos;
-    private MongoCollection<Document> candidatos;
+    private MongoCollection<Document> colecaoPartido;
+    private MongoCollection<Document> colecaoCandidato;
+    
+    private List<Document> partidos;
+    private List<Document> candidatos;
 
     /**
      * Construtor da classe. Estabelece conexão com o banco de dados e inicializa as coleções.
@@ -44,23 +45,27 @@ public class ManipuladorDatabase {
      */
     public ManipuladorDatabase(ControllerUrna controller) {
         this.controller = controller;
-        conectar();
     }
 
     /**
      * Realiza a conexão com o banco de dados MongoDB e inicializa as coleções de partidos e candidatos.
      */
-    private void conectar() {
+    public void conectar() {
         try {
             mongoClient = MongoClients.create(URI_DATABASE);
             database = mongoClient.getDatabase(DATABASE_NAME);
-            partidos = database.getCollection("partidos");
-            candidatos = database.getCollection("candidatos");
+            colecaoPartido = database.getCollection("partidos");
+            colecaoCandidato = database.getCollection("candidatos");
             controller.avisarSistema("ManipuladorDatabase", "conexão feita com sucesso - " + DATABASE_NAME);
         } catch (Exception e) {
             controller.avisarSistema("ManipuladorDatabase", "Erro na conexão com MongoDB:");
             e.printStackTrace();
         }
+    }
+    
+    public void carregarDados() {
+        partidos = colecaoPartido.find().into(new ArrayList<>());
+        candidatos = colecaoCandidato.find().into(new ArrayList<>());
     }
 
     /**
@@ -70,7 +75,11 @@ public class ManipuladorDatabase {
      * @return documento do partido encontrado, ou {@code null} se não existir
      */
     public Document getPartido(String numero) {
-        return partidos.find(eq("numero", numero)).first();
+//        return partidos.find(eq("numero", numero)).first();
+        for (Document partido : partidos) {
+            if (partido.getString("numero").equals(numero)) return partido;
+        }
+        return null;
     }
 
     /**
@@ -80,7 +89,11 @@ public class ManipuladorDatabase {
      * @return documento do candidato encontrado, ou {@code null} se não existir
      */
     public Document getCandidato(String numero) {
-        return candidatos.find(eq("numero", numero)).first();
+//        return candidatos.find(eq("numero", numero)).first();
+        for (Document candidato : candidatos) {
+            if (candidato.getString("numero").equals(numero));
+        }
+        return null;
     }
 
     /**
@@ -89,7 +102,8 @@ public class ManipuladorDatabase {
      * @return array de documentos representando todos os candidatos
      */
     public Document[] getTodosCandidatos() {
-        return toArray(candidatos.find());
+//        return toArray(candidatos.find());
+        return candidatos.toArray(new Document[0]);
     }
 
     /**
@@ -99,13 +113,20 @@ public class ManipuladorDatabase {
      * @return array de documentos da coleção, ou array vazio se o nome for inválido
      */
     public Document[] getColecao(String nome) {
-        MongoCollection<Document> colecao = switch (nome) {
-            case "partidos" -> partidos;
-            case "candidatos" -> candidatos;
+//        MongoCollection<Document> colecao = switch (nome) {
+//            case "partidos" -> partidos;
+//            case "candidatos" -> candidatos;
+//            default -> null;
+//        };
+//
+//        return colecao != null ? toArray(colecao.find()) : new Document[0];
+        List<Document> colecao = switch (nome) {
+            case "partido" -> partidos;
+            case "candidato" -> candidatos;
             default -> null;
         };
-
-        return colecao != null ? toArray(colecao.find()) : new Document[0];
+                
+        return colecao != null ? colecao.toArray(new Document[0]) : new Document[0];
     }
 
     /**
@@ -115,8 +136,15 @@ public class ManipuladorDatabase {
      * @return array de documentos dos candidatos pertencentes ao partido
      */
     public Document[] getCandidatosPartido(Document partido) {
-        ObjectId id = partido.getObjectId("_id");
-        return toArray(candidatos.find(eq("partido_id", id)));
+//        ObjectId id = partido.getObjectId("_id");
+//        return toArray(candidatos.find(eq("partido_id", id)));
+        List<Document> candidatosFiltrados = new ArrayList<>();
+        String idPartido = partido.getString("id");
+        for (Document candidato : candidatos) {
+            if (candidato.getString("partido_id").equals(idPartido)) candidatosFiltrados.add(partido);
+        }
+        
+        return candidatosFiltrados.toArray(new Document[0]);
     }
 
     /**
