@@ -91,7 +91,7 @@ public class ManipuladorDatabase {
     public Document getCandidato(String numero) {
 //        return candidatos.find(eq("numero", numero)).first();
         for (Document candidato : candidatos) {
-            if (candidato.getString("numero").equals(numero));
+            if (candidato.getString("numero").equals(numero)) return candidato;
         }
         return null;
     }
@@ -121,8 +121,8 @@ public class ManipuladorDatabase {
 //
 //        return colecao != null ? toArray(colecao.find()) : new Document[0];
         List<Document> colecao = switch (nome) {
-            case "partido" -> partidos;
-            case "candidato" -> candidatos;
+            case "partidos" -> partidos;
+            case "candidatos" -> candidatos;
             default -> null;
         };
                 

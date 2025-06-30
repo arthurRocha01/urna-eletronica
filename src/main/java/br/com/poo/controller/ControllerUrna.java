@@ -33,7 +33,14 @@ public class ControllerUrna {
     public ControllerUrna(TelaPrincipal tela) {
         this.tela = tela;
         this.banco = new ManipuladorDatabase(this);
+        iniciarDatabase();
         this.urna = new ModeloUrna(this);
+    }
+    
+    private void iniciarDatabase() {
+        banco.conectar();
+        banco.carregarDados();
+//        banco.fecharConexao();
     }
 
     /**
