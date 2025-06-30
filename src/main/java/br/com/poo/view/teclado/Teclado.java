@@ -21,9 +21,7 @@ public class Teclado extends JPanel {
 
     public Teclado() {
         configurarLayout();
-        adicionarCabecalho();
-        adicionarBotoesNumericos();
-        adicionarBotoesFuncionais();
+        construirComponentes();
     }
 
     private void configurarLayout() {
@@ -31,6 +29,12 @@ public class Teclado extends JPanel {
         setBackground(new Color(30, 30, 30));
         setPreferredSize(new Dimension(400, 600));
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 10, true));
+    }
+
+    private void construirComponentes() {
+        adicionarCabecalho();
+        adicionarBotoesNumericos();
+        adicionarBotoesFuncionais();
     }
 
     private void adicionarCabecalho() {

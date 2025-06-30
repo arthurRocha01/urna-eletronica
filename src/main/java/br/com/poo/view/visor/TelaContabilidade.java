@@ -17,7 +17,7 @@ import org.bson.Document;
 
 public class TelaContabilidade extends JPanel {
 
-    private final Visor visor;
+    private Visor visor;
     private static final String CAMINHO_IMAGENS = "src/main/resources/images/";
 
     public TelaContabilidade(Visor visor) {
@@ -32,13 +32,13 @@ public class TelaContabilidade extends JPanel {
         int y = 60;
         int posicao = 1;
 
-        for (Document doc : votos) {
-            String nome = doc.getString("nome");
+        for (Document votoCandidato : votos) {
+            String nome = votoCandidato.getString("nome");
 
             if ("branco".equalsIgnoreCase(nome)) {
-                y = addVotoBranco(doc, y);
+                y = addVotoBranco(votoCandidato, y);
             } else {
-                y = addCandidato(doc, posicao++, y);
+                y = addCandidato(votoCandidato, posicao++, y);
             }
         }
     }
@@ -87,17 +87,17 @@ public class TelaContabilidade extends JPanel {
     }
 
     private void addImagem(String sigla, String nome, int x, int y) {
-        String caminho = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
+        String caminhoImagem = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
         JLabel imagem = new JLabel();
         imagem.setBounds(x, y, 60, 60);
         imagem.setBorder(new LineBorder(Color.BLACK, 1));
 
         try {
-            ImageIcon icon = new ImageIcon(caminho);
+            ImageIcon icon = new ImageIcon(caminhoImagem);
             Image imgRedimensionada = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
             imagem.setIcon(new ImageIcon(imgRedimensionada));
         } catch (Exception e) {
-            System.err.println("Erro ao carregar imagem: " + caminho);
+            System.err.println("Erro ao carregar imagem: " + caminhoImagem);
         }
 
         add(imagem);

@@ -71,7 +71,6 @@ public class ManipuladorDatabase {
         return toArray(candidatos.find(eq("partido_id", id)));
     }
 
-
     private Document[] toArray(FindIterable<Document> iterable) {
         List<Document> lista = iterable.into(new ArrayList<>());
         return lista.toArray(new Document[0]);

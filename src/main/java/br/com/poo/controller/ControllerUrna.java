@@ -12,7 +12,7 @@ public class ControllerUrna {
 
     public TelaPrincipal tela;
     public ModeloUrna urna;
-    private final ManipuladorDatabase banco;
+    private ManipuladorDatabase banco;
 
     public ControllerUrna(TelaPrincipal tela) {
         this.tela = tela;

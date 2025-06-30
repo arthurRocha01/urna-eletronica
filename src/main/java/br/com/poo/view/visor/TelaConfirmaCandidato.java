@@ -18,8 +18,8 @@ import javax.swing.Timer;
 
 public class TelaConfirmaCandidato extends JPanel {
 
-    private final Visor visor;
-    private final VisorBuilder builder;
+    private Visor visor;
+    private VisorBuilder builder;
 
     private JProgressBar barraProgresso;
     private JLabel mensagem;
@@ -36,7 +36,7 @@ public class TelaConfirmaCandidato extends JPanel {
         this.builder = builder;
 
         configurarTela();
-        inicializarComponentes();
+        construirComponentes();
     }
 
     private void configurarTela() {
@@ -46,7 +46,7 @@ public class TelaConfirmaCandidato extends JPanel {
         setPreferredSize(new Dimension(600, 400));
     }
 
-    private void inicializarComponentes() {
+    private void construirComponentes() {
         titulo = criarLabel("TREINAMENTO", 16, Color.GRAY, 0, 10, 600, 30, SwingConstants.CENTER);
         add(titulo);
 

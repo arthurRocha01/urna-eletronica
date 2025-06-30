@@ -1,9 +1,5 @@
 package br.com.poo.view.visor;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -21,9 +17,6 @@ public class Visor extends JPanel {
 
     public StringBuilder numeroDigitado;
     public JTextField[] camposNumero = new JTextField[5];
-
-    public List<JComponent> componentesFixos = new ArrayList<>();
-    public List<JComponent> componentesDinamicos = new ArrayList<>();
 
     public boolean tecladoBloqueado = false;
     public boolean botoesBloqueados = false;
@@ -48,7 +41,6 @@ public class Visor extends JPanel {
 
     private void processarVoto() {
         String voto = getVotoInserido();
-        System.out.println(voto);
         
         if (voto.length() == 2) {
             Document partido = controlador.buscarPartido(voto);

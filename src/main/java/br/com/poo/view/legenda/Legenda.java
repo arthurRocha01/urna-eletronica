@@ -29,9 +29,9 @@ import br.com.poo.controller.ControllerUrna;
 public class Legenda extends JPanel {
 
     private ControllerUrna controller;
-    private final JPanel painelGrade = new JPanel(new GridLayout(2, 3, 10, 10));
-    private final Color corPartido = new Color(30, 144, 255);
-    private final Color corCandidato = new Color(60, 179, 113);
+    private JPanel painelGrade = new JPanel(new GridLayout(2, 3, 10, 10));
+    private Color corPartido = new Color(30, 144, 255);
+    private Color corCandidato = new Color(60, 179, 113);
 
     private JPanel painelPrincipal;
     private JPanel painelCabecalho;
@@ -89,15 +89,15 @@ public class Legenda extends JPanel {
     }
 
     private JPanel criarPainelTopoComVoltar() {
-        JButton btnVoltar = new JButton("← Voltar");
-        btnVoltar.setFocusable(false);
-        btnVoltar.setBackground(Color.WHITE);
-        btnVoltar.setForeground(corPartido);
-        btnVoltar.setFont(new Font("Arial", Font.BOLD, 14));
-        btnVoltar.addActionListener(e -> carregarPartidos());
+        JButton botaoVoltar = new JButton("← Voltar");
+        botaoVoltar.setFocusable(false);
+        botaoVoltar.setBackground(Color.WHITE);
+        botaoVoltar.setForeground(corPartido);
+        botaoVoltar.setFont(new Font("Arial", Font.BOLD, 14));
+        botaoVoltar.addActionListener(e -> carregarPartidos());
 
         JPanel topo = criarPainel(new FlowLayout(FlowLayout.LEFT), corPartido, null);
-        topo.add(btnVoltar);
+        topo.add(botaoVoltar);
         return topo;
     }
 

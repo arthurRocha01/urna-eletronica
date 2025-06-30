@@ -19,7 +19,6 @@ public class TelaPrincipal extends JFrame {
     public ControllerUrna controlador;
     public Visor visor;
     public Teclado teclado;
-
     private Legenda legenda;
 
     public TelaPrincipal() {

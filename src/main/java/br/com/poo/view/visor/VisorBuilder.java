@@ -28,19 +28,19 @@ public class VisorBuilder {
 
     private static final String CAMINHO_IMAGENS = "src/main/resources/images/";
 
-    private final Visor visor;
-    public final TelaConfirmaCandidato telaConfirmaCandidato;
-    public final TelaVotoBranco telaConfirmaBranco;
-    public final TelaContabilidade telaContabilidade;
+    private Visor visor;
+    public TelaConfirmaCandidato telaConfirmaCandidato;
+    public TelaVotoBranco telaConfirmaBranco;
+    public TelaContabilidade telaContabilidade;
 
-    private JLabel lblNumero;
-    private JLabel lblNomeTitulo;
-    private JLabel lblNomeValor;
-    private JLabel lblPartidoTitulo;
-    private JLabel lblPartidoValor;
-    private JLabel lblInstrucao;
-    private JLabel lblFotoTitulo;
-    private JLabel lblFoto;
+    private JLabel labelNumero;
+    private JLabel labelNomeTitulo;
+    private JLabel labelNomeValor;
+    private JLabel labelPartidoTitulo;
+    private JLabel labelPartidoValor;
+    private JLabel labelInstrucao;
+    private JLabel labelFotoTitulo;
+    private JLabel labelFoto;
     private JPanel painelFoto;
 
     public VisorBuilder(Visor visor) {
@@ -73,25 +73,25 @@ public class VisorBuilder {
         adicionarLabel("Governador", 22, new Rectangle(300, 45, 300, 30));
         adicionarCamposNumericos(5);
 
-        lblNumero = criarLabel("", 18, new Rectangle(25, 95, 300, 20));
-        lblNomeTitulo = criarLabel("", 16, new Rectangle(20, 190, 100, 20));
-        lblNomeValor = criarLabel("", 16, new Rectangle(120, 190, 200, 20));
-        lblPartidoTitulo = criarLabel("", 16, new Rectangle(20, 220, 100, 20));
-        lblPartidoValor = criarLabel("", 16, new Rectangle(120, 220, 200, 20));
-        lblInstrucao = criarLabel("", 15, new Rectangle(20, 285, 500, 100));
-        lblInstrucao.setVerticalAlignment(SwingConstants.TOP);
-        lblFotoTitulo = criarLabel("", 12, new Rectangle(585, 190, 100, 20));
+        labelNumero = criarLabel("", 18, new Rectangle(25, 95, 300, 20));
+        labelNomeTitulo = criarLabel("", 16, new Rectangle(20, 190, 100, 20));
+        labelNomeValor = criarLabel("", 16, new Rectangle(120, 190, 200, 20));
+        labelPartidoTitulo = criarLabel("", 16, new Rectangle(20, 220, 100, 20));
+        labelPartidoValor = criarLabel("", 16, new Rectangle(120, 220, 200, 20));
+        labelInstrucao = criarLabel("", 15, new Rectangle(20, 285, 500, 100));
+        labelInstrucao.setVerticalAlignment(SwingConstants.TOP);
+        labelFotoTitulo = criarLabel("", 12, new Rectangle(585, 190, 100, 20));
 
         criarPainelFoto();
     }
 
     private void criarPainelFoto() {
-        lblFoto = new JLabel();
+        labelFoto = new JLabel();
         painelFoto = new JPanel(new BorderLayout());
         painelFoto.setBackground(new Color(230, 230, 230));
         painelFoto.setBorder(new LineBorder(Color.BLACK, 1));
         painelFoto.setBounds(570, 85, 100, 100);
-        painelFoto.add(lblFoto, BorderLayout.CENTER);
+        painelFoto.add(labelFoto, BorderLayout.CENTER);
 
         visor.add(painelFoto);
         painelFoto.setVisible(false);
@@ -138,11 +138,11 @@ public class VisorBuilder {
     public void mostrarInformacoesPartido(Document partido) {
         String sigla = partido.getString("sigla");
 
-        lblNumero.setText("Número:");
-        lblPartidoTitulo.setText("Partido");
-        lblPartidoValor.setText(sigla);
+        labelNumero.setText("Número:");
+        labelPartidoTitulo.setText("Partido");
+        labelPartidoValor.setText(sigla);
 
-        lblInstrucao.setText("<html><div style='letter-spacing:1.5px;'>"
+        labelInstrucao.setText("<html><div style='letter-spacing:1.5px;'>"
             + "<hr style='border:1px solid black;'><br><br>"
             + "<div>Aperte a tecla:</div><div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
             + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>");
@@ -151,29 +151,29 @@ public class VisorBuilder {
     public void mostrarInformacoesCandidato(Document candidato) {
         String nome = candidato.getString("nome");
 
-        lblNomeTitulo.setText("Nome:");
-        lblNomeValor.setText(nome);
+        labelNomeTitulo.setText("Nome:");
+        labelNomeValor.setText(nome);
 
-        atualizarFoto(lblPartidoValor.getText(), nome);
-        lblFotoTitulo.setText("Governante");
+        atualizarFoto(labelPartidoValor.getText(), nome);
+        labelFotoTitulo.setText("Governante");
     }
 
     public void limparInformacoesCandidato() {
-        lblNomeTitulo.setText("");
-        lblNomeValor.setText("");
+        labelNomeTitulo.setText("");
+        labelNomeValor.setText("");
 
-        lblPartidoTitulo.setText("");
-        lblPartidoValor.setText("");
+        labelPartidoTitulo.setText("");
+        labelPartidoValor.setText("");
 
-        lblInstrucao.setText("");
-        lblFoto.setVisible(false);
+        labelInstrucao.setText("");
+        labelFoto.setVisible(false);
     }
 
     private void atualizarFoto(String sigla, String nome) {
         String caminho = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
         Image imagem = new ImageIcon(caminho).getImage().getScaledInstance(
             painelFoto.getWidth(), painelFoto.getHeight(), Image.SCALE_SMOOTH);
-        lblFoto.setIcon(new ImageIcon(imagem));
+        labelFoto.setIcon(new ImageIcon(imagem));
         painelFoto.setVisible(true);
     }
 

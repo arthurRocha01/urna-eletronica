@@ -15,8 +15,8 @@ import javax.swing.Timer;
 
 public class TelaVotoBranco extends JPanel {
 
-    private final Visor visor;
-    private final VisorBuilder builder;
+    private Visor visor;
+    private VisorBuilder builder;
 
     private JLabel labelTitulo;
     private JLabel labelMensagem;
@@ -25,6 +25,7 @@ public class TelaVotoBranco extends JPanel {
 
     private Timer timerPiscar;
     private Timer timerRelogio;
+
     private boolean visivel = true;
 
     public TelaVotoBranco(Visor visor, VisorBuilder builder) {
@@ -32,7 +33,7 @@ public class TelaVotoBranco extends JPanel {
         this.builder = builder;
 
         configurarTela();
-        inicializarComponentes();
+        construirComponentes();
         iniciarTimers();
     }
 
@@ -43,15 +44,15 @@ public class TelaVotoBranco extends JPanel {
         setOpaque(true);
     }
 
-    private void inicializarComponentes() {
-        labelTitulo = criarLabelComEstilo("TREINAMENTO", 16, Color.GRAY, 0, 10, 600, 30, SwingConstants.CENTER);
-        labelMensagem = criarLabelComEstilo("VOTO EM BRANCO", 32, Color.BLACK, 0, 130, 600, 60, SwingConstants.CENTER);
-        labelRodape = criarLabelComEstilo("Município: 99999 - Minha Cidade   Zona: 9999   Seção: 9999",
+    private void construirComponentes() {
+        labelTitulo = criarLabel("TREINAMENTO", 16, Color.GRAY, 0, 10, 600, 30, SwingConstants.CENTER);
+        labelMensagem = criarLabel("VOTO EM BRANCO", 32, Color.BLACK, 0, 130, 600, 60, SwingConstants.CENTER);
+        labelRodape = criarLabel("Município: 99999 - Minha Cidade   Zona: 9999   Seção: 9999",
                 12, Color.DARK_GRAY, 0, 370, 600, 30, SwingConstants.CENTER);
         labelRodape.setOpaque(true);
         labelRodape.setBackground(new Color(230, 235, 245));
 
-        labelRelogio = criarLabelComEstilo("", 12, Color.DARK_GRAY, 10, 10, 200, 20, SwingConstants.LEFT);
+        labelRelogio = criarLabel("", 12, Color.DARK_GRAY, 10, 10, 200, 20, SwingConstants.LEFT);
 
         add(labelTitulo);
         add(labelMensagem);
@@ -89,7 +90,7 @@ public class TelaVotoBranco extends JPanel {
         timerRelogio.start();
     }
 
-    private JLabel criarLabelComEstilo(String texto, int tamanhoFonte, Color cor,
+    private JLabel criarLabel(String texto, int tamanhoFonte, Color cor,
         int x, int y, int largura, int altura, int alinhamento) {
         JLabel label = new JLabel(texto, alinhamento);
         label.setFont(new Font("SansSerif", Font.BOLD, tamanhoFonte));
