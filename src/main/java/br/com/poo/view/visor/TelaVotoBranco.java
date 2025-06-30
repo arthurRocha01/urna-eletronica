@@ -1,18 +1,19 @@
 package br.com.poo.view.visor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-
+import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
+import javax.swing.*;
 
+/**
+ * Tela que exibe a confirmação visual do voto em branco durante a simulação da urna.
+ * Apresenta uma mensagem piscante e a data/hora atual.
+ * 
+ * @author Arthur Rocha
+ * @version 1.0
+ * @since 1.0
+ */
 public class TelaVotoBranco extends JPanel {
 
     private Visor visor;
@@ -28,6 +29,12 @@ public class TelaVotoBranco extends JPanel {
 
     private boolean visivel = true;
 
+    /**
+     * Construtor que recebe o painel do visor e o builder para troca de telas.
+     *
+     * @param visor painel principal da urna
+     * @param builder responsável por construir e navegar entre telas
+     */
     public TelaVotoBranco(Visor visor, VisorBuilder builder) {
         this.visor = visor;
         this.builder = builder;
@@ -37,6 +44,9 @@ public class TelaVotoBranco extends JPanel {
         iniciarTimers();
     }
 
+    /**
+     * Configura o layout e aparência da tela de voto em branco.
+     */
     private void configurarTela() {
         setLayout(null);
         setBackground(Color.WHITE);
@@ -44,6 +54,9 @@ public class TelaVotoBranco extends JPanel {
         setOpaque(true);
     }
 
+    /**
+     * Constrói e posiciona os componentes visuais na tela.
+     */
     private void construirComponentes() {
         labelTitulo = criarLabel("TREINAMENTO", 16, Color.GRAY, 0, 10, 600, 30, SwingConstants.CENTER);
         labelMensagem = criarLabel("VOTO EM BRANCO", 32, Color.BLACK, 0, 130, 600, 60, SwingConstants.CENTER);
@@ -60,6 +73,9 @@ public class TelaVotoBranco extends JPanel {
         add(labelRelogio);
     }
 
+    /**
+     * Exibe esta tela no visor da urna.
+     */
     public void mostrar() {
         visor.removeAll();
         visor.setLayout(new BorderLayout());
@@ -68,6 +84,9 @@ public class TelaVotoBranco extends JPanel {
         visor.repaint();
     }
 
+    /**
+     * Fecha esta tela e retorna para a tela inicial via builder.
+     */
     public void fechar() {
         visor.remove(this);
         builder.iniciarTela();
@@ -75,6 +94,9 @@ public class TelaVotoBranco extends JPanel {
         visor.repaint();
     }
 
+    /**
+     * Inicia os temporizadores para piscar a mensagem e atualizar o relógio.
+     */
     private void iniciarTimers() {
         timerPiscar = new Timer(500, e -> {
             visivel = !visivel;
@@ -90,6 +112,19 @@ public class TelaVotoBranco extends JPanel {
         timerRelogio.start();
     }
 
+    /**
+     * Cria e configura um JLabel para ser usado na tela.
+     *
+     * @param texto texto exibido
+     * @param tamanhoFonte tamanho da fonte
+     * @param cor cor do texto
+     * @param x posição horizontal
+     * @param y posição vertical
+     * @param largura largura do componente
+     * @param altura altura do componente
+     * @param alinhamento alinhamento horizontal do texto
+     * @return JLabel configurado
+     */
     private JLabel criarLabel(String texto, int tamanhoFonte, Color cor,
         int x, int y, int largura, int altura, int alinhamento) {
         JLabel label = new JLabel(texto, alinhamento);

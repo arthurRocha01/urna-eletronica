@@ -1,29 +1,43 @@
 package br.com.poo.view.visor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Image;
-
+import java.awt.*;
 import java.util.List;
-
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 import org.bson.Document;
 
+/**
+ * Exibe a tela de contabilidade de votos da urna.
+ * 
+ * <p>Apresenta os três candidatos mais votados e os votos em branco com nome, partido,
+ * quantidade de votos e porcentagem.</p>
+ * 
+ * <p>Também exibe as imagens dos candidatos conforme sua sigla e nome.</p>
+ * 
+ * @author Arthur Rocha
+ * @version 1.0
+ * @since 1.0
+ */
 public class TelaContabilidade extends JPanel {
 
     private Visor visor;
     private static final String CAMINHO_IMAGENS = "src/main/resources/images/";
 
+    /**
+     * Construtor que recebe o painel do visor principal.
+     *
+     * @param visor painel principal que contém esta tela
+     */
     public TelaContabilidade(Visor visor) {
         this.visor = visor;
     }
 
+    /**
+     * Exibe todos os candidatos e votos brancos com seus respectivos dados.
+     *
+     * @param votos lista de documentos contendo dados de contabilidade de votos
+     */
     public void exibir(List<Document> votos) {
         prepararVisor();
         configurarPainel();
@@ -43,6 +57,9 @@ public class TelaContabilidade extends JPanel {
         }
     }
 
+    /**
+     * Limpa e prepara o visor principal para exibir esta tela.
+     */
     private void prepararVisor() {
         visor.removeAll();
         visor.setLayout(new BorderLayout());
@@ -51,16 +68,30 @@ public class TelaContabilidade extends JPanel {
         visor.repaint();
     }
 
+    /**
+     * Configura o layout e aparência do painel da tela.
+     */
     private void configurarPainel() {
         setLayout(null);
         setBackground(Color.WHITE);
         setPreferredSize(new Dimension(600, 800));
     }
 
+    /**
+     * Adiciona o título da tela.
+     */
     private void addTitulo() {
         addLabel("CONTABILIDADE DOS VOTOS", 22, 180, 10, 400, 30);
     }
 
+    /**
+     * Adiciona os dados de um candidato ao painel.
+     *
+     * @param doc documento contendo informações do candidato
+     * @param posicao posição do candidato no ranking
+     * @param y posição vertical para inserção
+     * @return nova posição vertical após a adição
+     */
     private int addCandidato(Document doc, int posicao, int y) {
         String nome = doc.getString("nome");
         String partido = doc.getString("sigla");
@@ -76,6 +107,13 @@ public class TelaContabilidade extends JPanel {
         return y + 110;
     }
 
+    /**
+     * Adiciona os dados dos votos brancos ao painel.
+     *
+     * @param doc documento contendo informações dos votos brancos
+     * @param y posição vertical para inserção
+     * @return nova posição vertical após a adição
+     */
     private int addVotoBranco(Document doc, int y) {
         int votos = doc.getInteger("votos", 0);
         double porcentagem = doc.getDouble("porcentagem") != null ? doc.getDouble("porcentagem") : 0.0;
@@ -86,6 +124,14 @@ public class TelaContabilidade extends JPanel {
         return y + 60;
     }
 
+    /**
+     * Adiciona a imagem de um candidato ao painel.
+     *
+     * @param sigla sigla do partido (nome da pasta)
+     * @param nome nome do candidato (nome da imagem em minúsculas)
+     * @param x coordenada x
+     * @param y coordenada y
+     */
     private void addImagem(String sigla, String nome, int x, int y) {
         String caminhoImagem = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
         JLabel imagem = new JLabel();
@@ -103,6 +149,16 @@ public class TelaContabilidade extends JPanel {
         add(imagem);
     }
 
+    /**
+     * Adiciona um JLabel com as configurações definidas.
+     *
+     * @param texto texto do label
+     * @param tamanho tamanho da fonte
+     * @param x coordenada x
+     * @param y coordenada y
+     * @param largura largura do label
+     * @param altura altura do label
+     */
     private void addLabel(String texto, int tamanho, int x, int y, int largura, int altura) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("Arial", Font.PLAIN, tamanho));
@@ -110,6 +166,9 @@ public class TelaContabilidade extends JPanel {
         add(label);
     }
 
+    /**
+     * Fecha esta tela e retorna para a tela inicial.
+     */
     public void fechar() {
         visor.remove(this);
         visor.builder.iniciarTela();

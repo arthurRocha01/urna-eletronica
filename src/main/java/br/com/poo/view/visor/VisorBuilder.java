@@ -24,13 +24,27 @@ import javax.swing.border.LineBorder;
 
 import org.bson.Document;
 
+/**
+ * Classe responsável por construir e gerenciar os componentes visuais do visor da urna eletrônica,
+ * incluindo as telas de confirmação, voto em branco, e contabilidade dos votos.
+ * 
+ * Permite a montagem da interface, atualização dos dados exibidos, 
+ * e controle da aparência responsiva.
+ * 
+ * @author Arthur Rocha
+ * @version 1.0
+ * @since 1.0
+ */
 public class VisorBuilder {
 
     private static final String CAMINHO_IMAGENS = "src/main/resources/images/";
 
     private Visor visor;
+    /** Tela de confirmação do voto em candidato */
     public TelaConfirmaCandidato telaConfirmaCandidato;
+    /** Tela de confirmação do voto em branco */
     public TelaVotoBranco telaConfirmaBranco;
+    /** Tela de contabilidade dos votos */
     public TelaContabilidade telaContabilidade;
 
     private JLabel labelNumero;
@@ -43,6 +57,11 @@ public class VisorBuilder {
     private JLabel labelFoto;
     private JPanel painelFoto;
 
+    /**
+     * Construtor que recebe o visor principal e inicializa as telas auxiliares.
+     * 
+     * @param visor Instância do painel Visor onde os componentes serão exibidos
+     */
     public VisorBuilder(Visor visor) {
         this.visor = visor;
         this.telaConfirmaCandidato = new TelaConfirmaCandidato(visor, this);
@@ -50,11 +69,19 @@ public class VisorBuilder {
         telaContabilidade = new TelaContabilidade(visor);
     }
 
+    /**
+     * Inicia a configuração da interface do visor, definindo layout,
+     * adicionando bordas e construindo os componentes iniciais.
+     */
     public void iniciarTela() {
         configurarVisor();
         montarInterface();
     }
 
+    /**
+     * Configura o layout, cor de fundo, borda e o listener para redimensionamento
+     * do visor principal.
+     */
     private void configurarVisor() {
         visor.setLayout(null);
         visor.setBackground(Color.WHITE);
@@ -68,6 +95,10 @@ public class VisorBuilder {
         });
     }
 
+    /**
+     * Monta os componentes básicos da interface, incluindo títulos, campos numéricos
+     * e áreas para exibição de informações.
+     */
     private void montarInterface() {
         adicionarLabel("SEU VOTO PARA:", 17, new Rectangle(20, 10, 300, 20));
         adicionarLabel("Governador", 22, new Rectangle(300, 45, 300, 30));
@@ -85,6 +116,9 @@ public class VisorBuilder {
         criarPainelFoto();
     }
 
+    /**
+     * Cria o painel onde será exibida a foto do candidato.
+     */
     private void criarPainelFoto() {
         labelFoto = new JLabel();
         painelFoto = new JPanel(new BorderLayout());
@@ -97,6 +131,11 @@ public class VisorBuilder {
         painelFoto.setVisible(false);
     }
 
+    /**
+     * Adiciona os campos numéricos para entrada do voto.
+     * 
+     * @param quantidade Número de campos numéricos a serem criados
+     */
     private void adicionarCamposNumericos(int quantidade) {
         int largura = 40, altura = 55, espacamento = 5;
         int total = quantidade * (largura + espacamento) - espacamento;
@@ -120,6 +159,14 @@ public class VisorBuilder {
         visor.add(painel);
     }
 
+    /**
+     * Cria um JLabel e adiciona ao visor.
+     * 
+     * @param texto Texto do label
+     * @param tamanhoFonte Tamanho da fonte
+     * @param bounds Posição e tamanho do componente
+     * @return JLabel criado
+     */
     private JLabel criarLabel(String texto, int tamanhoFonte, Rectangle bounds) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
@@ -128,6 +175,13 @@ public class VisorBuilder {
         return label;
     }
 
+    /**
+     * Adiciona um JLabel ao visor sem retornar.
+     * 
+     * @param texto Texto do label
+     * @param tamanhoFonte Tamanho da fonte
+     * @param bounds Posição e tamanho do componente
+     */
     private void adicionarLabel(String texto, int tamanhoFonte, Rectangle bounds) {
         JLabel label = new JLabel(texto);
         label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
@@ -135,6 +189,11 @@ public class VisorBuilder {
         visor.add(label);
     }
 
+    /**
+     * Atualiza os campos de informações para exibir dados do partido.
+     * 
+     * @param partido Documento contendo informações do partido
+     */
     public void mostrarInformacoesPartido(Document partido) {
         String sigla = partido.getString("sigla");
 
@@ -148,6 +207,12 @@ public class VisorBuilder {
             + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>");
     }
 
+    /**
+     * Atualiza os campos de informações para exibir dados do candidato,
+     * incluindo a foto, caso disponível.
+     * 
+     * @param candidato Documento contendo informações do candidato
+     */
     public void mostrarInformacoesCandidato(Document candidato) {
         String nome = candidato.getString("nome");
 
@@ -158,6 +223,9 @@ public class VisorBuilder {
         labelFotoTitulo.setText("Governante");
     }
 
+    /**
+     * Limpa as informações exibidas sobre candidato e partido, removendo foto e textos.
+     */
     public void limparInformacoesCandidato() {
         labelNomeTitulo.setText("");
         labelNomeValor.setText("");
@@ -169,6 +237,12 @@ public class VisorBuilder {
         labelFoto.setVisible(false);
     }
 
+    /**
+     * Atualiza a foto do candidato exibida no painel de foto.
+     * 
+     * @param sigla Sigla do partido
+     * @param nome Nome do candidato
+     */
     private void atualizarFoto(String sigla, String nome) {
         String caminho = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
         Image imagem = new ImageIcon(caminho).getImage().getScaledInstance(
@@ -177,25 +251,44 @@ public class VisorBuilder {
         painelFoto.setVisible(true);
     }
 
+    /**
+     * Fecha a tela de contabilidade, voltando para tela anterior.
+     */
     public void exibirTelaVoto() {
         telaContabilidade.fechar();
     }
 
+    /**
+     * Exibe a tela de contabilidade dos votos com os dados fornecidos.
+     * 
+     * @param votosContabilizados Lista de documentos contendo votos contabilizados
+     */
     public void mostrarContabilidade(List<Document> votosContabilizados) {
         telaContabilidade.exibir(votosContabilizados);
     }
 
+    /**
+     * Exibe a tela de confirmação do voto e libera o visor após um atraso.
+     */
     public void exibirConfirmaVoto() {
         telaConfirmaBranco.fechar();
         telaConfirmaCandidato.mostrar();
         desbloquearVisorComDelay();
     }
 
+    /**
+     * Manipula a exibição da tela de voto branco conforme a ação recebida.
+     * 
+     * @param acao "mostrar" para exibir, "fechar" para fechar a tela
+     */
     public void manipuladorTelaVotoBranco(String acao) {
         if (acao.equals("mostrar")) telaConfirmaBranco.mostrar();
         if (acao.equals("fechar")) telaConfirmaBranco.fechar();
     }
 
+    /**
+     * Desbloqueia o teclado e botões do visor após um delay configurado.
+     */
     private void desbloquearVisorComDelay() {
         Timer timer = new Timer(3500, e -> {
             visor.tecladoBloqueado = false;
@@ -206,6 +299,10 @@ public class VisorBuilder {
         timer.start();
     }
 
+    /**
+     * Redimensiona todos os componentes dentro do visor para manter
+     * uma aparência responsiva ao redimensionar a janela.
+     */
     private void redimensionarComponentes() {
         double escalaX = visor.getWidth() / (double) visor.LARGURA;
         double escalaY = visor.getHeight() / (double) visor.ALTURA;
@@ -219,6 +316,14 @@ public class VisorBuilder {
         visor.repaint();
     }
 
+    /**
+     * Redimensiona um componente individualmente ajustando sua posição,
+     * tamanho e tamanho da fonte conforme os fatores de escala.
+     * 
+     * @param componente Componente a ser redimensionado
+     * @param escalaX Fator de escala horizontal
+     * @param escalaY Fator de escala vertical
+     */
     private void redimensionarComponente(JComponent componente, double escalaX, double escalaY) {
         Rectangle b = componente.getBounds();
         componente.setBounds(

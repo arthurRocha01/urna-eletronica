@@ -1,21 +1,23 @@
 package br.com.poo.view.visor;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.swing.*;
 
-import javax.swing.AbstractAction;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
-import javax.swing.Timer;
-
-
+/**
+ * Tela de confirmação do voto que simula o processo de gravação e finalização.
+ * 
+ * <p>Apresenta uma barra de progresso e mensagens visuais para o usuário,
+ * incluindo a palavra "FIM", confirmação de voto e hora atual.</p>
+ * 
+ * <p>Após a animação, a tela é resetada para o início.</p>
+ * 
+ * @author Arthur Rocha
+ * @version 1.0
+ * @since 1.0
+ */
 public class TelaConfirmaCandidato extends JPanel {
 
     private Visor visor;
@@ -31,6 +33,12 @@ public class TelaConfirmaCandidato extends JPanel {
 
     private Timer timerRelogio;
 
+    /**
+     * Construtor da tela de confirmação.
+     * 
+     * @param visor painel principal onde esta tela será exibida
+     * @param builder objeto responsável por reconstruir as telas
+     */
     public TelaConfirmaCandidato(Visor visor, VisorBuilder builder) {
         this.visor = visor;
         this.builder = builder;
@@ -39,6 +47,9 @@ public class TelaConfirmaCandidato extends JPanel {
         construirComponentes();
     }
 
+    /**
+     * Define configurações visuais iniciais da tela.
+     */
     private void configurarTela() {
         setLayout(null);
         setBackground(Color.WHITE);
@@ -46,6 +57,9 @@ public class TelaConfirmaCandidato extends JPanel {
         setPreferredSize(new Dimension(600, 400));
     }
 
+    /**
+     * Constrói os componentes visuais como labels, barra de progresso e relógio.
+     */
     private void construirComponentes() {
         titulo = criarLabel("TREINAMENTO", 16, Color.GRAY, 0, 10, 600, 30, SwingConstants.CENTER);
         add(titulo);
@@ -74,14 +88,17 @@ public class TelaConfirmaCandidato extends JPanel {
         relogio = criarLabel("", 12, Color.DARK_GRAY, 10, 10, 200, 20, SwingConstants.LEFT);
         add(relogio);
 
+        // Timer para atualizar o relógio em tempo real
         timerRelogio = new Timer(1000, e -> {
-            String horaAtual = new SimpleDateFormat("EEE dd/MM/yyyy HH:mm:ss")
-                    .format(new Date()).toUpperCase();
+            String horaAtual = new SimpleDateFormat("EEE dd/MM/yyyy HH:mm:ss").format(new Date()).toUpperCase();
             relogio.setText(horaAtual);
         });
         timerRelogio.start();
     }
 
+    /**
+     * Mostra esta tela no visor e inicia a animação de confirmação do voto.
+     */
     public void mostrar() {
         visor.removeAll();
         visor.setLayout(new BorderLayout());
@@ -110,6 +127,9 @@ public class TelaConfirmaCandidato extends JPanel {
         animador.start();
     }
 
+    /**
+     * Exibe a mensagem final "FIM" e reinicia a tela após breve pausa.
+     */
     private void exibirFim() {
         barraProgresso.setVisible(false);
         mensagem.setVisible(false);
@@ -126,6 +146,19 @@ public class TelaConfirmaCandidato extends JPanel {
         resetarTela.start();
     }
 
+    /**
+     * Cria e retorna um JLabel com as configurações fornecidas.
+     *
+     * @param texto conteúdo textual do label
+     * @param tamanhoFonte tamanho da fonte
+     * @param cor cor do texto
+     * @param x posição horizontal
+     * @param y posição vertical
+     * @param largura largura do label
+     * @param altura altura do label
+     * @param alinhamento alinhamento horizontal do texto
+     * @return JLabel criado com as configurações especificadas
+     */
     private JLabel criarLabel(String texto, int tamanhoFonte, Color cor, int x, int y, int largura, int altura, int alinhamento) {
         JLabel label = new JLabel(texto, alinhamento);
         label.setFont(new Font("SansSerif", Font.BOLD, tamanhoFonte));
