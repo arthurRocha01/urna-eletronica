@@ -126,7 +126,7 @@ public class ManipuladorDatabase {
      */
     public Document[] getCandidatosPartido(Document partido) {
         List<Document> candidatosFiltrados = new ArrayList<>();
-        String idPartido = partido.getString("id");
+        String idPartido = partido.getString("_id");
         for (Document candidato : candidatos) {
             if (candidato.getString("partido_id").equals(idPartido)) candidatosFiltrados.add(partido);
         }

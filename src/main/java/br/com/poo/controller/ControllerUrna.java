@@ -54,6 +54,7 @@ public class ControllerUrna {
         } else if (!tela.visor.botoesBloqueados || tela.visor.isVotandoBranco() || tela.visor.isFinalizado()) {
             if (isVotando(comando)) tela.visor.bloquearBotoes();
             processarComando(comando);
+            avisarSistema("Controller(executarAcao())", "botao " + comando + " clicado");
         }
     }
 

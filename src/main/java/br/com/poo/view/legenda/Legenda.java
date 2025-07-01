@@ -85,11 +85,36 @@ public class Legenda extends JPanel {
         painelGrade.removeAll();
 
         for (Document partido : controller.buscarColecao("partidos")) {
+            controller.avisarSistema("Legenda(carregarPartios())", partido.getString("nome"));
             painelGrade.add(criarPainelPartido(partido));
         }
 
         painelGrade.add(new JLabel()); // espaço extra
         atualizarPainel(painelCabecalho, painelGrade);
+    }
+
+        /**
+     * Cria o painel visual de um partido, incluindo evento de clique.
+     *
+     * @param partido documento do partido
+     * @return painel do partido
+     */
+    private JPanel criarPainelPartido(Document partido) {
+        JPanel painel = criarPainelVertical(corPartido);
+        painel.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                exibirCandidatos(partido);
+                controller.avisarSistema("Legenda(criarPainelPartido())", partido.getString("nome") + "clicado");
+            }
+        });
+
+        painel.add(Box.createVerticalStrut(5));
+        painel.add(criarTopoPartido(partido));
+        painel.add(Box.createVerticalStrut(4));
+        painel.add(criarLabelCentralizado(partido.getString("nome"), Font.PLAIN, 11));
+        painel.add(Box.createVerticalGlue());
+
+        return painel;
     }
 
     /**
@@ -101,67 +126,13 @@ public class Legenda extends JPanel {
         painelGrade.removeAll();
 
         for (Document candidato : controller.buscarCandidatosPorPartido(partido)) {
+            controller.avisarSistema("Legenda(exibirCandidatos())", candidato.getString("nome"));
             painelGrade.add(criarPainelCandidato(candidato));
         }
 
         painelGrade.add(new JLabel()); // espaço extra
         JPanel topo = criarPainelTopoComVoltar();
         atualizarPainel(topo, painelGrade);
-    }
-
-    /**
-     * Cria o painel superior com botão de voltar para visualização de partidos.
-     *
-     * @return painel superior
-     */
-    private JPanel criarPainelTopoComVoltar() {
-        JButton botaoVoltar = new JButton("← Voltar");
-        botaoVoltar.setFocusable(false);
-        botaoVoltar.setBackground(Color.WHITE);
-        botaoVoltar.setForeground(corPartido);
-        botaoVoltar.setFont(new Font("Arial", Font.BOLD, 14));
-        botaoVoltar.addActionListener(e -> carregarPartidos());
-
-        JPanel topo = criarPainel(new FlowLayout(FlowLayout.LEFT), corPartido, null);
-        topo.add(botaoVoltar);
-        return topo;
-    }
-
-    /**
-     * Atualiza o painel principal com um novo cabeçalho e novo conteúdo.
-     *
-     * @param topo componente do topo (ex: cabeçalho ou botão voltar)
-     * @param conteudo painel de conteúdo a ser exibido
-     */
-    private void atualizarPainel(JComponent topo, JComponent conteudo) {
-        painelPrincipal.removeAll();
-        painelPrincipal.add(topo, BorderLayout.NORTH);
-        painelPrincipal.add(conteudo, BorderLayout.CENTER);
-        painelPrincipal.revalidate();
-        painelPrincipal.repaint();
-    }
-
-    /**
-     * Cria o painel visual de um partido, incluindo evento de clique.
-     *
-     * @param partido documento do partido
-     * @return painel do partido
-     */
-    private JPanel criarPainelPartido(Document partido) {
-        JPanel painel = criarPainelVertical(corPartido);
-        painel.addMouseListener(new MouseAdapter() {
-            public void mouseClicked(MouseEvent e) {
-                exibirCandidatos(partido);
-            }
-        });
-
-        painel.add(Box.createVerticalStrut(5));
-        painel.add(criarTopoPartido(partido));
-        painel.add(Box.createVerticalStrut(4));
-        painel.add(criarLabelCentralizado(partido.getString("nome"), Font.PLAIN, 11));
-        painel.add(Box.createVerticalGlue());
-
-        return painel;
     }
 
     /**
@@ -183,20 +154,6 @@ public class Legenda extends JPanel {
     }
 
     /**
-     * Cria o topo do painel de partido, com sigla e número.
-     *
-     * @param partido documento do partido
-     * @return painel do topo com sigla e número
-     */
-    private JPanel criarTopoPartido(Document partido) {
-        JPanel topo = criarPainel(new FlowLayout(FlowLayout.CENTER, 5, 0), null, null);
-        topo.setOpaque(false);
-        topo.add(criarLabel(partido.getString("sigla"), Font.BOLD, 16, false));
-        topo.add(criarLabel("Nº " + partido.getString("numero"), Font.PLAIN, 13, false));
-        return topo;
-    }
-
-    /**
      * Cria um painel vertical com estilo definido para candidatos ou partidos.
      *
      * @param corFundo cor de fundo do painel
@@ -210,6 +167,53 @@ public class Legenda extends JPanel {
         painel.setBorder(new LineBorder(Color.WHITE, 1, true));
         painel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         return painel;
+    }
+
+    /**
+     * Atualiza o painel principal com um novo cabeçalho e novo conteúdo.
+     *
+     * @param topo componente do topo (ex: cabeçalho ou botão voltar)
+     * @param conteudo painel de conteúdo a ser exibido
+     */
+    private void atualizarPainel(JComponent topo, JComponent conteudo) {
+        painelPrincipal.removeAll();
+        painelPrincipal.add(topo, BorderLayout.NORTH);
+        painelPrincipal.add(conteudo, BorderLayout.CENTER);
+        painelPrincipal.revalidate();
+        painelPrincipal.repaint();
+    }
+
+
+    /**
+     * Cria o painel superior com botão de voltar para visualização de partidos.
+     *
+     * @return painel superior
+     */
+    private JPanel criarPainelTopoComVoltar() {
+        JButton botaoVoltar = new JButton("← Voltar");
+        botaoVoltar.setFocusable(false);
+        botaoVoltar.setBackground(Color.WHITE);
+        botaoVoltar.setForeground(corPartido);
+        botaoVoltar.setFont(new Font("Arial", Font.BOLD, 14));
+        botaoVoltar.addActionListener(e -> carregarPartidos());
+
+        JPanel topo = criarPainel(new FlowLayout(FlowLayout.LEFT), corPartido, null);
+        topo.add(botaoVoltar);
+        return topo;
+    }
+
+    /**
+     * Cria o topo do painel de partido, com sigla e número.
+     *
+     * @param partido documento do partido
+     * @return painel do topo com sigla e número
+     */
+    private JPanel criarTopoPartido(Document partido) {
+        JPanel topo = criarPainel(new FlowLayout(FlowLayout.CENTER, 5, 0), null, null);
+        topo.setOpaque(false);
+        topo.add(criarLabel(partido.getString("sigla"), Font.BOLD, 16, false));
+        topo.add(criarLabel("Nº " + partido.getString("numero"), Font.PLAIN, 13, false));
+        return topo;
     }
 
     /**

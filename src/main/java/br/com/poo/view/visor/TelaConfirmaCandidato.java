@@ -112,7 +112,7 @@ public class TelaConfirmaCandidato extends JPanel {
         fim.setVisible(false);
         votou.setVisible(false);
 
-        Timer animador = new Timer(30, new AbstractAction() {
+        Timer animador = new Timer(15, new AbstractAction() {
             int progresso = 0;
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -136,7 +136,7 @@ public class TelaConfirmaCandidato extends JPanel {
         fim.setVisible(true);
         votou.setVisible(true);
 
-        Timer resetarTela = new Timer(2000, e -> {
+        Timer resetarTela = new Timer(1000, e -> {
             visor.remove(this);
             builder.iniciarTela();
             visor.revalidate();

@@ -227,14 +227,18 @@ public class VisorBuilder {
      * Limpa as informações exibidas sobre candidato e partido, removendo foto e textos.
      */
     public void limparInformacoesCandidato() {
+        labelNumero.setText("");
+
         labelNomeTitulo.setText("");
         labelNomeValor.setText("");
 
         labelPartidoTitulo.setText("");
         labelPartidoValor.setText("");
 
+        painelFoto.setVisible(false);
+        labelFotoTitulo.setText("");
+        
         labelInstrucao.setText("");
-        labelFoto.setVisible(false);
     }
 
     /**
@@ -290,7 +294,7 @@ public class VisorBuilder {
      * Desbloqueia o teclado e botões do visor após um delay configurado.
      */
     private void desbloquearVisor() {
-        Timer timer = new Timer(3500, e -> {
+        Timer timer = new Timer(2500, e -> {
             visor.desbloquearTeclado();
             visor.desbloquearBotoes();
         });
