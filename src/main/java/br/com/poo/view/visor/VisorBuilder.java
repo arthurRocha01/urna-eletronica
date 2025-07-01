@@ -273,7 +273,7 @@ public class VisorBuilder {
     public void exibirConfirmaVoto() {
         telaConfirmaBranco.fechar();
         telaConfirmaCandidato.mostrar();
-        desbloquearVisorComDelay();
+        desbloquearVisor();
     }
 
     /**
@@ -289,10 +289,9 @@ public class VisorBuilder {
     /**
      * Desbloqueia o teclado e botões do visor após um delay configurado.
      */
-    private void desbloquearVisorComDelay() {
+    private void desbloquearVisor() {
         Timer timer = new Timer(3500, e -> {
-            visor.tecladoBloqueado = false;
-            visor.botoesBloqueados = false;
+            visor.desbloquearTeclado();
             visor.desbloquearBotoes();
         });
         timer.setRepeats(false);

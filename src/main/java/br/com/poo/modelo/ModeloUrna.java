@@ -88,14 +88,6 @@ public class ModeloUrna {
         votosContabilizados.add(new Document("nome", "branco").append("votos", totalVotosBrancos));
         calcularPorcentagemVotos(votosContabilizados, totalVotos);
 
-        for (Document votoCandidato : votosContabilizados) {
-            String nome = votoCandidato.getString("nome");
-            String partido = votoCandidato.getString("sigla");
-            int votos = votoCandidato.getInteger("votos");
-            double porcentagem = votoCandidato.getDouble("porcentagem");
-            System.out.printf("Candidato: %s - Partido: %s - Votos: %d - Porcentagem: %.2f%%\n", nome, partido, votos, porcentagem);
-        }
-
         return votosContabilizados;
     }
 

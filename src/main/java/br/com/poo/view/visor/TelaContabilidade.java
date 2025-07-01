@@ -143,7 +143,7 @@ public class TelaContabilidade extends JPanel {
             Image imgRedimensionada = icon.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
             imagem.setIcon(new ImageIcon(imgRedimensionada));
         } catch (Exception e) {
-            System.err.println("Erro ao carregar imagem: " + caminhoImagem);
+            visor.controlador.avisarSistema("TelaContabilidade", "Erro ao carregar imagem: " + caminhoImagem);
         }
 
         add(imagem);

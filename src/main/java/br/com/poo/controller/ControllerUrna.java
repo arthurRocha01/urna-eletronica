@@ -40,7 +40,7 @@ public class ControllerUrna {
     private void iniciarDatabase() {
         banco.conectar();
         banco.carregarDados();
-//        banco.fecharConexao();
+        banco.fecharConexao();
     }
 
     /**
@@ -75,7 +75,7 @@ public class ControllerUrna {
      */
     private boolean isVotando(String comando) {
         if (comando.equals("CONFIRMA") && tela.visor.isVotoCompleto()) {
-            tela.visor.bloquearBotoes();
+            tela.visor.bloquearTeclado();
             return true;
         }
         return false;
@@ -117,7 +117,7 @@ public class ControllerUrna {
     private void registrarVoto(String numero, Document candidato) {
         if (votoValido(numero, candidato)) registrarVotoCandidato(candidato);
         else tela.visor.builder.manipuladorTelaVotoBranco("mostrar");
-        tela.visor.limparCamposVoto();
+        // tela.visor.limparCamposVoto();
     }
 
     /**
@@ -168,7 +168,6 @@ public class ControllerUrna {
      * @return documento do candidato ou null
      */
     public Document buscarCandidato(String numero) {
-        avisarSistema("Controller(buscarCandidato())", numero);
         return banco.getCandidato(numero);
     }
 
@@ -179,7 +178,6 @@ public class ControllerUrna {
      * @return documento do partido ou null
      */
     public Document buscarPartido(String numero) {
-        avisarSistema("Controller(buscarPartido())", numero);
         return banco.getPartido(numero);
     }
 

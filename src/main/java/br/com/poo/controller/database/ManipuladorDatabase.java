@@ -6,7 +6,6 @@ import java.util.List;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import org.bson.Document;
 
@@ -75,7 +74,6 @@ public class ManipuladorDatabase {
      * @return documento do partido encontrado, ou {@code null} se não existir
      */
     public Document getPartido(String numero) {
-//        return partidos.find(eq("numero", numero)).first();
         for (Document partido : partidos) {
             if (partido.getString("numero").equals(numero)) return partido;
         }
@@ -89,7 +87,6 @@ public class ManipuladorDatabase {
      * @return documento do candidato encontrado, ou {@code null} se não existir
      */
     public Document getCandidato(String numero) {
-//        return candidatos.find(eq("numero", numero)).first();
         for (Document candidato : candidatos) {
             if (candidato.getString("numero").equals(numero)) return candidato;
         }
@@ -102,7 +99,6 @@ public class ManipuladorDatabase {
      * @return array de documentos representando todos os candidatos
      */
     public Document[] getTodosCandidatos() {
-//        return toArray(candidatos.find());
         return candidatos.toArray(new Document[0]);
     }
 
@@ -113,13 +109,6 @@ public class ManipuladorDatabase {
      * @return array de documentos da coleção, ou array vazio se o nome for inválido
      */
     public Document[] getColecao(String nome) {
-//        MongoCollection<Document> colecao = switch (nome) {
-//            case "partidos" -> partidos;
-//            case "candidatos" -> candidatos;
-//            default -> null;
-//        };
-//
-//        return colecao != null ? toArray(colecao.find()) : new Document[0];
         List<Document> colecao = switch (nome) {
             case "partidos" -> partidos;
             case "candidatos" -> candidatos;
@@ -136,8 +125,6 @@ public class ManipuladorDatabase {
      * @return array de documentos dos candidatos pertencentes ao partido
      */
     public Document[] getCandidatosPartido(Document partido) {
-//        ObjectId id = partido.getObjectId("_id");
-//        return toArray(candidatos.find(eq("partido_id", id)));
         List<Document> candidatosFiltrados = new ArrayList<>();
         String idPartido = partido.getString("id");
         for (Document candidato : candidatos) {
@@ -148,23 +135,12 @@ public class ManipuladorDatabase {
     }
 
     /**
-     * Converte um iterable de documentos MongoDB em um array.
-     *
-     * @param iterable documentos retornados por uma consulta
-     * @return array de documentos
-     */
-    private Document[] toArray(FindIterable<Document> iterable) {
-        List<Document> lista = iterable.into(new ArrayList<>());
-        return lista.toArray(new Document[0]);
-    }
-
-    /**
      * Encerra a conexão com o MongoDB, se estiver ativa.
      */
     public void fecharConexao() {
         if (mongoClient != null) {
             mongoClient.close();
-            System.out.println("Conexão com MongoDB encerrada.");
+            controller.avisarSistema("ManipuladorDatabase", "Conexão com MongoDB encerrada");
         }
     }
 }

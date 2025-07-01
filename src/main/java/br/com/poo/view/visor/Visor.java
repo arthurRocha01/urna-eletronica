@@ -74,12 +74,10 @@ public class Visor extends JPanel {
         
         if (voto.length() == 2) {
             Document partido = controlador.buscarPartido(voto);
-            System.out.println(partido);
             if (partido != null) builder.mostrarInformacoesPartido(partido);
         }
         else if (voto.length() == 5) {
             Document candidato = controlador.buscarCandidato(voto);
-            System.out.println(candidato);
             if (candidato != null) builder.mostrarInformacoesCandidato(candidato);
         }
     }
@@ -108,14 +106,14 @@ public class Visor extends JPanel {
         for (JTextField campo : camposNumero) {
             if (campo.getText().isEmpty()) return false;
         }
-        bloquarTeclado();
+        // bloquearTeclado();
         return true;
     }
 
     /**
      * Bloqueia o teclado para impedir novas entradas.
      */
-    public void bloquarTeclado() {
+    public void bloquearTeclado() {
         tecladoBloqueado = true;
         controlador.avisarSistema("Visor", "teclado bloquado");
     }
@@ -127,6 +125,15 @@ public class Visor extends JPanel {
      */
     public boolean isVotandoBranco() {
         return builder.telaConfirmaBranco.isShowing();
+    }
+
+    /**
+     * Indica se a tela de gravação do voto está sendo exibida.
+     * 
+     * @return true se estiver gravando, false caso contrário
+     */
+    public boolean isGravandoVoto() {
+        return builder.telaConfirmaCandidato.isShowing();
     }
 
     /**

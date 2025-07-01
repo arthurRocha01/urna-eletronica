@@ -23,6 +23,7 @@ public class TelaVotoBranco extends JPanel {
     private JLabel labelMensagem;
     private JLabel labelRodape;
     private JLabel labelRelogio;
+    private JLabel labelInstrucao;
 
     private Timer timerPiscar;
     private Timer timerRelogio;
