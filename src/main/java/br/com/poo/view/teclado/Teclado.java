@@ -20,6 +20,8 @@ import br.com.poo.controller.ControllerUrna;
  */
 public class Teclado extends JPanel {
 
+    private static final String CAMINHO_IMAGEM_BRASAO = "src/main/resources/images/outros/brasao_tre.png";
+
     private ControllerUrna controller;
 
     /**
@@ -53,16 +55,31 @@ public class Teclado extends JPanel {
      * Adiciona o cabeçalho visual com brasão e texto da Justiça Eleitoral.
      */
     private void adicionarCabecalho() {
-        int largura = getPreferredSize().width;
-        JPanel cabecalho = criarPainel(this, Color.LIGHT_GRAY, 0, 0, largura, 80);
+    int largura = getPreferredSize().width;
+    JPanel cabecalho = criarPainel(this, Color.LIGHT_GRAY, 0, 0, largura, 80);
 
-        int brasaoTam = 50;
-        int xBrasao = (largura - brasaoTam) / 5;
-        int yBrasao = 15;
+    cabecalho.add(criarLabel("JUSTIÇA ELEITORAL", 16, Color.BLACK, 15, 25, largura, 30, SwingConstants.CENTER));
 
-        criarPainel(cabecalho, Color.DARK_GRAY, xBrasao, yBrasao, brasaoTam, brasaoTam);
-        cabecalho.add(criarLabel("JUSTIÇA ELEITORAL", 16, Color.BLACK, 15, 25, largura, 30, SwingConstants.CENTER));
-    }
+    int brasaoTam = 50;
+    int xBrasao = (largura - brasaoTam) / 5;
+    int yBrasao = 15;
+
+    adicionarBrasao(cabecalho, xBrasao, yBrasao, brasaoTam);
+}
+
+    /**
+     * Adiciona o brasão TRE ao cabeçalho do teclado.
+     */
+    private void adicionarBrasao(Container pai, int xBrasao, int yBrasao, int brasaoTam) {
+        ImageIcon icon = new ImageIcon(CAMINHO_IMAGEM_BRASAO);
+        Image img = icon.getImage().getScaledInstance(brasaoTam, brasaoTam, Image.SCALE_SMOOTH);
+
+        JLabel imagemLabel = new JLabel(new ImageIcon(img));
+        imagemLabel.setBounds(xBrasao, yBrasao, brasaoTam, brasaoTam);
+
+        pai.add(imagemLabel);
+}
+
 
     /**
      * Adiciona os botões numéricos de 1 a 9, organizados em grade.

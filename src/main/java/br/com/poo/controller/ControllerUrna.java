@@ -36,7 +36,7 @@ public class ControllerUrna {
         iniciarDatabase();
         this.urna = new ModeloUrna(this);
     }
-    
+
     /**
      * Inicia o banco de dados carrega os dados e fecha a conexão.
      */
@@ -89,13 +89,13 @@ public class ControllerUrna {
         switch (comando) {
             case "CORRIGE" -> tela.visor.limparCamposVoto();
             case "CONFIRMA" -> confirmarVoto();
-            case "BRANCO" -> tela.visor.builder.manipuladorTelaVotoBranco("mostrar");
+            case "BRANCO" -> mostrarConfirmacaoVotoBranco();
             default -> {}
         }
     }
 
     /**
-     * Confirma o voto digitado e executa a ação apropriada (registrar, branco ou finalizar).
+     * Confirma o voto digitado e executa a ação apropriada (registrar, branco, finalizar ou reinicirar).
      */
     private void confirmarVoto() {
         String voto = tela.visor.getVotoInserido();
@@ -103,12 +103,22 @@ public class ControllerUrna {
         if (candidato == null) avisarSistema("Controller(confirmaVoto())", "candidato invalido.");
         else avisarSistema("Controller(confirmaVoto())", "candidato valido.");
         
-        if (isVotando(voto)) registrarVoto(voto, candidato);
+        if (isReiniciar()) tela.visor.builder.exibirTelaVoto();
+        else if (isVotando(voto)) registrarVoto(voto, candidato);
         else if (isVotandoBranco()) registrarVotoBranco();
         else if (!isVotando(voto)) finalizarVotacao();
-        else if (isReiniciar()) tela.visor.builder.exibirTelaVoto();
+    }
+
+    /**
+     * Verifica se o caso atual é de reiniciar.
+     */
+    private boolean isReiniciar() {
+        return tela.visor.isTelaRelatorio();
     }
     
+    /**
+     * Verifica se o caso atual é de votação.
+     */
     private boolean isVotando(String voto) {
         return tela.visor.isVotoCompleto() && tela.visor.isTelaVoto() && !voto.equals("99999");
     }
@@ -121,8 +131,22 @@ public class ControllerUrna {
      */
     private void registrarVoto(String numero, Document candidato) {
         if (votoValido(numero, candidato)) registrarVotoCandidato(candidato);
-        else tela.visor.builder.manipuladorTelaVotoBranco("mostrar");
-         tela.visor.limparCamposVoto();
+        else mostrarConfirmacaoVotoBranco();
+        tela.visor.limparCamposVoto();
+    }
+
+    /**
+     * Verifica se o caso atual é de confirmar o voto branco.
+     */
+    private boolean isConfimandoVotoBranco() {
+        return !isVotandoBranco() && !tela.visor.isTelaGravando();
+    }
+
+    /**
+     * Exibe a confirmação de voto branco se for o caso adequado.
+     */
+    private void mostrarConfirmacaoVotoBranco() {
+        if (isConfimandoVotoBranco()) tela.visor.builder.manipuladorTelaVotoBranco("mostrar");
     }
 
     /**
@@ -146,8 +170,11 @@ public class ControllerUrna {
         tela.visor.builder.exibirConfirmaVoto();
         avisarSistema("Controller", "candidato votado");
     }
-    
-      private boolean isVotandoBranco() {
+
+    /**
+     * Verifica se o caso atual é de voto branco.
+     */
+    private boolean isVotandoBranco() {
         return tela.visor.isTelaBranco();
     }
 
@@ -159,10 +186,6 @@ public class ControllerUrna {
         avisarSistema("Controller", "Voto branco ou inválido.");
         tela.visor.builder.manipuladorTelaVotoBranco("fechar");
         tela.visor.builder.exibirConfirmaVoto();
-    }
-    
-    private boolean isReiniciar() {
-        return tela.visor.isTelaRelatorio()&& !tela.visor.isVotoCompleto();
     }
     
     /**
