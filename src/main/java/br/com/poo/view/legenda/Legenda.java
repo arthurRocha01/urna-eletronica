@@ -81,7 +81,7 @@ public class Legenda extends JPanel {
     /**
      * Carrega os partidos disponíveis a partir do controller e os exibe em grade.
      */
-    public void carregarPartidos() {
+    private void carregarPartidos() {
         painelGrade.removeAll();
 
         for (Document partido : controller.buscarColecao("partidos")) {

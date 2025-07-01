@@ -115,7 +115,10 @@ public class Visor extends JPanel {
      */
     public void bloquearTeclado() {
         tecladoBloqueado = true;
-        controlador.avisarSistema("Visor", "teclado bloquado");
+    }
+    
+    public boolean isTelaVoto() {
+        return this.isShowing();
     }
 
     /**
@@ -123,7 +126,7 @@ public class Visor extends JPanel {
      * 
      * @return true se estiver votando em branco, false caso contrário
      */
-    public boolean isVotandoBranco() {
+    public boolean isTelaBranco() {
         return builder.telaConfirmaBranco.isShowing();
     }
 
@@ -132,7 +135,7 @@ public class Visor extends JPanel {
      * 
      * @return true se estiver gravando, false caso contrário
      */
-    public boolean isGravandoVoto() {
+    public boolean isTelaGravando() {
         return builder.telaConfirmaCandidato.isShowing();
     }
 
@@ -141,7 +144,7 @@ public class Visor extends JPanel {
      * 
      * @return true se a votação está finalizada, false caso contrário
      */
-    public boolean isFinalizado() {
+    public boolean isTelaRelatorio() {
         return builder.telaContabilidade.isShowing();
     }
 
@@ -150,8 +153,9 @@ public class Visor extends JPanel {
      * e limpa informações exibidas do candidato.
      */
     public void limparCamposVoto() {
-        desbloquearTeclado();
-        desbloquearBotoes();
+//        desbloquearTeclado();
+//        desbloquearBotoes();
+//        controlador.avisarSistema("Visor(limparCamposVoto())", "teclado e botoes desbloqueados.");
         for (JTextField campo : camposNumero) campo.setText("");
         builder.limparInformacoesCandidato();
     }
@@ -161,7 +165,6 @@ public class Visor extends JPanel {
      */
     public void desbloquearTeclado() {
         tecladoBloqueado = false;
-        controlador.avisarSistema("Visor", "teclado desbloqueado");
     }
 
     /**
@@ -169,7 +172,6 @@ public class Visor extends JPanel {
      */
     public void bloquearBotoes() {
         botoesBloqueados = true;
-        controlador.avisarSistema("Visor", "botoes bloquados");
     }
 
     /**
@@ -177,7 +179,6 @@ public class Visor extends JPanel {
      */
     public void desbloquearBotoes() {
         botoesBloqueados = false;
-        controlador.avisarSistema("Visor", "botoes desbloqueados");
     }
 
     /**

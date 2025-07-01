@@ -297,6 +297,7 @@ public class VisorBuilder {
         Timer timer = new Timer(2500, e -> {
             visor.desbloquearTeclado();
             visor.desbloquearBotoes();
+            visor.controlador.avisarSistema("VisorBuilder(desbloquearVisor())", "teclado e botoes desbloqueados");
         });
         timer.setRepeats(false);
         timer.start();
