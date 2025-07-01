@@ -85,7 +85,6 @@ public class Legenda extends JPanel {
         painelGrade.removeAll();
 
         for (Document partido : controller.buscarColecao("partidos")) {
-            controller.avisarSistema("Legenda(carregarPartios())", partido.getString("nome"));
             painelGrade.add(criarPainelPartido(partido));
         }
 
@@ -104,7 +103,6 @@ public class Legenda extends JPanel {
         painel.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 exibirCandidatos(partido);
-                controller.avisarSistema("Legenda(criarPainelPartido())", partido.getString("nome") + "clicado");
             }
         });
 
@@ -126,7 +124,6 @@ public class Legenda extends JPanel {
         painelGrade.removeAll();
 
         for (Document candidato : controller.buscarCandidatosPorPartido(partido)) {
-            controller.avisarSistema("Legenda(exibirCandidatos())", candidato.getString("nome"));
             painelGrade.add(criarPainelCandidato(candidato));
         }
 

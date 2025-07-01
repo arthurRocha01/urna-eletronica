@@ -8,6 +8,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoClient;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 
 import br.com.poo.controller.ControllerUrna;
 
@@ -126,12 +127,19 @@ public class ManipuladorDatabase {
      */
     public Document[] getCandidatosPartido(Document partido) {
         List<Document> candidatosFiltrados = new ArrayList<>();
-        String idPartido = partido.getString("_id");
+        ObjectId idPartido = partido.getObjectId("_id");
         for (Document candidato : candidatos) {
-            if (candidato.getString("partido_id").equals(idPartido)) candidatosFiltrados.add(partido);
+            if (idPartido.equals(candidato.getObjectId("partido_id"))) {
+                candidatosFiltrados.add(candidato);
+            };
         }
         
         return candidatosFiltrados.toArray(new Document[0]);
+    }
+
+    public void test() {
+        Document partido = getPartido("91");
+        Document[] candidatos = getCandidatosPartido(partido);
     }
 
     /**
