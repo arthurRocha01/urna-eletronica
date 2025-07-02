@@ -108,7 +108,7 @@ public class ControllerUrna {
         if (isReiniciar()) tela.visor.builder.exibirTelaVoto();
         else if (isVotando(voto)) registrarVoto(voto, candidato);
         else if (isVotandoBranco()) registrarVotoBranco();
-        else if (!isVotando(voto)) finalizarVotacao();
+        else if (isFinalizando(voto)) finalizarVotacao();
     }
 
     /**
@@ -186,6 +186,10 @@ public class ControllerUrna {
         urna.registrarVoto("branco");
         tela.visor.builder.manipuladorTelaVotoBranco("fechar");
         tela.visor.builder.exibirConfirmaVoto();
+    }
+
+    private boolean isFinalizando(String voto) {
+        return tela.visor.isTelaVoto() && tela.visor.isVotoCompleto() && voto.equals("99999");
     }
     
     /**

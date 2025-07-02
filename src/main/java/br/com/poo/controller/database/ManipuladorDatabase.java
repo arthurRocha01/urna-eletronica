@@ -76,7 +76,7 @@ public class ManipuladorDatabase {
      */
     public Document getPartido(String numero) {
         for (Document partido : partidos) {
-            if (partido.getString("numero").equals(numero)) return partido;
+            if (numero.equals(partido.getString("numero"))) return partido;
         }
         return null;
     }
@@ -89,7 +89,7 @@ public class ManipuladorDatabase {
      */
     public Document getCandidato(String numero) {
         for (Document candidato : candidatos) {
-            if (candidato.getString("numero").equals(numero)) return candidato;
+            if (numero.equals(candidato.getString("numero"))) return candidato;
         }
         return null;
     }
