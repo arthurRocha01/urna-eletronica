@@ -106,7 +106,6 @@ public class Visor extends JPanel {
         for (JTextField campo : camposNumero) {
             if (campo.getText().isEmpty()) return false;
         }
-        // bloquearTeclado();
         return true;
     }
 
@@ -116,7 +115,12 @@ public class Visor extends JPanel {
     public void bloquearTeclado() {
         tecladoBloqueado = true;
     }
-    
+
+    /**
+     * Indica se a tela de voto branco está sendo exibida.
+     * 
+     * @return true se estiver votando, false caso contrário
+     */
     public boolean isTelaVoto() {
         return this.isShowing();
     }
@@ -153,9 +157,6 @@ public class Visor extends JPanel {
      * e limpa informações exibidas do candidato.
      */
     public void limparCamposVoto() {
-//        desbloquearTeclado();
-//        desbloquearBotoes();
-//        controlador.avisarSistema("Visor(limparCamposVoto())", "teclado e botoes desbloqueados.");
         for (JTextField campo : camposNumero) campo.setText("");
         builder.limparInformacoesCandidato();
     }

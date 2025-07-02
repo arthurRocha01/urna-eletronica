@@ -55,12 +55,8 @@ public class ControllerUrna {
         if (isInserindoVoto(comando)) {
             tela.visor.inserirDigito(comando);
         } else if (!tela.visor.botoesBloqueados || isVotandoBranco() || isReiniciar()) {
-            if (isVotando(comando)) {
-                tela.visor.bloquearBotoes();
-                avisarSistema("Controller(executarAcao()", "botoes bloqueados");
-            }
+            if (isVotando(comando)) tela.visor.bloquearBotoes();
             processarComando(comando);
-            avisarSistema("Controller(executarAcao())", "botao " + comando + " clicado");
         }
     }
 
@@ -100,8 +96,6 @@ public class ControllerUrna {
     private void confirmarVoto() {
         String voto = tela.visor.getVotoInserido();
         Document candidato = buscarCandidato(voto);
-        if (candidato == null) avisarSistema("Controller(confirmaVoto())", "candidato invalido.");
-        else avisarSistema("Controller(confirmaVoto())", "candidato valido.");
         
         if (isReiniciar()) tela.visor.builder.exibirTelaVoto();
         else if (isVotando(voto)) registrarVoto(voto, candidato);
@@ -168,7 +162,6 @@ public class ControllerUrna {
     private void registrarVotoCandidato(Document candidato) {
         urna.registrarVoto(candidato.getString("nome"));
         tela.visor.builder.exibirConfirmaVoto();
-        avisarSistema("Controller", "candidato votado");
     }
 
     /**
@@ -183,7 +176,6 @@ public class ControllerUrna {
      */
     private void registrarVotoBranco() {
         urna.registrarVoto("branco");
-        avisarSistema("Controller", "Voto branco ou inválido.");
         tela.visor.builder.manipuladorTelaVotoBranco("fechar");
         tela.visor.builder.exibirConfirmaVoto();
     }
@@ -192,7 +184,6 @@ public class ControllerUrna {
      * Finaliza o processo de votação e exibe os resultados na tela.
      */
     private void finalizarVotacao() {
-        avisarSistema("Controller(finalizar())", "exibir contabilidade");
         List<Document> votosContabilizados = urna.contabilizarVotos();
         tela.visor.builder.mostrarContabilidade(votosContabilizados);
     }

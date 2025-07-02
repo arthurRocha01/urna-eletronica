@@ -137,11 +137,6 @@ public class ManipuladorDatabase {
         return candidatosFiltrados.toArray(new Document[0]);
     }
 
-    public void test() {
-        Document partido = getPartido("91");
-        Document[] candidatos = getCandidatosPartido(partido);
-    }
-
     /**
      * Encerra a conexão com o MongoDB, se estiver ativa.
      */
