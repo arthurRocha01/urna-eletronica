@@ -96,215 +96,6 @@ public class VisorBuilder {
     }
 
     /**
-     * Monta os componentes básicos da interface, incluindo títulos, campos numéricos
-     * e áreas para exibição de informações.
-     */
-    private void montarInterface() {
-        adicionarLabel("SEU VOTO PARA:", 17, new Rectangle(20, 10, 300, 20));
-        adicionarLabel("Governador", 22, new Rectangle(300, 45, 300, 30));
-        adicionarCamposNumericos(5);
-
-        labelNumero = criarLabel("", 18, new Rectangle(25, 95, 300, 20));
-        labelNomeTitulo = criarLabel("", 16, new Rectangle(20, 190, 100, 20));
-        labelNomeValor = criarLabel("", 16, new Rectangle(120, 190, 200, 20));
-        labelPartidoTitulo = criarLabel("", 16, new Rectangle(20, 220, 100, 20));
-        labelPartidoValor = criarLabel("", 16, new Rectangle(120, 220, 200, 20));
-        labelInstrucao = criarLabel("", 15, new Rectangle(20, 285, 500, 100));
-        labelInstrucao.setVerticalAlignment(SwingConstants.TOP);
-        labelFotoTitulo = criarLabel("", 12, new Rectangle(585, 190, 100, 20));
-
-        criarPainelFoto();
-    }
-
-    /**
-     * Cria o painel onde será exibida a foto do candidato.
-     */
-    private void criarPainelFoto() {
-        labelFoto = new JLabel();
-        painelFoto = new JPanel(new BorderLayout());
-        painelFoto.setBackground(new Color(230, 230, 230));
-        painelFoto.setBorder(new LineBorder(Color.BLACK, 1));
-        painelFoto.setBounds(570, 85, 100, 100);
-        painelFoto.add(labelFoto, BorderLayout.CENTER);
-
-        visor.add(painelFoto);
-        painelFoto.setVisible(false);
-    }
-
-    /**
-     * Adiciona os campos numéricos para entrada do voto.
-     * 
-     * @param quantidade Número de campos numéricos a serem criados
-     */
-    private void adicionarCamposNumericos(int quantidade) {
-        int largura = 40, altura = 55, espacamento = 5;
-        int total = quantidade * (largura + espacamento) - espacamento;
-        int x = (visor.LARGURA - total) / 4;
-
-        JPanel painel = new JPanel(null);
-        painel.setBackground(Color.WHITE);
-        painel.setBounds(x, 85, total, altura);
-
-        for (int i = 0; i < quantidade; i++) {
-            JTextField campo = new JTextField();
-            campo.setFont(new Font("Arial", Font.BOLD, 28));
-            campo.setHorizontalAlignment(JTextField.CENTER);
-            campo.setBorder(new LineBorder(Color.BLACK, 2));
-            campo.setFocusable(false);
-            campo.setBounds(i * (largura + espacamento), 0, largura, altura);
-            visor.camposNumero[i] = campo;
-            painel.add(campo);
-        }
-
-        visor.add(painel);
-    }
-
-    /**
-     * Cria um JLabel e adiciona ao visor.
-     * 
-     * @param texto Texto do label
-     * @param tamanhoFonte Tamanho da fonte
-     * @param bounds Posição e tamanho do componente
-     * @return JLabel criado
-     */
-    private JLabel criarLabel(String texto, int tamanhoFonte, Rectangle bounds) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
-        label.setBounds(bounds);
-        visor.add(label);
-        return label;
-    }
-
-    /**
-     * Adiciona um JLabel ao visor sem retornar.
-     * 
-     * @param texto Texto do label
-     * @param tamanhoFonte Tamanho da fonte
-     * @param bounds Posição e tamanho do componente
-     */
-    private void adicionarLabel(String texto, int tamanhoFonte, Rectangle bounds) {
-        JLabel label = new JLabel(texto);
-        label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
-        label.setBounds(bounds);
-        visor.add(label);
-    }
-
-    /**
-     * Atualiza os campos de informações para exibir dados do partido.
-     * 
-     * @param partido Documento contendo informações do partido
-     */
-    public void mostrarInformacoesPartido(Document partido) {
-        String sigla = partido.getString("sigla");
-
-        labelNumero.setText("Número:");
-        labelPartidoTitulo.setText("Partido");
-        labelPartidoValor.setText(sigla);
-
-        labelInstrucao.setText("<html><div style='letter-spacing:1.5px;'>"
-            + "<hr style='border:1px solid black;'><br><br>"
-            + "<div>Aperte a tecla:</div><div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
-            + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>");
-    }
-
-    /**
-     * Atualiza os campos de informações para exibir dados do candidato,
-     * incluindo a foto, caso disponível.
-     * 
-     * @param candidato Documento contendo informações do candidato
-     */
-    public void mostrarInformacoesCandidato(Document candidato) {
-        String nome = candidato.getString("nome");
-
-        labelNomeTitulo.setText("Nome:");
-        labelNomeValor.setText(nome);
-
-        atualizarFoto(labelPartidoValor.getText(), nome);
-        labelFotoTitulo.setText("Governante");
-    }
-
-    /**
-     * Limpa as informações exibidas sobre candidato e partido, removendo foto e textos.
-     */
-    public void limparInformacoesCandidato() {
-        labelNumero.setText("");
-
-        labelNomeTitulo.setText("");
-        labelNomeValor.setText("");
-
-        labelPartidoTitulo.setText("");
-        labelPartidoValor.setText("");
-
-        painelFoto.setVisible(false);
-        labelFotoTitulo.setText("");
-        
-        labelInstrucao.setText("");
-    }
-
-    /**
-     * Atualiza a foto do candidato exibida no painel de foto.
-     * 
-     * @param sigla Sigla do partido
-     * @param nome Nome do candidato
-     */
-    private void atualizarFoto(String sigla, String nome) {
-        String caminho = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
-        Image imagem = new ImageIcon(caminho).getImage().getScaledInstance(
-            painelFoto.getWidth(), painelFoto.getHeight(), Image.SCALE_SMOOTH);
-        labelFoto.setIcon(new ImageIcon(imagem));
-        painelFoto.setVisible(true);
-    }
-
-    /**
-     * Fecha a tela de contabilidade e fecha tela de confirmação do voto branco 
-     * caso estiver sendo exiida, voltando para tela anterior.
-     */
-    public void exibirTelaVoto() {
-        if (telaConfirmaBranco.isShowing()) manipuladorTelaVotoBranco("fechar");
-        telaContabilidade.fechar();
-    }
-
-    /**
-     * Exibe a tela de contabilidade dos votos com os dados fornecidos.
-     * 
-     * @param votosContabilizados Lista de documentos contendo votos contabilizados
-     */
-    public void mostrarContabilidade(List<Document> votosContabilizados) {
-        telaContabilidade.exibir(votosContabilizados);
-    }
-
-    /**
-     * Exibe a tela de confirmação do voto e libera o visor após um atraso.
-     */
-    public void exibirConfirmaVoto() {
-        telaConfirmaBranco.fechar();
-        telaConfirmaCandidato.mostrar();
-        desbloquearVisor();
-    }
-
-    /**
-     * Manipula a exibição da tela de voto branco conforme a ação recebida.
-     * 
-     * @param acao "mostrar" para exibir, "fechar" para fechar a tela
-     */
-    public void manipuladorTelaVotoBranco(String acao) {
-        if (acao.equals("mostrar")) telaConfirmaBranco.mostrar();
-        if (acao.equals("fechar")) telaConfirmaBranco.fechar();
-    }
-
-    /**
-     * Desbloqueia o teclado e botões do visor após um delay configurado.
-     */
-    private void desbloquearVisor() {
-        Timer timer = new Timer(2500, e -> {
-            visor.desbloquearTeclado();
-            visor.desbloquearBotoes();
-        });
-        timer.setRepeats(false);
-        timer.start();
-    }
-
-    /**
      * Redimensiona todos os componentes dentro do visor para manter
      * uma aparência responsiva ao redimensionar a janela.
      */
@@ -341,5 +132,214 @@ public class VisorBuilder {
         if (fonte != null) {
             componente.setFont(fonte.deriveFont((float)(fonte.getSize2D() * Math.min(escalaX, escalaY))));
         }
+    }
+
+    /**
+     * Monta os componentes básicos da interface, incluindo títulos, campos numéricos
+     * e áreas para exibição de informações.
+     */
+    private void montarInterface() {
+        adicionarLabel("SEU VOTO PARA:", 17, new Rectangle(20, 10, 300, 20));
+        adicionarLabel("Governador", 22, new Rectangle(300, 45, 300, 30));
+        adicionarCamposNumericos(5);
+
+        labelNumero = criarLabel("", 18, new Rectangle(25, 95, 300, 20));
+        labelNomeTitulo = criarLabel("", 16, new Rectangle(20, 190, 100, 20));
+        labelNomeValor = criarLabel("", 16, new Rectangle(120, 190, 200, 20));
+        labelPartidoTitulo = criarLabel("", 16, new Rectangle(20, 220, 100, 20));
+        labelPartidoValor = criarLabel("", 16, new Rectangle(120, 220, 200, 20));
+        labelInstrucao = criarLabel("", 15, new Rectangle(20, 285, 500, 100));
+        labelInstrucao.setVerticalAlignment(SwingConstants.TOP);
+        labelFotoTitulo = criarLabel("", 12, new Rectangle(585, 190, 100, 20));
+
+        criarPainelFoto();
+    }
+
+        /**
+     * Adiciona um JLabel ao visor sem retornar.
+     * 
+     * @param texto Texto do label
+     * @param tamanhoFonte Tamanho da fonte
+     * @param bounds Posição e tamanho do componente
+     */
+    private void adicionarLabel(String texto, int tamanhoFonte, Rectangle bounds) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
+        label.setBounds(bounds);
+        visor.add(label);
+    }
+
+        /**
+     * Adiciona os campos numéricos para entrada do voto.
+     * 
+     * @param quantidade Número de campos numéricos a serem criados
+     */
+    private void adicionarCamposNumericos(int quantidade) {
+        int largura = 40, altura = 55, espacamento = 5;
+        int total = quantidade * (largura + espacamento) - espacamento;
+        int x = (visor.LARGURA - total) / 4;
+
+        JPanel painel = new JPanel(null);
+        painel.setBackground(Color.WHITE);
+        painel.setBounds(x, 85, total, altura);
+
+        for (int i = 0; i < quantidade; i++) {
+            JTextField campo = new JTextField();
+            campo.setFont(new Font("Arial", Font.BOLD, 28));
+            campo.setHorizontalAlignment(JTextField.CENTER);
+            campo.setBorder(new LineBorder(Color.BLACK, 2));
+            campo.setFocusable(false);
+            campo.setBounds(i * (largura + espacamento), 0, largura, altura);
+            visor.camposNumero[i] = campo;
+            painel.add(campo);
+        }
+
+        visor.add(painel);
+    }
+
+            /**
+     * Cria um JLabel e adiciona ao visor.
+     * 
+     * @param texto Texto do label
+     * @param tamanhoFonte Tamanho da fonte
+     * @param bounds Posição e tamanho do componente
+     * @return JLabel criado
+     */
+    private JLabel criarLabel(String texto, int tamanhoFonte, Rectangle bounds) {
+        JLabel label = new JLabel(texto);
+        label.setFont(new Font("Arial", Font.PLAIN, tamanhoFonte));
+        label.setBounds(bounds);
+        visor.add(label);
+        return label;
+    }
+
+    /**
+     * Cria o painel onde será exibida a foto do candidato.
+     */
+    private void criarPainelFoto() {
+        labelFoto = new JLabel();
+        painelFoto = new JPanel(new BorderLayout());
+        painelFoto.setBackground(new Color(230, 230, 230));
+        painelFoto.setBorder(new LineBorder(Color.BLACK, 1));
+        painelFoto.setBounds(570, 85, 100, 100);
+        painelFoto.add(labelFoto, BorderLayout.CENTER);
+
+        visor.add(painelFoto);
+        painelFoto.setVisible(false);
+    }
+
+    /**
+     * Atualiza os campos de informações para exibir dados do partido.
+     * 
+     * @param partido Documento contendo informações do partido
+     */
+    public void mostrarInformacoesPartido(Document partido) {
+        String sigla = partido.getString("sigla");
+
+        labelNumero.setText("Número:");
+        labelPartidoTitulo.setText("Partido");
+        labelPartidoValor.setText(sigla);
+
+        labelInstrucao.setText("<html><div style='letter-spacing:1.5px;'>"
+            + "<hr style='border:1px solid black;'><br><br>"
+            + "<div>Aperte a tecla:</div><div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
+            + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>");
+    }
+
+    /**
+     * Atualiza os campos de informações para exibir dados do candidato,
+     * incluindo a foto, caso disponível.
+     * 
+     * @param candidato Documento contendo informações do candidato
+     */
+    public void mostrarInformacoesCandidato(Document candidato) {
+        String nome = candidato.getString("nome");
+
+        labelNomeTitulo.setText("Nome:");
+        labelNomeValor.setText(nome);
+
+        atualizarFoto(labelPartidoValor.getText(), nome);
+        labelFotoTitulo.setText("Governante");
+    }
+
+        /**
+     * Atualiza a foto do candidato exibida no painel de foto.
+     * 
+     * @param sigla Sigla do partido
+     * @param nome Nome do candidato
+     */
+    private void atualizarFoto(String sigla, String nome) {
+        String caminho = CAMINHO_IMAGENS + sigla + "/" + nome.toLowerCase() + ".png";
+        Image imagem = new ImageIcon(caminho).getImage().getScaledInstance(
+            painelFoto.getWidth(), painelFoto.getHeight(), Image.SCALE_SMOOTH);
+        labelFoto.setIcon(new ImageIcon(imagem));
+        painelFoto.setVisible(true);
+    }
+
+    /**
+     * Limpa as informações exibidas sobre candidato e partido, removendo foto e textos.
+     */
+    public void limparInformacoesCandidato() {
+        labelNumero.setText("");
+
+        labelNomeTitulo.setText("");
+        labelNomeValor.setText("");
+
+        labelPartidoTitulo.setText("");
+        labelPartidoValor.setText("");
+
+        painelFoto.setVisible(false);
+        labelFotoTitulo.setText("");
+        
+        labelInstrucao.setText("");
+    }
+
+    /**
+     * Fecha a tela de contabilidade e fecha tela de confirmação do voto branco 
+     * caso estiver sendo exiida, voltando para tela anterior.
+     */
+    public void exibirTelaVoto() {
+        if (telaConfirmaBranco.isShowing()) manipuladorTelaVotoBranco("fechar");
+        telaContabilidade.fechar();
+    }
+
+    /**
+     * Exibe a tela de confirmação do voto e libera o visor após um atraso.
+     */
+    public void exibirConfirmaVoto() {
+        telaConfirmaBranco.fechar();
+        telaConfirmaCandidato.mostrar();
+        desbloquearVisor();
+    }
+
+        /**
+     * Manipula a exibição da tela de voto branco conforme a ação recebida.
+     * 
+     * @param acao "mostrar" para exibir, "fechar" para fechar a tela
+     */
+    public void manipuladorTelaVotoBranco(String acao) {
+        if (acao.equals("mostrar")) telaConfirmaBranco.mostrar();
+        if (acao.equals("fechar")) telaConfirmaBranco.fechar();
+    }
+
+    /**
+     * Exibe a tela de contabilidade dos votos com os dados fornecidos.
+     * 
+     * @param votosContabilizados Lista de documentos contendo votos contabilizados
+     */
+    public void exibirRelatorio(List<Document> votosContabilizados) {
+        telaContabilidade.exibir(votosContabilizados);
+    }
+
+    /**
+     * Desbloqueia o teclado e botões do visor após um delay configurado.
+     */
+    private void desbloquearVisor() {
+        Timer timer = new Timer(2500, e -> {
+            visor.desbloquearTeclado();
+            visor.desbloquearBotoes();
+        });
+        timer.setRepeats(false);
+        timer.start();
     }
 }

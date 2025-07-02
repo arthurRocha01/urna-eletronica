@@ -197,7 +197,7 @@ public class ControllerUrna {
      */
     private void finalizarVotacao() {
         List<Document> votosContabilizados = urna.contabilizarVotos();
-        tela.visor.builder.mostrarContabilidade(votosContabilizados);
+        tela.visor.builder.exibirRelatorio(votosContabilizados);
     }
 
     /**
