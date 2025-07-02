@@ -256,9 +256,11 @@ public class VisorBuilder {
     }
 
     /**
-     * Fecha a tela de contabilidade, voltando para tela anterior.
+     * Fecha a tela de contabilidade e fecha tela de confirmação do voto branco 
+     * caso estiver sendo exiida, voltando para tela anterior.
      */
     public void exibirTelaVoto() {
+        if (telaConfirmaBranco.isShowing()) manipuladorTelaVotoBranco("fechar");
         telaContabilidade.fechar();
     }
 

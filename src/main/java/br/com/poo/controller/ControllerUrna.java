@@ -83,11 +83,19 @@ public class ControllerUrna {
      */
     private void processarComando(String comando) {
         switch (comando) {
-            case "CORRIGE" -> tela.visor.limparCamposVoto();
+            case "CORRIGE" -> corrigir();
             case "CONFIRMA" -> confirmarVoto();
             case "BRANCO" -> mostrarConfirmacaoVotoBranco();
             default -> {}
         }
+    }
+
+    /**
+     * Corrige o voto branco se estiver votando branco e limpa o campo de dígito.
+     */
+    private void corrigir() {
+        if (isVotandoBranco()) tela.visor.builder.exibirTelaVoto();
+        tela.visor.limparCamposVoto();
     }
 
     /**

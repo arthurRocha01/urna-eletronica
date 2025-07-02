@@ -68,10 +68,17 @@ public class TelaVotoBranco extends JPanel {
 
         labelRelogio = criarLabel("", 12, Color.DARK_GRAY, 10, 10, 200, 20, SwingConstants.LEFT);
 
+        labelInstrucao = criarLabel("", 13, Color.DARK_GRAY, 15, 230, 450, 90, SwingConstants.LEFT);
+        labelInstrucao.setText("<html><div style='letter-spacing:1.5px;'>"
+            + "<hr style='border:1px solid black;'><br><br>"
+            + "<div>Aperte a tecla:</div><div><b>CONFIRMA</b> para CONFIRMAR este voto</div>"
+            + "<div><b>CORRIGE</b> para REINICIAR este voto</div></div></html>");
+
         add(labelTitulo);
         add(labelMensagem);
         add(labelRodape);
         add(labelRelogio);
+        add(labelInstrucao);
     }
 
     /**
