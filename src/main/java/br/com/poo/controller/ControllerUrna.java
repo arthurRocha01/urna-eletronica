@@ -69,6 +69,7 @@ public class ControllerUrna {
     private boolean isInserindoVoto(String comando) {
         return comando.matches("\\d+") && !tela.visor.tecladoBloqueado;
     }
+
     /**
      * Verifica se o comando é um voto válido (confirmação).
      *
