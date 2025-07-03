@@ -55,8 +55,8 @@ public class ControllerUrna {
         if (isInserindoVoto(comando)) {
             tela.visor.inserirDigito(comando);
         } else if (!tela.visor.botoesBloqueados || isVotandoBranco() || isReiniciar()) {
-            if (isVotando(comando)) tela.visor.bloquearBotoes();
             processarComando(comando);
+            if (isVotando("")) tela.visor.bloquearBotoes();
         }
     }
 
